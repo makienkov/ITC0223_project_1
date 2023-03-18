@@ -1,3 +1,10 @@
+#Sketches
+/src/maxshatzki_imdb.py
+/src/sketch.py
+/src/sketch2.py
+
+/.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
