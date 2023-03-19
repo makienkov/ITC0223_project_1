@@ -43,7 +43,7 @@ def load_config():
             obj = json.loads(obj)
 
         if set(required_constants).intersection(list(obj.keys())) == set(
-            required_constants
+                required_constants
         ):
             logging.info("all config parameters loaded successfully from config file")
         else:
@@ -108,6 +108,7 @@ def url_to_soup(url: str) -> BeautifulSoup:
 
     return soup
 
+
 def check_percentage(percentage_string):
     """checks for percentage string formatting
     Args:
@@ -167,20 +168,6 @@ def extract_links_and_titles(num_pages):
             logging.info("extracted title: %s with data: %s", "title", title_data2)
 
     return output_dict
-
-
-def extract_price_change(soup):
-    """A function that:
-    extracts current price change from provided soup of article page
-
-    :param soup: the soup of article page
-
-    :return: current price change
-    """
-    logging.info("extract_price_change() was called")
-
-    # TODO: not implemented yet!
-    return None
 
 
 def extract_data_from_soup(soup):
