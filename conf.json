@@ -1,8 +1,8 @@
 {
-    "URL": "https://seekingalpha.com/market-news?page=",
     "DEBUG_LOG_LEVEL": 20,
     "DEPLOYMENT_LOG_LEVEL": 20,
     "DEBUG_MODE": true,
+    "URL": "https://seekingalpha.com/market-news?page=",
     "DEPLOYMENT_NUMBER_OF_PAGES": 2,
     "DEBUG_NUMBER_OF_PAGES": 1,
     "DEBUG_NUMBER_OF_URLS": 5,
