@@ -436,9 +436,7 @@ def parallel_approach(my_dict: dict):
     responses_dict = {response.url: extract_data_from_soup(BeautifulSoup(response.text, "html.parser")) for response in
                       responses}
 
-    for i, (key, value) in enumerate(list(my_dict.items())[:stop]):
-        print("value", value[0])
-        print(responses_dict[value[0]])
+    for key, value in list(my_dict.items())[:stop]:
         my_dict[key] += responses_dict[value[0]]
 
     logging.info("parallel_approach() was ended")
