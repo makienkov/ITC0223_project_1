@@ -12,11 +12,11 @@ import re
 import datetime
 import grequests
 import requests
-
 from bs4 import BeautifulSoup
 
-LOG_FILE_NAME = ".".join(__file__.split(".")[:-1]) + ".log"
 CONFIG_FILE_NAME = "conf.json"
+
+LOG_FILE_NAME = ".".join(__file__.split(".")[:-1]) + ".log"
 
 with open(LOG_FILE_NAME, "wb"):
     pass
@@ -30,7 +30,7 @@ logging.basicConfig(
 
 def load_config():
     """
-    Loads the configuration file settings "conf.json".
+    Loads the configuration file settings CONFIG_FILE_NAME.
     Returns the global parameters
     """
     logging.info("load_config() started")
@@ -47,12 +47,12 @@ def load_config():
     ]
 
     try:
-        with open("conf.json", "rb") as my_file:
+        with open(CONFIG_FILE_NAME, "rb") as my_file:
             obj = my_file.read()
             obj = json.loads(obj)
 
         if set(required_constants).intersection(list(obj.keys())) == set(
-            required_constants
+                required_constants
         ):
             logging.info("all config parameters loaded successfully from config file")
         else:
@@ -155,7 +155,7 @@ def url_request(url: str) -> str:
     """
     logging.info("url_request() was called with:\n %s", url)
 
-    time.sleep(0.1)
+    time.sleep(0.2)
 
     header = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) \
@@ -186,43 +186,6 @@ def url_request(url: str) -> str:
         return response.text
 
 
-def url_parallel_request(urls: list[str]) -> list[str]:
-    """A function that:
-    "requests" in parallel the HTML pages from the given list of URLs,
-    and will return a list of HTML pages
-    """
-    logging.info("url_parallel_request() was called")
-
-    time.sleep(0.1)
-
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) \
-            Gecko/20100101 Firefox/66.0",
-        "Accept-Encoding": "*",
-        "Connection": "keep-alive",
-    }
-
-    requests_list = [grequests.get(url, headers=headers, timeout=9.9) for url in urls]
-
-    responses = grequests.map(requests_list)
-
-    html_pages = []
-    for response in responses:
-        try:
-            response.raise_for_status()
-            logging.info("connected to server successfully")
-            html_pages.append(response.text)
-        except requests.exceptions.HTTPError as error:
-            print(f"An error occurred: {error}")
-            logging.error("server unreachable !%s", error)
-            logging.critical("Exiting program...")
-            sys.exit()
-
-    logging.info("url_parallel_request() was ended")
-
-    return html_pages
-
-
 def url_to_soup(url: str) -> BeautifulSoup:
     """A function that:
     "requests" the HTML page from the given string  - URL,
@@ -250,9 +213,9 @@ def check_percentage(percentage_string):
     logging.info("check_percentage() was called with:\n %s", percentage_string)
 
     if (
-        percentage_string.startswith("+")
-        or percentage_string.startswith("-")
-        or percentage_string == "0.00"
+            percentage_string.startswith("+")
+            or percentage_string.startswith("-")
+            or percentage_string == "0.00"
     ):
         logging.info("check_percentage() was ended")
         return percentage_string
@@ -261,13 +224,39 @@ def check_percentage(percentage_string):
     return "absent"
 
 
+def add_data_links_and_titles(data2: str) -> list[str]:
+    """A function that:
+    extracts more data from the given select object,
+    :param data2: soup  select object
+    :return: a list with mode data [price_change, price_change_time]
+    """
+    logging.info("add_data_links_and_titles() was called")
+
+    clean_text = re.sub(r"\s*\d+\s*Comments?", "", data2)
+    clean_text = clean_text.split()[1:]
+    price_change = str(clean_text[0].split("%")[0]) + "%"
+    price_change = check_percentage(price_change)
+    logging.info("extracted price change: %s", price_change)
+
+    now = datetime.datetime.now()
+    price_change_time = (
+        f"{now.year}/{now.month}/{now.day} {now.hour}:{now.minute}:{now.second}"
+    )
+
+    logging.info("extracted price change:%s", price_change_time)
+
+    logging.info("extract_links_and_titles() was ended")
+
+    return [price_change, price_change_time]
+
+
 def extract_links_and_titles(num_pages):
     """A function that:
     extracts article's links (full and short) from news main page(s).
-    Outputs a dict of {title: [full_link, short_link]}
+    Outputs a dict of {title1: [href, title_id..],...}
 
     :param num_pages: number of pages to scrap
-    :return: a dict of {title: link}
+    :return: a dict with data per title
     """
     logging.info("extract_links_and_titles() was called with:\n %s", num_pages)
 
@@ -292,19 +281,8 @@ def extract_links_and_titles(num_pages):
             output_dict[title] = title_data
             logging.info("extracted title: %s with data: %s", title, title_data)
 
-            title_data2 = []
-            clean_text = re.sub(r"\s*\d+\s*Comments?", "", data2.text)
-            clean_text = clean_text.split()[1:]
-            price_change = str(clean_text[0].split("%")[0]) + "%"
-            price_change = check_percentage(price_change)
-            title_data2.append(price_change)
-            now = datetime.datetime.now()
-            price_change_time = (
-                f"{now.year}/{now.month}/{now.day} {now.hour}:{now.minute}:{now.second}"
-            )
-            title_data2.append(price_change_time)
+            title_data2 = add_data_links_and_titles(data2.text)
             output_dict[title] += title_data2
-            logging.info("extracted title: %s with data: %s", "title", title_data2)
 
     logging.info("extract_links_and_titles() was ended")
     return output_dict
@@ -314,7 +292,7 @@ def extract_data_from_soup(soup):
     """A function that:
     extracts data from soup of article page
     and returns the dictionary of single item in the following format:
-    title: [ticker, date_str, time, author, data]
+    title: [ticker, date_str, time, author]
     """
 
     text = soup.text
@@ -427,6 +405,45 @@ def print_timing_function_results(time_lapse: str):
     logging.info("print_timing_function_results() was ended")
 
 
+def parallel_approach(my_dict: dict):
+    """
+    A function that scrapes data from secondary href sites using parallel approach
+    """
+    logging.info("parallel_approach() started ")
+
+    stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(my_dict)
+
+    # Create a list of requests
+    reqs = []
+    urls = []
+
+    for value in list(my_dict.values())[:stop]:
+        urls.append(value[0])
+
+    for url in urls:
+        try:
+            request = grequests.get(url)
+            reqs.append(request)
+            logging.info(f"{url} fetched successfully")
+        except FileNotFoundError:
+            logging.error(f"{url} unreachable")
+            logging.critical("Exiting program...")
+            exit()
+
+    # Send requests in batches of 5
+    responses = grequests.imap(reqs, size=5)
+
+    responses_dict = {response.url: extract_data_from_soup(BeautifulSoup(response.text, "html.parser")) for response in
+                      responses}
+
+    for i, (key, value) in enumerate(list(my_dict.items())[:stop]):
+        print("value", value[0])
+        print(responses_dict[value[0]])
+        my_dict[key] += responses_dict[value[0]]
+
+    logging.info("parallel_approach() was ended")
+
+
 def main():
     """
     Main function:
@@ -446,9 +463,11 @@ def main():
 
     print_dict(my_dict)
 
-    time_str2, _ = time_some_function(
-        extract_data_from_articles, [my_dict]
-    )
+    if not PARALLEL:
+        time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+    else:
+        time_str2, _ = time_some_function(parallel_approach, [my_dict])
+
     print("scraping the secondary webpages took: ")
     print_timing_function_results(time_str2)
 
