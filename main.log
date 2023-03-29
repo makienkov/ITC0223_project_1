@@ -1,0 +1,370 @@
+INFO - 2023-03-29 23:18:31,567 - load_config() started
+INFO - 2023-03-29 23:18:31,567 - all config parameters loaded successfully from config file
+INFO - 2023-03-29 23:18:31,567 - Config file loaded successfully
+INFO - 2023-03-29 23:18:31,567 - debug mode is: True
+INFO - 2023-03-29 23:18:31,568 - debug log level is: 20
+INFO - 2023-03-29 23:18:31,568 - deployment log level  is: 20
+INFO - 2023-03-29 23:18:31,568 - URL is: https://seekingalpha.com/market-news?page=
+INFO - 2023-03-29 23:18:31,568 - site URL is: https://seekingalpha.com
+INFO - 2023-03-29 23:18:31,568 - debug number of urls_ is: 5
+INFO - 2023-03-29 23:18:31,568 - number of pages is: 1
+INFO - 2023-03-29 23:18:31,568 - parallel enabled ? : True
+INFO - 2023-03-29 23:18:31,568 - load_config() completed
+INFO - 2023-03-29 23:18:31,569 - main() started
+DEBUG - 2023-03-29 23:18:31,569 - DEBUG before set_log_level()
+INFO - 2023-03-29 23:18:31,569 - load_logs() started
+INFO - 2023-03-29 23:18:31,569 - logging level set to: INFO=20
+INFO - 2023-03-29 23:18:31,569 - load_logs() completed
+INFO - 2023-03-29 23:18:31,570 - time_some_function() was called for <function extract_links_and_titles at 0x000001B46BA31D00>
+INFO - 2023-03-29 23:18:31,570 - extract_links_and_titles() was called with:
+ 1
+INFO - 2023-03-29 23:18:31,570 - url_to_soup() was called with:
+ https://seekingalpha.com/market-news?page=1
+INFO - 2023-03-29 23:18:31,570 - url_request() was called with:
+ https://seekingalpha.com/market-news?page=1
+INFO - 2023-03-29 23:18:32,867 - connected to server successfully
+INFO - 2023-03-29 23:18:32,867 - Request fetched successfully, code=200
+INFO - 2023-03-29 23:18:32,867 - url_request() was ended
+INFO - 2023-03-29 23:18:32,888 - url_to_soup() ended
+INFO - 2023-03-29 23:18:32,897 - extracted title: Planet Labs Non-GAAP EPS of -$0.08 beats by $0.02, revenue of $52.98M beats by $0.42M with data: ['https://seekingalpha.com/news/3952443-planet-labs-non-gaap-eps-of-0_08-beats-0_02-revenue-of-52_98m-beats-0_42m', '3952443']
+INFO - 2023-03-29 23:18:32,897 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,898 - check_percentage() was called with:
+ +3.96%
+INFO - 2023-03-29 23:18:32,898 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,898 - extracted price change: +3.96%
+INFO - 2023-03-29 23:18:32,898 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,898 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,898 - extracted title: J&J unveils long-term data on Rybrevant for non-small cell lung cancer with data: ['https://seekingalpha.com/news/3952439-johnson-johnson-unveils-long-term-data-on-rybrevant-for-non-small-cell-lung-cancer', '3952439']
+INFO - 2023-03-29 23:18:32,898 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,898 - check_percentage() was called with:
+ +0.98%
+INFO - 2023-03-29 23:18:32,898 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,898 - extracted price change: +0.98%
+INFO - 2023-03-29 23:18:32,898 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,898 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,898 - extracted title: Viking Therapeutics proposes stock offering, size not disclosed with data: ['https://seekingalpha.com/news/3952442-viking-therapeutics-proposes-stock-offering-size-not-disclosed', '3952442']
+INFO - 2023-03-29 23:18:32,898 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,898 - check_percentage() was called with:
+ +3.17%
+INFO - 2023-03-29 23:18:32,898 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,898 - extracted price change: +3.17%
+INFO - 2023-03-29 23:18:32,898 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,898 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,898 - extracted title: Verint Systems Non-GAAP EPS of $0.75 beats by $0.03, revenue of $236.25M beats by $2.1M with data: ['https://seekingalpha.com/news/3952440-verint-systems-non-gaap-eps-of-0_75-beats-0_03-revenue-of-236_25m-beats-2_1m', '3952440']
+INFO - 2023-03-29 23:18:32,899 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,899 - check_percentage() was called with:
+ +1.93%
+INFO - 2023-03-29 23:18:32,899 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,899 - extracted price change: +1.93%
+INFO - 2023-03-29 23:18:32,899 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,899 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,899 - extracted title: RH Non-GAAP EPS of $2.88 misses by $0.48, revenue of $772.5M misses by $4.8M with data: ['https://seekingalpha.com/news/3952438-rh-non-gaap-eps-of-2_88-misses-0_48-revenue-of-772_5m-misses-4_8m', '3952438']
+INFO - 2023-03-29 23:18:32,899 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,899 - check_percentage() was called with:
+ +1.83%
+INFO - 2023-03-29 23:18:32,899 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,899 - extracted price change: +1.83%
+INFO - 2023-03-29 23:18:32,899 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,899 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,899 - extracted title: Volta ticks higher after shareholders vote to approve sale to Shell with data: ['https://seekingalpha.com/news/3952436-volta-ticks-higher-after-shareholders-vote-to-approve-sale-to-shell', '3952436']
+INFO - 2023-03-29 23:18:32,899 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,899 - check_percentage() was called with:
+ +1.00%
+INFO - 2023-03-29 23:18:32,899 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,899 - extracted price change: +1.00%
+INFO - 2023-03-29 23:18:32,899 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,899 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,899 - extracted title: Micron stock surges as analysts realize 'deeper bottom' but recovery is near with data: ['https://seekingalpha.com/news/3952194-micron-rises-analysts-realize-deeper-bottom-recovery-near', '3952194']
+INFO - 2023-03-29 23:18:32,899 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,899 - check_percentage() was called with:
+ +7.19%
+INFO - 2023-03-29 23:18:32,900 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,900 - extracted price change: +7.19%
+INFO - 2023-03-29 23:18:32,900 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,900 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,900 - extracted title: Dow, S&P 500, Nasdaq rally as Micron boosts tech with data: ['https://seekingalpha.com/news/3952433-dow-sp-500-nasdaq-rally-as-micron-boosts-tech', '3952433']
+INFO - 2023-03-29 23:18:32,900 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,900 - check_percentage() was called with:
+ +1.42%
+INFO - 2023-03-29 23:18:32,900 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,900 - extracted price change: +1.42%
+INFO - 2023-03-29 23:18:32,900 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,900 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,900 - extracted title: JetBlue Airways looks to cut schedule amid air traffic controller shortage with data: ['https://seekingalpha.com/news/3952432-jetblue-airways-looks-to-cut-schedule-amid-air-traffic-controller-shortage', '3952432']
+INFO - 2023-03-29 23:18:32,900 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,900 - check_percentage() was called with:
+ +2.60%
+INFO - 2023-03-29 23:18:32,900 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,900 - extracted price change: +2.60%
+INFO - 2023-03-29 23:18:32,900 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,900 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,900 - extracted title: Winklevoss's Gemini gears up to launch overseas crypto derivatives exchange - report with data: ['https://seekingalpha.com/news/3952431-winklevosss-gemini-gears-up-to-launch-overseas-crypto-derivatives-exchange-report', '3952431']
+INFO - 2023-03-29 23:18:32,900 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,900 - check_percentage() was called with:
+ +3.59%
+INFO - 2023-03-29 23:18:32,900 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,900 - extracted price change: +3.59%
+INFO - 2023-03-29 23:18:32,900 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,900 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,901 - extracted title: Intel stock pops as investor event details Xeon demand, timeline for lower power chip with data: ['https://seekingalpha.com/news/3952404-intel-spikes-investor-event-details-xeon-demand-lower-power-chip', '3952404']
+INFO - 2023-03-29 23:18:32,901 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,901 - check_percentage() was called with:
+ +7.61%
+INFO - 2023-03-29 23:18:32,901 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,901 - extracted price change: +7.61%
+INFO - 2023-03-29 23:18:32,901 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,901 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,901 - extracted title: Lululemon stock jumps 13% as analysts hike estimates with data: ['https://seekingalpha.com/news/3952302-lululemon-stock-jumps-14-as-analysts-hike-estimates', '3952302']
+INFO - 2023-03-29 23:18:32,901 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,901 - check_percentage() was called with:
+ +12.72%
+INFO - 2023-03-29 23:18:32,901 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,901 - extracted price change: +12.72%
+INFO - 2023-03-29 23:18:32,901 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,901 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,901 - extracted title: Pure Energy nearly doubles after getting permits for Clayton Valley lithium project with data: ['https://seekingalpha.com/news/3952429-pure-energy-nearly-doubles-after-getting-permits-for-clayton-valley-lithium-project', '3952429']
+INFO - 2023-03-29 23:18:32,901 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,901 - check_percentage() was called with:
+ +8.44%
+INFO - 2023-03-29 23:18:32,901 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,901 - extracted price change: +8.44%
+INFO - 2023-03-29 23:18:32,901 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,901 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,901 - extracted title: Sports betting revenue in U.S. is forecast to top $10B this year with data: ['https://seekingalpha.com/news/3952428-sports-betting-revenue-in-us-is-forecast-to-top-10b-this-year', '3952428']
+INFO - 2023-03-29 23:18:32,901 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,901 - check_percentage() was called with:
+ +2.47%
+INFO - 2023-03-29 23:18:32,901 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,901 - extracted price change: +2.47%
+INFO - 2023-03-29 23:18:32,902 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,902 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,902 - extracted title: Annovis Bio jumps 17% on the day of data presentation on lead asset with data: ['https://seekingalpha.com/news/3952427-annovis-stock-jumps-the-day-lead-asset-data', '3952427']
+INFO - 2023-03-29 23:18:32,902 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,902 - check_percentage() was called with:
+ +12.17%
+INFO - 2023-03-29 23:18:32,902 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,902 - extracted price change: +12.17%
+INFO - 2023-03-29 23:18:32,902 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,902 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,902 - extracted title: Kazakhstan seeks $5.1B in environmental fines from Kashagan oil group with data: ['https://seekingalpha.com/news/3952426-kazakhstan-seeks-51b-in-environmental-fines-from-kashagan-oil-group', '3952426']
+INFO - 2023-03-29 23:18:32,902 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,902 - check_percentage() was called with:
+ +1.74%
+INFO - 2023-03-29 23:18:32,902 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,902 - extracted price change: +1.74%
+INFO - 2023-03-29 23:18:32,902 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,902 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,902 - extracted title: FDIC considering pressing U.S. big banks in paying for bank failures - report with data: ['https://seekingalpha.com/news/3952425-fdic-considering-pressing-us-big-banks-in-paying-for-bank-failures-report', '3952425']
+INFO - 2023-03-29 23:18:32,902 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,902 - check_percentage() was called with:
+ +0.20%
+INFO - 2023-03-29 23:18:32,902 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,902 - extracted price change: +0.20%
+INFO - 2023-03-29 23:18:32,902 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,902 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,902 - extracted title: Globalstar announces $200M non-convertible financing to satisfy remaining capital needs with data: ['https://seekingalpha.com/news/3952423-globalstar-announces-200m-non-convertible-financing-to-satisfy-remaining-capital-needs', '3952423']
+INFO - 2023-03-29 23:18:32,902 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,903 - check_percentage() was called with:
+ +11.88%
+INFO - 2023-03-29 23:18:32,903 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,903 - extracted price change: +11.88%
+INFO - 2023-03-29 23:18:32,903 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,903 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,903 - extracted title: Primoris Services goes ex-dividend tomorrow with data: ['https://seekingalpha.com/news/3952422-primoris-services-corporation-declares-missing-dividend', '3952422']
+INFO - 2023-03-29 23:18:32,903 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,903 - check_percentage() was called with:
+ +0.99%
+INFO - 2023-03-29 23:18:32,903 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,903 - extracted price change: +0.99%
+INFO - 2023-03-29 23:18:32,903 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,903 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,903 - extracted title: Orion Office REIT goes ex-dividend tomorrow with data: ['https://seekingalpha.com/news/3952420-orion-office-reit-inc-declares-missing-dividend', '3952420']
+INFO - 2023-03-29 23:18:32,903 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,903 - check_percentage() was called with:
+ +2.42%
+INFO - 2023-03-29 23:18:32,903 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,903 - extracted price change: +2.42%
+INFO - 2023-03-29 23:18:32,903 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,903 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,903 - extracted title: Core & Main offers âgood opportunityâ on weak sentiment, Baird says with data: ['https://seekingalpha.com/news/3952417-core-main-offers-good-opportunity-on-weak-sentiment-baird-says', '3952417']
+INFO - 2023-03-29 23:18:32,903 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,903 - check_percentage() was called with:
+ +1.99%
+INFO - 2023-03-29 23:18:32,903 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,904 - extracted price change: +1.99%
+INFO - 2023-03-29 23:18:32,904 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,904 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,904 - extracted title: Nasdaq, S&P, Dow set to finish with solid gains, boosted by big tech, Micron with data: ['https://seekingalpha.com/news/3952323-nasdaq-sp-dow-rise-boosted-by-tech-stocks-surge-in-shares-of-micron', '3952323']
+INFO - 2023-03-29 23:18:32,904 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,904 - check_percentage() was called with:
+ +1.00%
+INFO - 2023-03-29 23:18:32,904 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,904 - extracted price change: +1.00%
+INFO - 2023-03-29 23:18:32,904 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,904 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,904 - extracted title: AES tops five utility stocks seen outperforming at Morgan Stanley with data: ['https://seekingalpha.com/news/3952406-aes-tops-five-utility-stocks-seen-outperforming-at-morgan-stanley', '3952406']
+INFO - 2023-03-29 23:18:32,904 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,904 - check_percentage() was called with:
+ +1.47%
+INFO - 2023-03-29 23:18:32,904 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,904 - extracted price change: +1.47%
+INFO - 2023-03-29 23:18:32,904 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,904 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,904 - extracted title: Ault Alliance signs agreement to sell $10M in convertible preferred stock with data: ['https://seekingalpha.com/news/3952405-ault-alliance-signs-agreement-to-sell-10m-in-convertible-preferred-stock', '3952405']
+INFO - 2023-03-29 23:18:32,904 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,904 - check_percentage() was called with:
+ -7.42%
+INFO - 2023-03-29 23:18:32,904 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,904 - extracted price change: -7.42%
+INFO - 2023-03-29 23:18:32,904 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,904 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,905 - extracted title: NV5 Global nabs $11M in essential infrastructure projects in California and New Mexico with data: ['https://seekingalpha.com/news/3952403-nv5-global-nabs-11m-in-essential-infrastructure-projects-in-california-and-new-mexico', '3952403']
+INFO - 2023-03-29 23:18:32,905 - add_data_links_and_titles() was called
+INFO - 2023-03-29 23:18:32,905 - check_percentage() was called with:
+ +1.58%
+INFO - 2023-03-29 23:18:32,905 - check_percentage() was ended
+INFO - 2023-03-29 23:18:32,905 - extracted price change: +1.58%
+INFO - 2023-03-29 23:18:32,905 - extracted price change:2023/3/29 23:18:32
+INFO - 2023-03-29 23:18:32,905 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,905 - extract_links_and_titles() was ended
+INFO - 2023-03-29 23:18:32,905 - time_some_function() ended
+INFO - 2023-03-29 23:18:32,905 - print_timing_function_results() started for 0:00:01.335019
+INFO - 2023-03-29 23:18:32,906 - print_timing_function_results() was ended
+INFO - 2023-03-29 23:18:32,912 - time_some_function() was called for <function parallel_approach at 0x000001B46BA320C0>
+INFO - 2023-03-29 23:18:32,912 - parallel_approach() started 
+INFO - 2023-03-29 23:18:32,912 - https://seekingalpha.com/news/3952443-planet-labs-non-gaap-eps-of-0_08-beats-0_02-revenue-of-52_98m-beats-0_42m fetched successfully
+INFO - 2023-03-29 23:18:32,912 - https://seekingalpha.com/news/3952439-johnson-johnson-unveils-long-term-data-on-rybrevant-for-non-small-cell-lung-cancer fetched successfully
+INFO - 2023-03-29 23:18:32,913 - https://seekingalpha.com/news/3952442-viking-therapeutics-proposes-stock-offering-size-not-disclosed fetched successfully
+INFO - 2023-03-29 23:18:32,913 - https://seekingalpha.com/news/3952440-verint-systems-non-gaap-eps-of-0_75-beats-0_03-revenue-of-236_25m-beats-2_1m fetched successfully
+INFO - 2023-03-29 23:18:32,913 - https://seekingalpha.com/news/3952438-rh-non-gaap-eps-of-2_88-misses-0_48-revenue-of-772_5m-misses-4_8m fetched successfully
+INFO - 2023-03-29 23:18:33,376 - extract_data_from_soup() was called for (NASDAQ:VRNT) | Seeking Alpha                    Seeking Alpha - Go to HomepageTrendingMy PortfolioM
+INFO - 2023-03-29 23:18:33,376 - ticker added ! VRNT
+INFO - 2023-03-29 23:18:33,376 - author added ! Pranav Ghumatkar
+INFO - 2023-03-29 23:18:33,376 - date_str added ! Mar. 29, 2023
+INFO - 2023-03-29 23:18:33,376 - time_ added ! 4:11 PM
+INFO - 2023-03-29 23:18:33,376 - extract_data_from_soup() was ended
+INFO - 2023-03-29 23:18:33,389 - extract_data_from_soup() was called for J&J unveils long-term data on Rybrevant for lung cancer | Seeking Alpha                    Seeking A
+INFO - 2023-03-29 23:18:33,389 - ticker added ! JNJ
+INFO - 2023-03-29 23:18:33,389 - author added ! Jonathan Block
+INFO - 2023-03-29 23:18:33,389 - date_str added ! Mar. 29, 2023
+INFO - 2023-03-29 23:18:33,389 - time_ added ! 4:13 PM
+INFO - 2023-03-29 23:18:33,389 - extract_data_from_soup() was ended
+INFO - 2023-03-29 23:18:33,414 - extract_data_from_soup() was called for Viking Therapeutics proposes stock offering, size not disclosed (NASDAQ:VKTX) | Seeking Alpha       
+INFO - 2023-03-29 23:18:33,414 - ticker added ! VKTX
+INFO - 2023-03-29 23:18:33,414 - author added ! Ahmed Farhath
+INFO - 2023-03-29 23:18:33,414 - date_str added ! Mar. 29, 2023
+INFO - 2023-03-29 23:18:33,414 - time_ added ! 4:12 PM
+INFO - 2023-03-29 23:18:33,414 - extract_data_from_soup() was ended
+INFO - 2023-03-29 23:18:33,539 - extract_data_from_soup() was called for (NYSE:PL) | Seeking Alpha                    Seeking Alpha - Go to HomepageTrendingMy PortfolioMy Au
+INFO - 2023-03-29 23:18:33,539 - ticker added ! PL
+INFO - 2023-03-29 23:18:33,539 - author added ! Pranav Ghumatkar
+INFO - 2023-03-29 23:18:33,539 - date_str added ! Mar. 29, 2023
+INFO - 2023-03-29 23:18:33,539 - time_ added ! 4:14 PM
+INFO - 2023-03-29 23:18:33,539 - extract_data_from_soup() was ended
+INFO - 2023-03-29 23:18:33,601 - extract_data_from_soup() was called for (NYSE:RH) | Seeking Alpha                    Seeking Alpha - Go to HomepageTrendingMy PortfolioMy Au
+INFO - 2023-03-29 23:18:33,601 - ticker added ! RH
+INFO - 2023-03-29 23:18:33,601 - author added ! Pranav Ghumatkar
+INFO - 2023-03-29 23:18:33,601 - date_str added ! Mar. 29, 2023
+INFO - 2023-03-29 23:18:33,601 - time_ added ! 4:09 PM
+INFO - 2023-03-29 23:18:33,601 - extract_data_from_soup() was ended
+INFO - 2023-03-29 23:18:33,601 - parallel_approach() was ended
+INFO - 2023-03-29 23:18:33,602 - time_some_function() ended
+INFO - 2023-03-29 23:18:33,602 - print_timing_function_results() started for 0:00:00.690015
+INFO - 2023-03-29 23:18:33,602 - print_timing_function_results() was ended
+INFO - 2023-03-29 23:18:33,612 - initialize_db() was called
+INFO - 2023-03-29 23:18:33,612 - database_query() called with: DROP DATABASE IF EXISTS market; , commit: True, print False:
+INFO - 2023-03-29 23:18:33,646 - Query executed successfully
+INFO - 2023-03-29 23:18:33,647 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,647 - database_query() called with: CREATE DATABASE IF NOT EXISTS market; , commit: True, print False:
+INFO - 2023-03-29 23:18:33,654 - Query executed successfully
+INFO - 2023-03-29 23:18:33,654 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,654 - database_query() called with: DROP TABLE IF EXISTS stock; , commit: True, print False:
+INFO - 2023-03-29 23:18:33,661 - Query executed successfully
+INFO - 2023-03-29 23:18:33,661 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,661 - database_query() called with: DROP TABLE IF EXISTS article; , commit: True, print False:
+INFO - 2023-03-29 23:18:33,668 - Query executed successfully
+INFO - 2023-03-29 23:18:33,668 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,669 - database_query() called with: DROP TABLE IF EXISTS author; , commit: True, print False:
+INFO - 2023-03-29 23:18:33,673 - Query executed successfully
+INFO - 2023-03-29 23:18:33,674 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,674 - database_query() called with: CREATE TABLE IF NOT EXISTS author (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255)); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,690 - Query executed successfully
+INFO - 2023-03-29 23:18:33,690 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,691 - database_query() called with: CREATE TABLE IF NOT EXISTS article (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(1000), link VARCHAR(1000), datetime_posted DATETIME, author_id INT, FOREIGN KEY (author_id) REFERENCES author(id)); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,715 - Query executed successfully
+INFO - 2023-03-29 23:18:33,715 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,715 - database_query() called with: CREATE TABLE IF NOT EXISTS stock (id INT AUTO_INCREMENT PRIMARY KEY, ticker_symbol VARCHAR(50), price_change DECIMAL(10, 2), datetime_change DATETIME, article_id INT, FOREIGN KEY (article_id) REFERENCES article(id)); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,768 - Query executed successfully
+INFO - 2023-03-29 23:18:33,768 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,768 - initialize_db() was ended successfully
+INFO - 2023-03-29 23:18:33,768 - dict_to_db() called for len(data): 25 
+INFO - 2023-03-29 23:18:33,827 - new_article() called for title: Planet Labs Non-GAAP EPS of -$0.08 beats by $0.02, revenue of $52.98M beats by $0.42M 
+INFO - 2023-03-29 23:18:33,827 - database_query() called with: INSERT INTO author (name) SELECT 'Pranav Ghumatkar' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Pranav Ghumatkar'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,832 - Query executed successfully
+INFO - 2023-03-29 23:18:33,835 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,835 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Planet Labs Non-GAAP EPS of -$0.08 beats by $0.02, revenue of $52.98M beats by $0.42M', 'https://seekingalpha.com/news/3952443-planet-labs-non-gaap-eps-of-0_08-beats-0_02-revenue-of-52_98m-beats-0_42m', '2023-03-29 23:14:00+03:00', (SELECT id FROM author WHERE name = 'Pranav Ghumatkar')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Planet Labs Non-GAAP EPS of -$0.08 beats by $0.02, revenue of $52.98M beats by $0.42M'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,840 - Query executed successfully
+INFO - 2023-03-29 23:18:33,842 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,842 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('PL', '+3.96', '2023-03-29 23:18:32', (SELECT id FROM article WHERE title = 'Planet Labs Non-GAAP EPS of -$0.08 beats by $0.02, revenue of $52.98M beats by $0.42M')); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,847 - Query executed successfully
+INFO - 2023-03-29 23:18:33,848 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,848 - new_article() ended
+INFO - 2023-03-29 23:18:33,848 - dict_to_db() ended successfully
+INFO - 2023-03-29 23:18:33,848 - new_article() called for title: J&J unveils long-term data on Rybrevant for non-small cell lung cancer 
+INFO - 2023-03-29 23:18:33,848 - database_query() called with: INSERT INTO author (name) SELECT 'Jonathan Block' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Jonathan Block'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,852 - Query executed successfully
+INFO - 2023-03-29 23:18:33,855 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,855 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'J&J unveils long-term data on Rybrevant for non-small cell lung cancer', 'https://seekingalpha.com/news/3952439-johnson-johnson-unveils-long-term-data-on-rybrevant-for-non-small-cell-lung-cancer', '2023-03-29 23:13:00+03:00', (SELECT id FROM author WHERE name = 'Jonathan Block')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'J&J unveils long-term data on Rybrevant for non-small cell lung cancer'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,859 - Query executed successfully
+INFO - 2023-03-29 23:18:33,860 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,860 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('JNJ', '+0.98', '2023-03-29 23:18:32', (SELECT id FROM article WHERE title = 'J&J unveils long-term data on Rybrevant for non-small cell lung cancer')); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,865 - Query executed successfully
+INFO - 2023-03-29 23:18:33,867 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,867 - new_article() ended
+INFO - 2023-03-29 23:18:33,867 - dict_to_db() ended successfully
+INFO - 2023-03-29 23:18:33,867 - new_article() called for title: Viking Therapeutics proposes stock offering, size not disclosed 
+INFO - 2023-03-29 23:18:33,867 - database_query() called with: INSERT INTO author (name) SELECT 'Ahmed Farhath' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Ahmed Farhath'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,871 - Query executed successfully
+INFO - 2023-03-29 23:18:33,873 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,873 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Viking Therapeutics proposes stock offering, size not disclosed', 'https://seekingalpha.com/news/3952442-viking-therapeutics-proposes-stock-offering-size-not-disclosed', '2023-03-29 23:12:00+03:00', (SELECT id FROM author WHERE name = 'Ahmed Farhath')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Viking Therapeutics proposes stock offering, size not disclosed'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,877 - Query executed successfully
+INFO - 2023-03-29 23:18:33,879 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,879 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('VKTX', '+3.17', '2023-03-29 23:18:32', (SELECT id FROM article WHERE title = 'Viking Therapeutics proposes stock offering, size not disclosed')); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,883 - Query executed successfully
+INFO - 2023-03-29 23:18:33,885 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,885 - new_article() ended
+INFO - 2023-03-29 23:18:33,885 - dict_to_db() ended successfully
+INFO - 2023-03-29 23:18:33,885 - new_article() called for title: Verint Systems Non-GAAP EPS of $0.75 beats by $0.03, revenue of $236.25M beats by $2.1M 
+INFO - 2023-03-29 23:18:33,885 - database_query() called with: INSERT INTO author (name) SELECT 'Pranav Ghumatkar' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Pranav Ghumatkar'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,889 - Query executed successfully
+INFO - 2023-03-29 23:18:33,890 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,890 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Verint Systems Non-GAAP EPS of $0.75 beats by $0.03, revenue of $236.25M beats by $2.1M', 'https://seekingalpha.com/news/3952440-verint-systems-non-gaap-eps-of-0_75-beats-0_03-revenue-of-236_25m-beats-2_1m', '2023-03-29 23:11:00+03:00', (SELECT id FROM author WHERE name = 'Pranav Ghumatkar')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Verint Systems Non-GAAP EPS of $0.75 beats by $0.03, revenue of $236.25M beats by $2.1M'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,894 - Query executed successfully
+INFO - 2023-03-29 23:18:33,896 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,897 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('VRNT', '+1.93', '2023-03-29 23:18:32', (SELECT id FROM article WHERE title = 'Verint Systems Non-GAAP EPS of $0.75 beats by $0.03, revenue of $236.25M beats by $2.1M')); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,901 - Query executed successfully
+INFO - 2023-03-29 23:18:33,902 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,902 - new_article() ended
+INFO - 2023-03-29 23:18:33,902 - dict_to_db() ended successfully
+INFO - 2023-03-29 23:18:33,902 - new_article() called for title: RH Non-GAAP EPS of $2.88 misses by $0.48, revenue of $772.5M misses by $4.8M 
+INFO - 2023-03-29 23:18:33,902 - database_query() called with: INSERT INTO author (name) SELECT 'Pranav Ghumatkar' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Pranav Ghumatkar'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,906 - Query executed successfully
+INFO - 2023-03-29 23:18:33,907 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,907 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'RH Non-GAAP EPS of $2.88 misses by $0.48, revenue of $772.5M misses by $4.8M', 'https://seekingalpha.com/news/3952438-rh-non-gaap-eps-of-2_88-misses-0_48-revenue-of-772_5m-misses-4_8m', '2023-03-29 23:09:00+03:00', (SELECT id FROM author WHERE name = 'Pranav Ghumatkar')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'RH Non-GAAP EPS of $2.88 misses by $0.48, revenue of $772.5M misses by $4.8M'); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,911 - Query executed successfully
+INFO - 2023-03-29 23:18:33,913 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,913 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('RH', '+1.83', '2023-03-29 23:18:32', (SELECT id FROM article WHERE title = 'RH Non-GAAP EPS of $2.88 misses by $0.48, revenue of $772.5M misses by $4.8M')); , commit: True, print False:
+INFO - 2023-03-29 23:18:33,918 - Query executed successfully
+INFO - 2023-03-29 23:18:33,919 - database_query() ended with result: []
+INFO - 2023-03-29 23:18:33,919 - new_article() ended
+INFO - 2023-03-29 23:18:33,919 - dict_to_db() ended successfully
+INFO - 2023-03-29 23:18:33,919 - database_query() called with: SELECT * FROM author , commit: False, print True:
+INFO - 2023-03-29 23:18:33,923 - Query executed successfully
+INFO - 2023-03-29 23:18:33,925 - database_query() ended with result: [(1, 'Pranav Ghumatkar'), (2, 'Jonathan Block'), (3, 'Ahmed Farhath')]
+INFO - 2023-03-29 23:18:33,925 - database_query() called with: SELECT * FROM article , commit: False, print True:
+INFO - 2023-03-29 23:18:33,930 - Query executed successfully
+INFO - 2023-03-29 23:18:33,934 - database_query() ended with result: [(1, 'Planet Labs Non-GAAP EPS of -$0.08 beats by $0.02, revenue of $52.98M beats by $0.42M', 'https://seekingalpha.com/news/3952443-planet-labs-non-gaap-eps-of-0_08-beats-0_02-revenue-of-52_98m-beats-0_42m', datetime.datetime(2023, 3, 29, 23, 14), 1), (2, 'J&J unveils long-term data on Rybrevant for non-small cell lung cancer', 'https://seekingalpha.com/news/3952439-johnson-johnson-unveils-long-term-data-on-rybrevant-for-non-small-cell-lung-cancer', datetime.datetime(2023, 3, 29, 23, 13), 2), (3, 'Viking Therapeutics proposes stock offering, size not disclosed', 'https://seekingalpha.com/news/3952442-viking-therapeutics-proposes-stock-offering-size-not-disclosed', datetime.datetime(2023, 3, 29, 23, 12), 3), (4, 'Verint Systems Non-GAAP EPS of $0.75 beats by $0.03, revenue of $236.25M beats by $2.1M', 'https://seekingalpha.com/news/3952440-verint-systems-non-gaap-eps-of-0_75-beats-0_03-revenue-of-236_25m-beats-2_1m', datetime.datetime(2023, 3, 29, 23, 11), 1), (5, 'RH Non-GAAP EPS of $2.88 misses by $0.48, revenue of $772.5M misses by $4.8M', 'https://seekingalpha.com/news/3952438-rh-non-gaap-eps-of-2_88-misses-0_48-revenue-of-772_5m-misses-4_8m', datetime.datetime(2023, 3, 29, 23, 9), 1)]
+INFO - 2023-03-29 23:18:33,934 - database_query() called with: SELECT * FROM stock , commit: False, print True:
+INFO - 2023-03-29 23:18:33,939 - Query executed successfully
+INFO - 2023-03-29 23:18:33,941 - database_query() ended with result: [(1, 'PL', Decimal('3.96'), datetime.datetime(2023, 3, 29, 23, 18, 32), 1), (2, 'JNJ', Decimal('0.98'), datetime.datetime(2023, 3, 29, 23, 18, 32), 2), (3, 'VKTX', Decimal('3.17'), datetime.datetime(2023, 3, 29, 23, 18, 32), 3), (4, 'VRNT', Decimal('1.93'), datetime.datetime(2023, 3, 29, 23, 18, 32), 4), (5, 'RH', Decimal('1.83'), datetime.datetime(2023, 3, 29, 23, 18, 32), 5)]
+INFO - 2023-03-29 23:18:33,941 - main() completed
