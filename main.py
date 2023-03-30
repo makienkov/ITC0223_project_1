@@ -13,27 +13,88 @@ import datetime
 import grequests
 import requests
 from bs4 import BeautifulSoup
+import argparse
 
-CONFIG_FILE_NAME = "conf.json"
-
-LOG_FILE_NAME = ".".join(__file__.split(".")[:-1]) + ".log"
-
-with open(LOG_FILE_NAME, "wb"):
-    pass
-
-logging.basicConfig(
-    filename=LOG_FILE_NAME,
-    level=logging.DEBUG,
-    format="%(levelname)s - %(asctime)s - %(message)s",
-)
+FILE_NAME = ".".join(__file__.split(".")[:-1])
 
 
-def load_config():
+def initialise_parser():
     """
-    Loads the configuration file settings CONFIG_FILE_NAME.
+    The function initialises and returns the parser of user input.
+
+    :return: Initialised parser object
+    """
+    print("initialise_parser() started")
+    parser = argparse.ArgumentParser(description='Scrap info from seekingalpha.com')
+    parser.add_argument('-s', '--shortened-info', action='store_false',
+                        help='Don\'t scrap news pages and get data,'
+                             ' only from main page(s).')
+    parser.add_argument('-c', '--config-file', default='conf.json',
+                        help='Path to the .json config file to use')
+    parser.add_argument('--new-config-file', type=str,
+                        help='Name of new config .json file to save.'
+                             '\nIf provided, the program will save all'
+                             '\nused params to the new .json file.')
+    parser.add_argument('-l', '--log-file', default=FILE_NAME + '.log',
+                        help='Name of log file')
+
+    parser.add_argument('--debug-log-level', choices=[10, 20, 30, 40, 50],
+                        help='Log level in debug mode, integer.'
+                             '\nPossible choices:'
+                             '\n* DEBUG=10'
+                             '\n* INFO=20'
+                             '\n* WARN=30'
+                             '\n* ERROR=40'
+                             '\n* CRITICAL=50')
+
+    parser.add_argument('--deployment-log-level', choices=[10, 20, 30, 40, 50],
+                        help='Log level in deployment mode, integer.'
+                             '\nPossible choices:'
+                             '\n* DEBUG=10'
+                             '\n* INFO=20'
+                             '\n* WARN=30'
+                             '\n* ERROR=40'
+                             '\n* CRITICAL=50')
+
+    parser.add_argument('-d', '--debug-mode', type=bool,
+                        help='Switcher between dev (debug) and prod (deployment) scenarios.')
+    parser.add_argument('--url', type=str,
+                        help="URL of the main news page. Must ends with '?page='")
+    parser.add_argument('--debug_number-of-pages', type=int,
+                        help='Number of news main pages to scrap in debug mode')
+    parser.add_argument('--deployment-number-of-pages', type=int,
+                        help='Number of news main pages to scrap in deployment mode')
+    parser.add_argument('--debug-number-of-urls', type=int,
+                        help='Number of news main pages to scrap in deployment mode')
+    parser.add_argument('-p', '--parallel', action='store_true',
+                        help='Run the scraping parallely using grequest.')
+
+    print("initialise_parser() was ended")
+    return parser
+
+
+def config_logging(log_file_name: str = FILE_NAME + '.log'):
+    """
+    Initializes logger instance based on provided log file name
+    and sets log level to DEBUG.
+    Log level setting may be updated later outside this function.
+    """
+    with open(log_file_name, "wb"):
+        pass
+
+    logging.basicConfig(
+        filename=log_file_name,
+        level=logging.DEBUG,
+        format="%(levelname)s - %(asctime)s - %(message)s",
+    )
+
+
+def load_config(config_file_name: str = "conf.json"):
+    """
+    Loads the configuration file settings config_file_name.
     Returns the global parameters
     """
-    logging.info("load_config() started")
+    logging.info("load_config() started, config_file_name : " + config_file_name)
 
     required_constants = [
         "DEBUG_MODE",
@@ -47,7 +108,7 @@ def load_config():
     ]
 
     try:
-        with open(CONFIG_FILE_NAME, "rb") as my_file:
+        with open(config_file_name, "rb") as my_file:
             obj = my_file.read()
             obj = json.loads(obj)
 
@@ -78,20 +139,6 @@ def load_config():
     debug_number_of_pages_ = obj["DEBUG_NUMBER_OF_PAGES"]
     parallel_ = obj["PARALLEL"]
 
-    if debug_mode_:
-        number_of_pages = debug_number_of_pages_
-    else:
-        number_of_pages = deployment_number_of_pages_
-
-    logging.info("debug mode is: %s", debug_mode_)
-    logging.info("debug log level is: %s", debug_log_level_)
-    logging.info("deployment log level  is: %s", deployment_log_level_)
-    logging.info("URL is: %s", url_)
-    logging.info("site URL is: %s", site_url_)
-    logging.info("debug number of urls_ is: %s", debug_number_of_urls_)
-    logging.info("number of pages is: %s", number_of_pages)
-    logging.info("parallel enabled ? : %s", parallel_)
-
     logging.info("load_config() completed")
 
     return [
@@ -101,12 +148,89 @@ def load_config():
         url_,
         site_url_,
         debug_number_of_urls_,
-        number_of_pages,
+        deployment_number_of_pages_,
+        debug_number_of_pages_,
         parallel_,
     ]
 
 
-glob = load_config()
+def set_config():
+    """
+    Gets global variables values from config file,
+    updates them with values from command line arguments
+    and then returns the list of global variables values.
+    """
+    logging.info("set_config() started")
+    if ARGS.url:
+        site_url = "/".join(ARGS.url.split("/")[0:-1])
+    else:
+        site_url = ARGS.url
+
+    args_configs = [
+        ARGS.debug_mode,
+        ARGS.debug_log_level,
+        ARGS.deployment_log_level,
+        ARGS.url,
+        site_url,
+        ARGS.debug_number_of_urls,
+        ARGS.debug_number_of_pages,
+        ARGS.deployment_number_of_pages,
+        ARGS.parallel
+    ]
+
+    configs_names = [
+        "debug_mode",
+        "debug_log_level",
+        "deployment_log_level",
+        "url",
+        "site_url",
+        "debug_number_of_urls",
+        "debug_number_of_pages",
+        "deployment_number_of_pages",
+        "parallel"
+    ]
+
+    if all(args_configs):
+        # user entered all the parameters from CLI
+        logging.info("User entered all the params from the CLI, config file is being ignored.")
+        configs = args_configs
+    else:
+        # some params need to be taken from config file...
+        configs = load_config(ARGS.config_file)
+
+        # ...and then updated with the CLI ones
+        for i in range(len(args_configs)):
+            if args_configs[i]:
+                logging.info(f"Setting command line argument {configs_names[i]} as {args_configs[i]}")
+                configs[i] = args_configs[i]
+
+    if configs[0]:
+        # debug mode
+        configs[7] = configs[6]
+
+    logging.info("debug mode is: %s", configs[0])
+    logging.info("debug log level is: %s", configs[1])
+    logging.info("deployment log level  is: %s", configs[2])
+    logging.info("URL is: %s", configs[3])
+    logging.info("site URL is: %s", configs[4])
+    logging.info("debug number of urls_ is: %s", configs[5])
+    logging.info("number of pages is: %s", configs[7])
+    logging.info("parallel enabled ? : %s", configs[8])
+
+    logging.info("set_config() completed")
+
+    # delete unused number of pages before returning
+    configs.pop(5)
+    # TODO: the whole load_config() needs an update
+    #  to work as dictionary od pd.DataFrame, not like this.
+
+    return configs
+
+
+ARGS = initialise_parser().parse_args()
+config_logging(ARGS.log_file)
+glob = set_config()
+SCRAP_INDIVIDUAL_PAGES = ARGS.shortened_info
 DEBUG_MODE = glob[0]
 DEBUG_LOG_LEVEL = glob[1]
 DEPLOYMENT_LOG_LEVEL = glob[2]
@@ -269,6 +393,8 @@ def extract_links_and_titles(num_pages):
 
         select_object = link_soup.select("article div div h3 a")
         select_object2 = link_soup.select("article div div footer")
+        # TODO: rename object to corresponding data
+        # TODO: add the object to scrap symbols
 
         for data, data2 in zip(select_object, select_object2):
             title_data = []
@@ -461,15 +587,16 @@ def main():
 
     print_dict(my_dict)
 
-    if not PARALLEL:
-        time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
-    else:
-        time_str2, _ = time_some_function(parallel_approach, [my_dict])
+    if SCRAP_INDIVIDUAL_PAGES:
+        if not PARALLEL:
+            time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+        else:
+            time_str2, _ = time_some_function(parallel_approach, [my_dict])
 
-    print("scraping the secondary webpages took: ")
-    print_timing_function_results(time_str2)
+        print("scraping the secondary webpages took: ")
+        print_timing_function_results(time_str2)
 
-    print_dict(my_dict)
+        print_dict(my_dict)
 
     logging.info("main() completed")
 
