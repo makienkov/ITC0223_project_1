@@ -1,5 +1,6 @@
 """
 !/usr/bin/env python3
+coding=utf-8
 ----------------------------------------------------------------
 Global scope
 ----------------------------------------------------------------
@@ -9,11 +10,16 @@ import sys
 import logging
 import json
 import re
-import datetime
+from datetime import datetime
+from datetime import timedelta
 import grequests
 import requests
 from bs4 import BeautifulSoup
+import pytz
+import mysql.connector
+from prettytable import PrettyTable
 import argparse
+
 
 FILE_NAME = ".".join(__file__.split(".")[:-1])
 
@@ -241,6 +247,34 @@ NUMBER_OF_PAGES = glob[6]
 PARALLEL = glob[7]
 del glob
 
+PATH_TO_CONFIGURATION_FILE = "mysql_connector.json"
+
+
+def load_config_file_database():
+    """
+    get the full path to the configuration file .json
+    and load it into the configuration
+    """
+    try:
+        with open(PATH_TO_CONFIGURATION_FILE, "rb") as my_file:
+            obj = my_file.read()
+            obj = json.loads(obj)
+        print("Config file loaded successfully")
+    except FileNotFoundError:
+        print("Config file not found")
+        print("Exiting program...")
+        sys.exit()
+
+    username_ = obj["USER_NAME"]
+    password_ = obj["PASSWORD"]
+    del obj["USER_NAME"]
+    del obj["PASSWORD"]
+
+    return username_, password_, obj
+
+
+USER_NAME, PASSWORD, OTHER_SQL_CONFIG = load_config_file_database()
+
 
 def set_log_level():
     """
@@ -345,7 +379,7 @@ def check_percentage(percentage_string):
         return percentage_string
 
     logging.info("check_percentage() got 'absent' and ended")
-    return "absent"
+    return "0.0"
 
 
 def add_data_links_and_titles(data2: str) -> list[str]:
@@ -358,11 +392,16 @@ def add_data_links_and_titles(data2: str) -> list[str]:
 
     clean_text = re.sub(r"\s*\d+\s*Comments?", "", data2)
     clean_text = clean_text.split()[1:]
-    price_change = str(clean_text[0].split("%")[0]) + "%"
+    try:
+        price_change = str(clean_text[0].split("%")[0]) + "%"
+    except Exception as e:
+        logging.info("Error occurred while extracting percentage:%s", e)
+        price_change = "0.0"
+
     price_change = check_percentage(price_change)
     logging.info("extracted price change: %s", price_change)
 
-    now = datetime.datetime.now()
+    now = datetime.now()
     price_change_time = (
         f"{now.year}/{now.month}/{now.day} {now.hour}:{now.minute}:{now.second}"
     )
@@ -510,7 +549,7 @@ def time_some_function(function_, args_list: list) -> tuple[str, any]:
     end_time = time.time()
     time_taken = end_time - start_time
     logging.info("time_some_function() ended")
-    return str(datetime.timedelta(seconds=time_taken)), result
+    return str(timedelta(seconds=time_taken)), result
 
 
 def print_timing_function_results(time_lapse: str):
@@ -540,7 +579,7 @@ def parallel_approach(my_dict: dict):
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(my_dict)
 
     # Create a list of requests
-    reqs = []
+    requests_list = []
     urls = []
 
     for value in list(my_dict.values())[:stop]:
@@ -549,23 +588,191 @@ def parallel_approach(my_dict: dict):
     for url in urls:
         try:
             request = grequests.get(url)
-            reqs.append(request)
-            logging.info(f"{url} fetched successfully")
+            requests_list.append(request)
+            logging.info("%s fetched successfully", url)
         except FileNotFoundError:
-            logging.error(f"{url} unreachable")
+            logging.error("%s unreachable", url)
             logging.critical("Exiting program...")
-            exit()
+            sys.exit()
 
     # Send requests in batches of 5
-    responses = grequests.imap(reqs, size=5)
+    responses = grequests.imap(requests_list, size=5)
 
-    responses_dict = {response.url: extract_data_from_soup(BeautifulSoup(response.text, "html.parser")) for response in
-                      responses}
+    responses_dict = {
+        response.url: extract_data_from_soup(
+            BeautifulSoup(response.text, "html.parser")
+        )
+        for response in responses
+    }
 
     for key, value in list(my_dict.items())[:stop]:
         my_dict[key] += responses_dict[value[0]]
 
     logging.info("parallel_approach() was ended")
+
+
+def database_query(query_, commit_=False, print_result_=False, data_base_="market"):
+    """
+    data_base: database name
+    query: SQL query to be executed
+    commit=False: whether to commit the changes to database by the query
+    print_result=False: whether to print the result of the query
+    """
+    logging.info(
+        "database_query() called with: %s , commit: %s, print %s:",
+        query_,
+        commit_,
+        print_result_,
+    )
+
+    if "DATABASE" in query_:
+        data_base_ = ""
+
+    try:
+        # Establish a connection to the MySQL database
+        my_db = mysql.connector.connect(
+            host="localhost", user=USER_NAME, password=PASSWORD, database=data_base_
+        )
+
+        # Create a cursor object to execute SQL queries
+        my_cursor = my_db.cursor()
+
+        # Execute the SQL query to show all databases
+        my_cursor.execute(query_)
+
+        # Fetch all rows from the result set
+        result = my_cursor.fetchall()
+
+        # Create a PrettyTable object and add the column header dynamically
+        table = PrettyTable()
+
+        logging.info("Query executed successfully")
+
+        if print_result_:
+            try:
+                table.field_names = [i[0] for i in my_cursor.description]
+            except IndexError:
+                print(f"\nGOT exception for an index error: {IndexError}")
+            except TypeError:
+                print(f"\nGOT exception for a type error: {TypeError}")
+
+        # Add each row to the table
+        for row in result:
+            table.add_row(
+                [col.decode("utf-8") if isinstance(col, bytes) else col for col in row]
+            )
+
+        # Display the table
+        if print_result_:
+            print(table)
+
+        # Commit the changes to the database
+        if commit_:
+            my_db.commit()
+
+        # Close the cursor and database connection
+        if my_cursor:
+            my_cursor.close()
+        if my_db:
+            my_db.close()
+
+    except mysql.connector.Error as error:
+        print(f"Error executing query: {error}")
+        result = None
+
+    logging.info("database_query() ended with result: %s", result)
+    return result
+
+
+def new_article(title, values):
+    """
+    a case when the article is new,
+    update the database accordingly
+    note :
+     values = 0link, 1article_id, 2price_change, 3price_change_time,
+     4ticker_symbol, 5article_timestamp, 6author_name
+    """
+    logging.info("new_article() called for title: %s ", title)
+
+    # add new "name" in the table "author" if not already present
+    author_query = (
+            f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
+            + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
+    )
+    database_query(author_query, commit_=True)
+
+    # add the data only if there are no articles in the article table with the same title
+    article_query = \
+        "INSERT INTO article (title, link, datetime_posted, author_id) "\
+        + f"SELECT '{title}', '{values[0]}', '{values[5]}', "\
+        + f"(SELECT id FROM author WHERE name = '{values[6]}')"\
+        + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+    database_query(article_query, commit_=True)
+
+    # update the stock table with the data
+    stock_query = \
+        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) " \
+        + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', " \
+        + f"(SELECT id FROM article WHERE title = '{title}'));"
+    database_query(stock_query, commit_=True)
+
+    logging.info("new_article() ended")
+
+
+def dict_to_db(data):
+    """
+    take the dictionary .
+    update the database with all the entries.
+    note:
+      values =  0link, 1article_id, 2price_change, 3price_change_time,
+                4ticker_symbol, 5date_str, 6time_str, 7author_name
+    """
+    logging.info("dict_to_db() called for len(data): %s ", len(data))
+
+    stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(data)
+
+    # for value in list(my_dict.values())[:stop]:
+    #     urls.append(value[0])
+
+    for title, values in list(data.items())[:stop]:
+        # Re-format title MySQL-string  format
+        title = title.strip("'\"")
+
+        # Re-format price_change to MySQL-DATETIME format
+        values[2] = values[2].strip("%")
+
+        # Re-format price_change_time to MySQL-DATETIME format
+        values[3] = datetime.strptime(values[3], "%Y/%m/%d %H:%M:%S")
+
+        # Re-format article_timestamp to MySQL-DATETIME format
+        date_obj = datetime.strptime(values[5], "%b. %d, %Y")
+        time_obj = datetime.strptime(values[6], "%I:%M %p")
+        values[5] = datetime.combine(date_obj.date(), time_obj.time())
+
+        # Update the date from Eastern Time (ET) to Jerusalem Time Zone (GMT+2)
+        eastern = pytz.timezone("US/Eastern")
+        jerusalem = pytz.timezone("Asia/Jerusalem")
+        dt_eastern = eastern.localize(values[5])
+        values[5] = dt_eastern.astimezone(jerusalem)
+        del values[6]
+
+        new_article(title, values)
+
+        logging.info("dict_to_db() ended successfully")
+
+
+def initialize_db():
+    """
+    drop the database "market" tables and,
+    initialize the database with the empty tables
+    """
+    logging.info("initialize_db() was called")
+
+    for item in OTHER_SQL_CONFIG:
+        # print(obj[item])
+        database_query(OTHER_SQL_CONFIG[item], commit_=True)
+
+    logging.info("initialize_db() was ended successfully")
 
 
 def main():
@@ -597,6 +804,14 @@ def main():
         print_timing_function_results(time_str2)
 
         print_dict(my_dict)
+
+    initialize_db()
+
+    dict_to_db(my_dict)
+
+    database_query("SELECT * FROM author", print_result_=True)
+    database_query("SELECT * FROM article", print_result_=True)
+    database_query("SELECT * FROM stock", print_result_=True)
 
     logging.info("main() completed")
 
