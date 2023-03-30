@@ -254,7 +254,7 @@ def check_percentage(percentage_string):
         return percentage_string
 
     logging.info("check_percentage() got 'absent' and ended")
-    return "absent"
+    return "0.0"
 
 
 def add_data_links_and_titles(data2: str) -> list[str]:
@@ -267,7 +267,12 @@ def add_data_links_and_titles(data2: str) -> list[str]:
 
     clean_text = re.sub(r"\s*\d+\s*Comments?", "", data2)
     clean_text = clean_text.split()[1:]
-    price_change = str(clean_text[0].split("%")[0]) + "%"
+    try:
+        price_change = str(clean_text[0].split("%")[0]) + "%"
+    except Exception as e:
+        logging.info("Error occurred while extracting percentage:%s", e)
+        price_change = "0.0"
+
     price_change = check_percentage(price_change)
     logging.info("extracted price change: %s", price_change)
 
