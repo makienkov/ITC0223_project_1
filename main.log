@@ -1,372 +1,392 @@
-INFO - 2023-03-31 10:59:13,298 - set_config() started
-INFO - 2023-03-31 10:59:13,298 - load_config() started, config_file_name : conf.json
-INFO - 2023-03-31 10:59:13,298 - all config parameters loaded successfully from config file
-INFO - 2023-03-31 10:59:13,298 - Config file loaded successfully
-INFO - 2023-03-31 10:59:13,299 - load_config() completed
-INFO - 2023-03-31 10:59:13,299 - debug mode is: True
-INFO - 2023-03-31 10:59:13,299 - debug log level is: 20
-INFO - 2023-03-31 10:59:13,299 - deployment log level  is: 20
-INFO - 2023-03-31 10:59:13,299 - URL is: https://seekingalpha.com/market-news?page=
-INFO - 2023-03-31 10:59:13,299 - site URL is: https://seekingalpha.com
-INFO - 2023-03-31 10:59:13,299 - debug number of urls_ is: 5
-INFO - 2023-03-31 10:59:13,299 - number of pages is: 1
-INFO - 2023-03-31 10:59:13,299 - parallel enabled ? : True
-INFO - 2023-03-31 10:59:13,299 - set_config() completed
-INFO - 2023-03-31 10:59:13,299 - main() started
-DEBUG - 2023-03-31 10:59:13,299 - DEBUG before set_log_level()
-INFO - 2023-03-31 10:59:13,299 - load_logs() started
-INFO - 2023-03-31 10:59:13,299 - logging level set to: INFO=20
-INFO - 2023-03-31 10:59:13,299 - load_logs() completed
-INFO - 2023-03-31 10:59:13,300 - time_some_function() was called for <function extract_links_and_titles at 0x000001D7002D1EA0>
-INFO - 2023-03-31 10:59:13,300 - extract_links_and_titles() was called with:
+INFO - 2023-03-31 18:44:34,887 - set_config() started
+INFO - 2023-03-31 18:44:34,887 - load_config() started, config_file_name : conf.json
+INFO - 2023-03-31 18:44:34,887 - all config parameters loaded successfully from config file
+INFO - 2023-03-31 18:44:34,887 - Config file loaded successfully
+INFO - 2023-03-31 18:44:34,887 - load_config() completed
+INFO - 2023-03-31 18:44:34,887 - debug mode is: True
+INFO - 2023-03-31 18:44:34,887 - debug log level is: 20
+INFO - 2023-03-31 18:44:34,888 - deployment log level  is: 20
+INFO - 2023-03-31 18:44:34,888 - URL is: https://seekingalpha.com/market-news?page=
+INFO - 2023-03-31 18:44:34,888 - site URL is: https://seekingalpha.com
+INFO - 2023-03-31 18:44:34,888 - debug number of urls_ is: 5
+INFO - 2023-03-31 18:44:34,888 - number of pages is: 1
+INFO - 2023-03-31 18:44:34,888 - parallel enabled ? : True
+INFO - 2023-03-31 18:44:34,888 - set_config() completed
+INFO - 2023-03-31 18:44:34,889 - main() started
+DEBUG - 2023-03-31 18:44:34,889 - DEBUG before set_log_level()
+INFO - 2023-03-31 18:44:34,889 - load_logs() started
+INFO - 2023-03-31 18:44:34,889 - logging level set to: INFO=20
+INFO - 2023-03-31 18:44:34,889 - load_logs() completed
+INFO - 2023-03-31 18:44:34,889 - time_some_function() was called for <function extract_links_and_titles at 0x00000202A865D800>
+INFO - 2023-03-31 18:44:34,890 - extract_links_and_titles() was called with:
  1
-INFO - 2023-03-31 10:59:13,300 - url_to_soup() was called with:
+INFO - 2023-03-31 18:44:34,890 - url_to_soup() was called with:
  https://seekingalpha.com/market-news?page=1
-INFO - 2023-03-31 10:59:13,300 - url_request() was called with:
+INFO - 2023-03-31 18:44:34,890 - url_request() was called with:
  https://seekingalpha.com/market-news?page=1
-INFO - 2023-03-31 10:59:14,192 - connected to server successfully
-INFO - 2023-03-31 10:59:14,192 - Request fetched successfully, code=200
-INFO - 2023-03-31 10:59:14,193 - url_request() was ended
-INFO - 2023-03-31 10:59:14,229 - url_to_soup() ended
-INFO - 2023-03-31 10:59:14,240 - extracted title: Exro Technologies reports Q4 results with data: ['https://seekingalpha.com/news/3953000-exro-technologies-reports-q4-results', '3953000']
-INFO - 2023-03-31 10:59:14,240 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,240 - check_percentage() was called with:
- +2.56%
-INFO - 2023-03-31 10:59:14,240 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,240 - extracted price change: +2.56%
-INFO - 2023-03-31 10:59:14,240 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,240 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,240 - extracted title: Battle over silicon deepens as Japan restricts chip exports with data: ['https://seekingalpha.com/news/3952991-battle-over-silicon-deepens-as-japan-restricts-chip-exports', '3952991']
-INFO - 2023-03-31 10:59:14,241 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,241 - check_percentage() was called with:
- -0.44%
-INFO - 2023-03-31 10:59:14,241 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,241 - extracted price change: -0.44%
-INFO - 2023-03-31 10:59:14,241 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,241 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,241 - extracted title: French inflation eases from 38-year high to 5.6% in March 2023 with data: ['https://seekingalpha.com/news/3952989-french-inflation-eases-from-38-year-high', '3952989']
-INFO - 2023-03-31 10:59:14,241 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,241 - check_percentage() was called with:
- +1.43%
-INFO - 2023-03-31 10:59:14,241 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,241 - extracted price change: +1.43%
-INFO - 2023-03-31 10:59:14,241 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,241 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,241 - extracted title: UK Q4 GDP growth revised slightly higher to 0.1% Q/Q with data: ['https://seekingalpha.com/news/3952986-uk-q4-gdp-growth-revised-slightly-higher-to-01-qq', '3952986']
-INFO - 2023-03-31 10:59:14,241 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,241 - check_percentage() was called with:
- +1.29%
-INFO - 2023-03-31 10:59:14,242 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,242 - extracted price change: +1.29%
-INFO - 2023-03-31 10:59:14,242 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,242 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,242 - extracted title: Germany retail sales unexpectedly fall 1.3% M/M in February with data: ['https://seekingalpha.com/news/3952983-germany-retail-sales-unexpectedly-fall-13-mm-in-february', '3952983']
-INFO - 2023-03-31 10:59:14,242 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,242 - check_percentage() was called with:
- +1.79%
-INFO - 2023-03-31 10:59:14,242 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,242 - extracted price change: +1.79%
-INFO - 2023-03-31 10:59:14,242 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,242 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,242 - extracted title: First Bancorp declares $0.34 dividend with data: ['https://seekingalpha.com/news/3952858-first-bancorp-inc-declares-0_34-dividend', '3952858']
-INFO - 2023-03-31 10:59:14,242 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,242 - check_percentage() was called with:
- -2.40%
-INFO - 2023-03-31 10:59:14,242 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,242 - extracted price change: -2.40%
-INFO - 2023-03-31 10:59:14,242 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,242 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,242 - extracted title: Acuity Brands declares $0.13 dividend with data: ['https://seekingalpha.com/news/3952832-acuity-brands-inc-declares-0_13-dividend', '3952832']
-INFO - 2023-03-31 10:59:14,242 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,243 - check_percentage() was called with:
- +1.04%
-INFO - 2023-03-31 10:59:14,243 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,243 - extracted price change: +1.04%
-INFO - 2023-03-31 10:59:14,243 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,243 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,243 - extracted title: Asia-Pacific markets higher tracking gains on Wall Street buoyed by tech stocks with data: ['https://seekingalpha.com/news/3952982-asia-pacific-markets-higher-tracking-gains-on-wall-street-buoyed-by-tech-stocks', '3952982']
-INFO - 2023-03-31 10:59:14,243 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,243 - check_percentage() was called with:
- 2:01%
-INFO - 2023-03-31 10:59:14,243 - check_percentage() got 'absent' and ended
-INFO - 2023-03-31 10:59:14,243 - extracted price change: 0.0
-INFO - 2023-03-31 10:59:14,243 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,243 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,243 - extracted title: China manufacturing growth eases in March to 51.9 with data: ['https://seekingalpha.com/news/3952981-china-manufacturing-growth-eases-in-march-to-519', '3952981']
-INFO - 2023-03-31 10:59:14,243 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,243 - check_percentage() was called with:
- +1.70%
-INFO - 2023-03-31 10:59:14,243 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,243 - extracted price change: +1.70%
-INFO - 2023-03-31 10:59:14,243 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,243 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,243 - extracted title: Legend Biotech reports FY earnings results with data: ['https://seekingalpha.com/news/3952980-legend-biotech-gaap-eps-of--010-beats-by-163-revenue-of-6257m-beats-by-41739m', '3952980']
-INFO - 2023-03-31 10:59:14,243 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,243 - check_percentage() was called with:
- -0.29%
-INFO - 2023-03-31 10:59:14,244 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,244 - extracted price change: -0.29%
-INFO - 2023-03-31 10:59:14,244 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,244 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,244 - extracted title: China Gold International Resources reports Q4 results with data: ['https://seekingalpha.com/news/3952978-china-gold-international-resources-and-nbsp-reports-q4-results', '3952978']
-INFO - 2023-03-31 10:59:14,244 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,244 - check_percentage() was called with:
- +1.48%
-INFO - 2023-03-31 10:59:14,244 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,244 - extracted price change: +1.48%
-INFO - 2023-03-31 10:59:14,244 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,244 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,244 - extracted title: Sutro Biopharma GAAP EPS of -$2.35 beats by $0.16, revenue of $67.8M misses by $0.57M with data: ['https://seekingalpha.com/news/3952972-sutro-biopharma-gaap-eps-of--235-beats-by-016-revenue-of-678m-misses-by-057m', '3952972']
-INFO - 2023-03-31 10:59:14,244 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,244 - check_percentage() was called with:
- -6.08%
-INFO - 2023-03-31 10:59:14,244 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,244 - extracted price change: -6.08%
-INFO - 2023-03-31 10:59:14,244 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,244 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,244 - extracted title: Thorne HealthTech Non-GAAP EPS of $0.13 misses by $0.03, revenue of $62.96M misses by $0.95M with data: ['https://seekingalpha.com/news/3952963-thorne-healthtech-non-gaap-eps-of-0_13-misses-0_03-revenue-of-62_96m-misses-0_95m', '3952963']
-INFO - 2023-03-31 10:59:14,244 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,245 - check_percentage() was called with:
- +0.41%
-INFO - 2023-03-31 10:59:14,245 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,245 - extracted price change: +0.41%
-INFO - 2023-03-31 10:59:14,245 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,245 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,245 - extracted title: Friday's economic calendar with data: ['https://seekingalpha.com/news/3952821-fridays-economic-calendar', '3952821']
-INFO - 2023-03-31 10:59:14,245 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,245 - check_percentage() was called with:
- 12:00%
-INFO - 2023-03-31 10:59:14,245 - check_percentage() got 'absent' and ended
-INFO - 2023-03-31 10:59:14,245 - extracted price change: 0.0
-INFO - 2023-03-31 10:59:14,245 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,245 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,245 - extracted title: Shaw gains on reports Canadian minister will approve Rogers' C$20B takeover (update) with data: ['https://seekingalpha.com/news/3952950-shaw-communications-gains-on-report-canadian-minister-will-approve-rogers-deal', '3952950']
-INFO - 2023-03-31 10:59:14,245 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,245 - check_percentage() was called with:
- +0.87%
-INFO - 2023-03-31 10:59:14,245 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,245 - extracted price change: +0.87%
-INFO - 2023-03-31 10:59:14,245 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,245 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,245 - extracted title: Rio Tinto, First Quantum to jointly develop major Peru copper project with data: ['https://seekingalpha.com/news/3952947-rio-tinto-first-quantum-to-jointly-develop-major-peru-copper-project', '3952947']
-INFO - 2023-03-31 10:59:14,245 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,246 - check_percentage() was called with:
- +1.92%
-INFO - 2023-03-31 10:59:14,246 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,246 - extracted price change: +1.92%
-INFO - 2023-03-31 10:59:14,246 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,246 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,246 - extracted title: US IPO market rose modestly in Q1 as global market sank with data: ['https://seekingalpha.com/news/3952946-us-ipo-market-rose-modestly-in-q1-as-global-market-sank', '3952946']
-INFO - 2023-03-31 10:59:14,246 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,246 - check_percentage() was called with:
- +1.32%
-INFO - 2023-03-31 10:59:14,246 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,246 - extracted price change: +1.32%
-INFO - 2023-03-31 10:59:14,246 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,246 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,246 - extracted title: Pasithea Therapeutics files for $15M mixed shelf offering with data: ['https://seekingalpha.com/news/3952945-pasithea-therapeutics-files-for-15m-mixed-shelf-offering', '3952945']
-INFO - 2023-03-31 10:59:14,246 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,246 - check_percentage() was called with:
- +0.03%
-INFO - 2023-03-31 10:59:14,246 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,246 - extracted price change: +0.03%
-INFO - 2023-03-31 10:59:14,246 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,246 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,246 - extracted title: Galapagos to transfer drug discovery and research activities in France to NovAliX with data: ['https://seekingalpha.com/news/3952944-galapagos-to-transfer-drug-discovery-and-research-activities-in-france-to-novalix', '3952944']
-INFO - 2023-03-31 10:59:14,246 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,247 - check_percentage() was called with:
- -0.27%
-INFO - 2023-03-31 10:59:14,247 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,247 - extracted price change: -0.27%
-INFO - 2023-03-31 10:59:14,247 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,247 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,247 - extracted title: Gold stops just short of $2,000 in best most-active settlement in a year with data: ['https://seekingalpha.com/news/3952943-gold-stops-just-short-of-2000-in-best-most-active-settlement-in-a-year', '3952943']
-INFO - 2023-03-31 10:59:14,247 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,247 - check_percentage() was called with:
- +0.90%
-INFO - 2023-03-31 10:59:14,247 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,247 - extracted price change: +0.90%
-INFO - 2023-03-31 10:59:14,247 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,247 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,247 - extracted title: Servotronics mulls strategic alternatives for its unit housing the Ontario Knife Company with data: ['https://seekingalpha.com/news/3952942-servotronics-mulls-strategic-alternatives-for-its-unit-housing-the-ontario-knife-company', '3952942']
-INFO - 2023-03-31 10:59:14,247 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,247 - check_percentage() was called with:
- -0.93%
-INFO - 2023-03-31 10:59:14,247 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,247 - extracted price change: -0.93%
-INFO - 2023-03-31 10:59:14,247 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,247 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,247 - extracted title: Ambrx Biopharma to raise $300M by selling shares, ADSs - filing with data: ['https://seekingalpha.com/news/3952940-ambrx-biopharma-to-raise-300m-by-selling-shares-adss-filing', '3952940']
-INFO - 2023-03-31 10:59:14,247 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,248 - check_percentage() was called with:
- -10.76%
-INFO - 2023-03-31 10:59:14,248 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,248 - extracted price change: -10.76%
-INFO - 2023-03-31 10:59:14,248 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,248 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,248 - extracted title: Y-mAbs Therapeutics files for $150M mixed shelf offering with data: ['https://seekingalpha.com/news/3952938-y-mabs-therapeutics-files-150m-mixed-shelf-offering', '3952938']
-INFO - 2023-03-31 10:59:14,248 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,248 - check_percentage() was called with:
- +1.54%
-INFO - 2023-03-31 10:59:14,248 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,248 - extracted price change: +1.54%
-INFO - 2023-03-31 10:59:14,248 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,248 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,248 - extracted title: Virgin Orbit stock slumps ~43% in extended trading after co to ax nearly entire workforce with data: ['https://seekingalpha.com/news/3952939-virgin-orbit-stock-slumps-43-in-extended-trading-after-co-to-axe-nearly-entire-workforce', '3952939']
-INFO - 2023-03-31 10:59:14,248 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,248 - check_percentage() was called with:
- -16.02%
-INFO - 2023-03-31 10:59:14,248 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,248 - extracted price change: -16.02%
-INFO - 2023-03-31 10:59:14,248 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,248 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,248 - extracted title: Archer Daniels Midland mulls exit from main Russian business - report with data: ['https://seekingalpha.com/news/3952949-archer-daniels-midland-mulls-exit-from-main-russian-business-report', '3952949']
-INFO - 2023-03-31 10:59:14,249 - add_data_links_and_titles() was called
-INFO - 2023-03-31 10:59:14,249 - check_percentage() was called with:
- +0.61%
-INFO - 2023-03-31 10:59:14,249 - check_percentage() was ended
-INFO - 2023-03-31 10:59:14,249 - extracted price change: +0.61%
-INFO - 2023-03-31 10:59:14,249 - extracted price change:2023/3/31 10:59:14
-INFO - 2023-03-31 10:59:14,249 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,249 - extract_links_and_titles() was ended
-INFO - 2023-03-31 10:59:14,249 - time_some_function() ended
-INFO - 2023-03-31 10:59:14,249 - print_timing_function_results() started for 0:00:00.949301
-INFO - 2023-03-31 10:59:14,249 - print_timing_function_results() was ended
-INFO - 2023-03-31 10:59:14,249 - time_some_function() was called for <function parallel_approach at 0x000001D7002D2200>
-INFO - 2023-03-31 10:59:14,249 - parallel_approach() started 
-INFO - 2023-03-31 10:59:14,249 - https://seekingalpha.com/news/3953000-exro-technologies-reports-q4-results fetched successfully
-INFO - 2023-03-31 10:59:14,249 - https://seekingalpha.com/news/3952991-battle-over-silicon-deepens-as-japan-restricts-chip-exports fetched successfully
-INFO - 2023-03-31 10:59:14,249 - https://seekingalpha.com/news/3952989-french-inflation-eases-from-38-year-high fetched successfully
-INFO - 2023-03-31 10:59:14,250 - https://seekingalpha.com/news/3952986-uk-q4-gdp-growth-revised-slightly-higher-to-01-qq fetched successfully
-INFO - 2023-03-31 10:59:14,250 - https://seekingalpha.com/news/3952983-germany-retail-sales-unexpectedly-fall-13-mm-in-february fetched successfully
-INFO - 2023-03-31 10:59:14,538 - extract_data_from_soup() was called for French inflation eases from 38-year high to 5.6% in March 2023 | Seeking Alpha                    Se
-INFO - 2023-03-31 10:59:14,539 - ticker added ! EWQ
-INFO - 2023-03-31 10:59:14,539 - author added ! Meghavi Singh
-INFO - 2023-03-31 10:59:14,539 - date_str added ! Mar. 31, 2023
-INFO - 2023-03-31 10:59:14,539 - time_ added ! 3:22 AM
-INFO - 2023-03-31 10:59:14,539 - extract_data_from_soup() was ended
-INFO - 2023-03-31 10:59:14,566 - extract_data_from_soup() was called for Germany retail sales unexpectedly fall 1.3% M/M in February | Seeking Alpha                    Seeki
-INFO - 2023-03-31 10:59:14,566 - ticker added ! 1
-INFO - 2023-03-31 10:59:14,566 - author added ! Meghavi Singh
-INFO - 2023-03-31 10:59:14,566 - date_str added ! Mar. 31, 2023
-INFO - 2023-03-31 10:59:14,566 - time_ added ! 2:35 AM
-INFO - 2023-03-31 10:59:14,566 - extract_data_from_soup() was ended
-INFO - 2023-03-31 10:59:14,585 - extract_data_from_soup() was called for Battle over silicon deepens as Japan restricts chip exports | Seeking Alpha                    Seeki
-INFO - 2023-03-31 10:59:14,585 - ticker added ! NINOY
-INFO - 2023-03-31 10:59:14,585 - author added ! Yoel Minkoff
-INFO - 2023-03-31 10:59:14,585 - date_str added ! Mar. 31, 2023
-INFO - 2023-03-31 10:59:14,585 - time_ added ! 3:45 AM
-INFO - 2023-03-31 10:59:14,585 - extract_data_from_soup() was ended
-INFO - 2023-03-31 10:59:14,601 - extract_data_from_soup() was called for UK Q4 GDP growth revised slightly higher to 0.1% Q/Q | Seeking Alpha                    Seeking Alph
-INFO - 2023-03-31 10:59:14,601 - ticker added ! FXB
-INFO - 2023-03-31 10:59:14,601 - author added ! Meghavi Singh
-INFO - 2023-03-31 10:59:14,601 - date_str added ! Mar. 31, 2023
-INFO - 2023-03-31 10:59:14,601 - time_ added ! 3:00 AM
-INFO - 2023-03-31 10:59:14,601 - extract_data_from_soup() was ended
-INFO - 2023-03-31 10:59:14,624 - extract_data_from_soup() was called for Exro Technologies reports Q4 results | Seeking Alpha                    Seeking Alpha - Go to Homepa
-INFO - 2023-03-31 10:59:14,624 - ticker added ! EXROF
-INFO - 2023-03-31 10:59:14,624 - author added ! Meghavi Singh
-INFO - 2023-03-31 10:59:14,624 - date_str added ! Mar. 31, 2023
-INFO - 2023-03-31 10:59:14,625 - time_ added ! 3:51 AM
-INFO - 2023-03-31 10:59:14,625 - extract_data_from_soup() was ended
-INFO - 2023-03-31 10:59:14,625 - parallel_approach() was ended
-INFO - 2023-03-31 10:59:14,625 - time_some_function() ended
-INFO - 2023-03-31 10:59:14,625 - print_timing_function_results() started for 0:00:00.376523
-INFO - 2023-03-31 10:59:14,625 - print_timing_function_results() was ended
-INFO - 2023-03-31 10:59:14,625 - initialize_db() was called
-INFO - 2023-03-31 10:59:14,625 - database_query() called with: DROP DATABASE IF EXISTS market; , commit: True, print False:
-INFO - 2023-03-31 10:59:14,649 - Query executed successfully
-INFO - 2023-03-31 10:59:14,649 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,649 - database_query() called with: CREATE DATABASE IF NOT EXISTS market; , commit: True, print False:
-INFO - 2023-03-31 10:59:14,656 - Query executed successfully
-INFO - 2023-03-31 10:59:14,657 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,657 - database_query() called with: DROP TABLE IF EXISTS stock; , commit: True, print False:
-INFO - 2023-03-31 10:59:14,663 - Query executed successfully
-INFO - 2023-03-31 10:59:14,663 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,663 - database_query() called with: DROP TABLE IF EXISTS article; , commit: True, print False:
-INFO - 2023-03-31 10:59:14,670 - Query executed successfully
-INFO - 2023-03-31 10:59:14,671 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,671 - database_query() called with: DROP TABLE IF EXISTS author; , commit: True, print False:
-INFO - 2023-03-31 10:59:14,677 - Query executed successfully
-INFO - 2023-03-31 10:59:14,677 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,677 - database_query() called with: CREATE TABLE IF NOT EXISTS author (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255)); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,692 - Query executed successfully
-INFO - 2023-03-31 10:59:14,692 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,692 - database_query() called with: CREATE TABLE IF NOT EXISTS article (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(1000), link VARCHAR(1000), datetime_posted DATETIME, author_id INT, FOREIGN KEY (author_id) REFERENCES author(id)); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,721 - Query executed successfully
-INFO - 2023-03-31 10:59:14,722 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,722 - database_query() called with: CREATE TABLE IF NOT EXISTS stock (id INT AUTO_INCREMENT PRIMARY KEY, ticker_symbol VARCHAR(50), price_change DECIMAL(10, 2), datetime_change DATETIME, article_id INT, FOREIGN KEY (article_id) REFERENCES article(id)); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,751 - Query executed successfully
-INFO - 2023-03-31 10:59:14,751 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,751 - initialize_db() was ended successfully
-INFO - 2023-03-31 10:59:14,751 - dict_to_db() called for len(data): 25 
-INFO - 2023-03-31 10:59:14,813 - new_article() called for title: Exro Technologies reports Q4 results 
-INFO - 2023-03-31 10:59:14,813 - database_query() called with: INSERT INTO author (name) SELECT 'Meghavi Singh' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Meghavi Singh'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,818 - Query executed successfully
-INFO - 2023-03-31 10:59:14,820 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,821 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Exro Technologies reports Q4 results', 'https://seekingalpha.com/news/3953000-exro-technologies-reports-q4-results', '2023-03-31 10:51:00+03:00', (SELECT id FROM author WHERE name = 'Meghavi Singh')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Exro Technologies reports Q4 results'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,826 - Query executed successfully
-INFO - 2023-03-31 10:59:14,829 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,829 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('EXROF', '+2.56', '2023-03-31 10:59:14', (SELECT id FROM article WHERE title = 'Exro Technologies reports Q4 results')); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,836 - Query executed successfully
-INFO - 2023-03-31 10:59:14,838 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,838 - new_article() ended
-INFO - 2023-03-31 10:59:14,838 - dict_to_db() ended successfully
-INFO - 2023-03-31 10:59:14,838 - new_article() called for title: Battle over silicon deepens as Japan restricts chip exports 
-INFO - 2023-03-31 10:59:14,838 - database_query() called with: INSERT INTO author (name) SELECT 'Yoel Minkoff' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Yoel Minkoff'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,844 - Query executed successfully
-INFO - 2023-03-31 10:59:14,846 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,847 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Battle over silicon deepens as Japan restricts chip exports', 'https://seekingalpha.com/news/3952991-battle-over-silicon-deepens-as-japan-restricts-chip-exports', '2023-03-31 10:45:00+03:00', (SELECT id FROM author WHERE name = 'Yoel Minkoff')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Battle over silicon deepens as Japan restricts chip exports'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,853 - Query executed successfully
-INFO - 2023-03-31 10:59:14,855 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,855 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('NINOY', '-0.44', '2023-03-31 10:59:14', (SELECT id FROM article WHERE title = 'Battle over silicon deepens as Japan restricts chip exports')); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,860 - Query executed successfully
-INFO - 2023-03-31 10:59:14,862 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,863 - new_article() ended
-INFO - 2023-03-31 10:59:14,863 - dict_to_db() ended successfully
-INFO - 2023-03-31 10:59:14,863 - new_article() called for title: French inflation eases from 38year high to 56 in March 2023 
-INFO - 2023-03-31 10:59:14,863 - database_query() called with: INSERT INTO author (name) SELECT 'Meghavi Singh' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Meghavi Singh'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,868 - Query executed successfully
-INFO - 2023-03-31 10:59:14,868 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,869 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'French inflation eases from 38year high to 56 in March 2023', 'https://seekingalpha.com/news/3952989-french-inflation-eases-from-38-year-high', '2023-03-31 10:22:00+03:00', (SELECT id FROM author WHERE name = 'Meghavi Singh')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'French inflation eases from 38year high to 56 in March 2023'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,874 - Query executed successfully
-INFO - 2023-03-31 10:59:14,875 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,876 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('EWQ', '+1.43', '2023-03-31 10:59:14', (SELECT id FROM article WHERE title = 'French inflation eases from 38year high to 56 in March 2023')); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,881 - Query executed successfully
-INFO - 2023-03-31 10:59:14,883 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,883 - new_article() ended
-INFO - 2023-03-31 10:59:14,883 - dict_to_db() ended successfully
-INFO - 2023-03-31 10:59:14,883 - new_article() called for title: UK Q4 GDP growth revised slightly higher to 01 QQ 
-INFO - 2023-03-31 10:59:14,883 - database_query() called with: INSERT INTO author (name) SELECT 'Meghavi Singh' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Meghavi Singh'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,889 - Query executed successfully
-INFO - 2023-03-31 10:59:14,889 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,889 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'UK Q4 GDP growth revised slightly higher to 01 QQ', 'https://seekingalpha.com/news/3952986-uk-q4-gdp-growth-revised-slightly-higher-to-01-qq', '2023-03-31 10:00:00+03:00', (SELECT id FROM author WHERE name = 'Meghavi Singh')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'UK Q4 GDP growth revised slightly higher to 01 QQ'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,895 - Query executed successfully
-INFO - 2023-03-31 10:59:14,897 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,897 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('FXB', '+1.29', '2023-03-31 10:59:14', (SELECT id FROM article WHERE title = 'UK Q4 GDP growth revised slightly higher to 01 QQ')); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,902 - Query executed successfully
-INFO - 2023-03-31 10:59:14,904 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,904 - new_article() ended
-INFO - 2023-03-31 10:59:14,904 - dict_to_db() ended successfully
-INFO - 2023-03-31 10:59:14,904 - new_article() called for title: Germany retail sales unexpectedly fall 13 MM in February 
-INFO - 2023-03-31 10:59:14,904 - database_query() called with: INSERT INTO author (name) SELECT 'Meghavi Singh' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Meghavi Singh'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,909 - Query executed successfully
-INFO - 2023-03-31 10:59:14,909 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,909 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Germany retail sales unexpectedly fall 13 MM in February', 'https://seekingalpha.com/news/3952983-germany-retail-sales-unexpectedly-fall-13-mm-in-february', '2023-03-31 09:35:00+03:00', (SELECT id FROM author WHERE name = 'Meghavi Singh')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Germany retail sales unexpectedly fall 13 MM in February'); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,915 - Query executed successfully
-INFO - 2023-03-31 10:59:14,917 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,917 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('1', '+1.79', '2023-03-31 10:59:14', (SELECT id FROM article WHERE title = 'Germany retail sales unexpectedly fall 13 MM in February')); , commit: True, print False:
-INFO - 2023-03-31 10:59:14,922 - Query executed successfully
-INFO - 2023-03-31 10:59:14,924 - database_query() ended with result: []
-INFO - 2023-03-31 10:59:14,924 - new_article() ended
-INFO - 2023-03-31 10:59:14,924 - dict_to_db() ended successfully
-INFO - 2023-03-31 10:59:14,924 - database_query() called with: SELECT * FROM author , commit: False, print True:
-INFO - 2023-03-31 10:59:14,929 - Query executed successfully
-INFO - 2023-03-31 10:59:14,929 - database_query() ended with result: [(1, 'Meghavi Singh'), (2, 'Yoel Minkoff')]
-INFO - 2023-03-31 10:59:14,929 - database_query() called with: SELECT * FROM article , commit: False, print True:
-INFO - 2023-03-31 10:59:14,934 - Query executed successfully
-INFO - 2023-03-31 10:59:14,935 - database_query() ended with result: [(1, 'Exro Technologies reports Q4 results', 'https://seekingalpha.com/news/3953000-exro-technologies-reports-q4-results', datetime.datetime(2023, 3, 31, 10, 51), 1), (2, 'Battle over silicon deepens as Japan restricts chip exports', 'https://seekingalpha.com/news/3952991-battle-over-silicon-deepens-as-japan-restricts-chip-exports', datetime.datetime(2023, 3, 31, 10, 45), 2), (3, 'French inflation eases from 38year high to 56 in March 2023', 'https://seekingalpha.com/news/3952989-french-inflation-eases-from-38-year-high', datetime.datetime(2023, 3, 31, 10, 22), 1), (4, 'UK Q4 GDP growth revised slightly higher to 01 QQ', 'https://seekingalpha.com/news/3952986-uk-q4-gdp-growth-revised-slightly-higher-to-01-qq', datetime.datetime(2023, 3, 31, 10, 0), 1), (5, 'Germany retail sales unexpectedly fall 13 MM in February', 'https://seekingalpha.com/news/3952983-germany-retail-sales-unexpectedly-fall-13-mm-in-february', datetime.datetime(2023, 3, 31, 9, 35), 1)]
-INFO - 2023-03-31 10:59:14,935 - database_query() called with: SELECT * FROM stock , commit: False, print True:
-INFO - 2023-03-31 10:59:14,940 - Query executed successfully
-INFO - 2023-03-31 10:59:14,940 - database_query() ended with result: [(1, 'EXROF', Decimal('2.56'), datetime.datetime(2023, 3, 31, 10, 59, 14), 1), (2, 'NINOY', Decimal('-0.44'), datetime.datetime(2023, 3, 31, 10, 59, 14), 2), (3, 'EWQ', Decimal('1.43'), datetime.datetime(2023, 3, 31, 10, 59, 14), 3), (4, 'FXB', Decimal('1.29'), datetime.datetime(2023, 3, 31, 10, 59, 14), 4), (5, '1', Decimal('1.79'), datetime.datetime(2023, 3, 31, 10, 59, 14), 5)]
-INFO - 2023-03-31 10:59:14,941 - main() completed
+INFO - 2023-03-31 18:44:37,035 - connected to server successfully
+INFO - 2023-03-31 18:44:37,035 - Request fetched successfully, code=200
+INFO - 2023-03-31 18:44:37,035 - url_request() was ended
+INFO - 2023-03-31 18:44:37,066 - url_to_soup() ended
+INFO - 2023-03-31 18:44:37,082 - extracted title: Bitcoin eyes $29K again as soft inflation data fuels buying with data: ['https://seekingalpha.com/news/3953233-bitcoin-eyes-29k-again-as-soft-inflation-data-fuels-buying', '3953233']
+INFO - 2023-03-31 18:44:37,082 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,082 - check_percentage() was called with:
+ +0.31%
+INFO - 2023-03-31 18:44:37,082 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,082 - extracted price change: +0.31%
+INFO - 2023-03-31 18:44:37,082 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,082 - extracted ticker:BTC-USD
+INFO - 2023-03-31 18:44:37,082 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,082 - extracted title: Immunocore draws Buy at Mizuho on T cell receptor based therapies with data: ['https://seekingalpha.com/news/3953231-immunocore-stock-draws-buy-at-mizuho-on-tcr-therapies', '3953231']
+INFO - 2023-03-31 18:44:37,082 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,082 - check_percentage() was called with:
+ +3.54%
+INFO - 2023-03-31 18:44:37,082 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,082 - extracted price change: +3.54%
+INFO - 2023-03-31 18:44:37,082 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,082 - extracted ticker:IMCR
+INFO - 2023-03-31 18:44:37,082 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,082 - extracted title: Metropolitan Bank Holding surges 23%, recovering from short report drop with data: ['https://seekingalpha.com/news/3953228-metropolitan-bank-holding-surges-24-recovering-from-short-report-drop', '3953228']
+INFO - 2023-03-31 18:44:37,082 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,090 - check_percentage() was called with:
+ +21.45%
+INFO - 2023-03-31 18:44:37,090 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,090 - extracted price change: +21.45%
+INFO - 2023-03-31 18:44:37,090 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,090 - extracted ticker:MCB
+INFO - 2023-03-31 18:44:37,090 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,090 - extracted title: Nasdaq, S&P, Dow extend gains to a third day after key inflation gauge moderates with data: ['https://seekingalpha.com/news/3953229-nasdaq-sp500-dow-jones-stock-market-pce-inflation-data', '3953229']
+INFO - 2023-03-31 18:44:37,090 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,090 - check_percentage() was called with:
+ +0.77%
+INFO - 2023-03-31 18:44:37,090 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,091 - extracted price change: +0.77%
+INFO - 2023-03-31 18:44:37,091 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,091 - extracted ticker:SP500
+INFO - 2023-03-31 18:44:37,091 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,091 - extracted title: VanEck looks to enter the robotics sphere as it files for a new ETF with data: ['https://seekingalpha.com/news/3953226-vaneck-looks-to-enter-the-robotics-sphere-with-its-latest-sec-filing', '3953226']
+INFO - 2023-03-31 18:44:37,091 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,091 - check_percentage() was called with:
+ +1.19%
+INFO - 2023-03-31 18:44:37,091 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,091 - extracted price change: +1.19%
+INFO - 2023-03-31 18:44:37,091 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,091 - extracted ticker:ROBO
+INFO - 2023-03-31 18:44:37,091 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,091 - extracted title: Viatris pulls generic HIV drug filing in EU on bioequivalence woes with data: ['https://seekingalpha.com/news/3953222-viatris-pulls-generic-hiv-drug-filing-in-eu-bioequivalence-woes', '3953222']
+INFO - 2023-03-31 18:44:37,092 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,092 - check_percentage() was called with:
+ +1.05%
+INFO - 2023-03-31 18:44:37,092 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,092 - extracted price change: +1.05%
+INFO - 2023-03-31 18:44:37,092 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,092 - extracted ticker:VTRS
+INFO - 2023-03-31 18:44:37,092 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,092 - extracted title: Big tree announces C$0.5M brokered private placement with data: ['https://seekingalpha.com/news/3953220-big-tree-announces-c05m-brokered-private-placement', '3953220']
+INFO - 2023-03-31 18:44:37,092 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,092 - check_percentage() was called with:
+ 0.00%
+INFO - 2023-03-31 18:44:37,092 - check_percentage() got 'absent' and ended
+INFO - 2023-03-31 18:44:37,092 - extracted price change: 0.0
+INFO - 2023-03-31 18:44:37,092 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,093 - extracted ticker:BIGT:CA
+INFO - 2023-03-31 18:44:37,093 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,093 - extracted title: DSG buys Hisco for $269.1M in push to strengthen industrial equipment portfolio with data: ['https://seekingalpha.com/news/3953219-dsg-buys-hisco-for-2691m-in-push-to-strengthen-industrial-equipment-portfolio', '3953219']
+INFO - 2023-03-31 18:44:37,093 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,093 - check_percentage() was called with:
+ +4.66%
+INFO - 2023-03-31 18:44:37,093 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,093 - extracted price change: +4.66%
+INFO - 2023-03-31 18:44:37,093 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,093 - extracted ticker:DSGR
+INFO - 2023-03-31 18:44:37,093 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,094 - extracted title: Rolls-Royce names new CFO, shakes up management with data: ['https://seekingalpha.com/news/3953218-rolls-royce-names-new-cfo-shakes-up-management', '3953218']
+INFO - 2023-03-31 18:44:37,094 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,094 - check_percentage() was called with:
+ -0.55%
+INFO - 2023-03-31 18:44:37,094 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,094 - extracted price change: -0.55%
+INFO - 2023-03-31 18:44:37,094 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,094 - extracted ticker:RYCEY
+INFO - 2023-03-31 18:44:37,094 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,094 - extracted title: Eli Lilly says new Alzheimerâs drug showed dose-dependent effect with data: ['https://seekingalpha.com/news/3953216-eli-lilly-stock-shows-early-effect-of-alzheimers-therapy', '3953216']
+INFO - 2023-03-31 18:44:37,094 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,094 - check_percentage() was called with:
+ +0.07%
+INFO - 2023-03-31 18:44:37,094 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,094 - extracted price change: +0.07%
+INFO - 2023-03-31 18:44:37,095 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,095 - extracted ticker:LLY
+INFO - 2023-03-31 18:44:37,095 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,095 - extracted title: GE, Siemens Gamesa settle wind turbine patent disputes with data: ['https://seekingalpha.com/news/3953230-ge-siemens-gamesa-settle-wind-turbine-patent-disputes', '3953230']
+INFO - 2023-03-31 18:44:37,095 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,095 - check_percentage() was called with:
+ +1.46%
+INFO - 2023-03-31 18:44:37,095 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,095 - extracted price change: +1.46%
+INFO - 2023-03-31 18:44:37,095 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,096 - extracted ticker:GE
+INFO - 2023-03-31 18:44:37,096 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,096 - extracted title: Jack in the Box initiated at Buy as Loop Capital forecasts strong sales ahead with data: ['https://seekingalpha.com/news/3953215-jack-in-the-box-initiated-at-buy-as-loop-capital-forecasts-strong-sales-ahead', '3953215']
+INFO - 2023-03-31 18:44:37,096 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,096 - check_percentage() was called with:
+ +2.65%
+INFO - 2023-03-31 18:44:37,096 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,096 - extracted price change: +2.65%
+INFO - 2023-03-31 18:44:37,096 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,096 - extracted ticker:JACK
+INFO - 2023-03-31 18:44:37,096 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,097 - extracted title: Martinrea International receives Toronto Stock Exchange approval for normal course issuer bid with data: ['https://seekingalpha.com/news/3953214-martinrea-international-receives-toronto-stock-exchange-approval-for-normal-course-issuer-bid', '3953214']
+INFO - 2023-03-31 18:44:37,097 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,097 - check_percentage() was called with:
+ +3.73%
+INFO - 2023-03-31 18:44:37,097 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,097 - extracted price change: +3.73%
+INFO - 2023-03-31 18:44:37,097 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,097 - extracted ticker:MRE:CA
+INFO - 2023-03-31 18:44:37,097 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,098 - extracted title: Ventas plans to take ownership of collateral supporting $486M Santerre loan with data: ['https://seekingalpha.com/news/3953212-ventas-plans-to-take-ownership-of-collateral-supporting-486m-santerre-loan', '3953212']
+INFO - 2023-03-31 18:44:37,098 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,098 - check_percentage() was called with:
+ -3.52%
+INFO - 2023-03-31 18:44:37,098 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,098 - extracted price change: -3.52%
+INFO - 2023-03-31 18:44:37,098 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,098 - extracted ticker:VTR
+INFO - 2023-03-31 18:44:37,098 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,099 - extracted title: Dow, S&P, Nasdaq rise as PCE inflation data eases with data: ['https://seekingalpha.com/news/3953023-dow-sp-nasdaq-futures-steady-ahead-of-key-inflation-data', '3953023']
+INFO - 2023-03-31 18:44:37,099 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,099 - check_percentage() was called with:
+ +0.77%
+INFO - 2023-03-31 18:44:37,099 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,099 - extracted price change: +0.77%
+INFO - 2023-03-31 18:44:37,099 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,099 - extracted ticker:SP500
+INFO - 2023-03-31 18:44:37,099 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,099 - extracted title: ElringKlinger AG reports FY results with data: ['https://seekingalpha.com/news/3953208-elringklinger-ag-reports-fy-results', '3953208']
+INFO - 2023-03-31 18:44:37,099 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,099 - check_percentage() was called with:
+ 0.00%
+INFO - 2023-03-31 18:44:37,099 - check_percentage() got 'absent' and ended
+INFO - 2023-03-31 18:44:37,099 - extracted price change: 0.0
+INFO - 2023-03-31 18:44:37,100 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,100 - extracted ticker:EGKLF
+INFO - 2023-03-31 18:44:37,100 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,100 - extracted title: AstraZeneca Ultomiris gets EMA backing for expanded use with data: ['https://seekingalpha.com/news/3953206-astrazeneca-ultomiris-gets-ema-backing-expanded-use', '3953206']
+INFO - 2023-03-31 18:44:37,100 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,100 - check_percentage() was called with:
+ +0.39%
+INFO - 2023-03-31 18:44:37,100 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,100 - extracted price change: +0.39%
+INFO - 2023-03-31 18:44:37,100 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,100 - extracted ticker:AZN
+INFO - 2023-03-31 18:44:37,100 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,101 - extracted title: ILUS confirms securing $5.5M in funding and note settlement with data: ['https://seekingalpha.com/news/3953207-ilus-confirms-securing-55m-in-funding-and-note-settlement', '3953207']
+INFO - 2023-03-31 18:44:37,101 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,101 - check_percentage() was called with:
+ -4.65%
+INFO - 2023-03-31 18:44:37,101 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,101 - extracted price change: -4.65%
+INFO - 2023-03-31 18:44:37,101 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,101 - extracted ticker:ILUS
+INFO - 2023-03-31 18:44:37,101 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,101 - extracted title: Amylyx a new buy at Mizuho on support for ALS therapy Relyvrio with data: ['https://seekingalpha.com/news/3953204-amylyx-new-buy-mizuho-support-als-therapy-relyvrio', '3953204']
+INFO - 2023-03-31 18:44:37,101 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,101 - check_percentage() was called with:
+ +3.00%
+INFO - 2023-03-31 18:44:37,101 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,102 - extracted price change: +3.00%
+INFO - 2023-03-31 18:44:37,102 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,102 - extracted ticker:AMLX
+INFO - 2023-03-31 18:44:37,102 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,102 - extracted title: Draganfly closes $8M stock offering for securing growth capital with data: ['https://seekingalpha.com/news/3953203-draganfly-closes-8m-stock-offering-for-securing-growth-capital', '3953203']
+INFO - 2023-03-31 18:44:37,102 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,102 - check_percentage() was called with:
+ +2.34%
+INFO - 2023-03-31 18:44:37,102 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,102 - extracted price change: +2.34%
+INFO - 2023-03-31 18:44:37,102 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,102 - extracted ticker:DPRO
+INFO - 2023-03-31 18:44:37,102 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,103 - extracted title: G Medical Innovations prices $9.6M in stock offering with data: ['https://seekingalpha.com/news/3953202-g-medical-innovations-prices-96m-in-stock-offering', '3953202']
+INFO - 2023-03-31 18:44:37,103 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,103 - check_percentage() was called with:
+ -43.37%
+INFO - 2023-03-31 18:44:37,103 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,103 - extracted price change: -43.37%
+INFO - 2023-03-31 18:44:37,103 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,103 - extracted ticker:GMVD
+INFO - 2023-03-31 18:44:37,103 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,103 - extracted title: Y-mAbs, G Medical top healthcare gainers; Pyxis, AnPac among losers with data: ['https://seekingalpha.com/news/3953201-y-mabs-g-medical-top-healthcare-gainers-pyxis-anpac-among-losers', '3953201']
+INFO - 2023-03-31 18:44:37,103 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,103 - check_percentage() was called with:
+ +29.43%
+INFO - 2023-03-31 18:44:37,103 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,104 - extracted price change: +29.43%
+INFO - 2023-03-31 18:44:37,104 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,104 - extracted ticker:PALI
+INFO - 2023-03-31 18:44:37,104 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,104 - extracted title: NSTS Bancorp authorizes stock repurchase program with data: ['https://seekingalpha.com/news/3953200-nsts-bancorp-authorizes-stock-repurchase-program', '3953200']
+INFO - 2023-03-31 18:44:37,104 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,104 - check_percentage() was called with:
+ +6.32%
+INFO - 2023-03-31 18:44:37,104 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,104 - extracted price change: +6.32%
+INFO - 2023-03-31 18:44:37,104 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,104 - extracted ticker:NSTS
+INFO - 2023-03-31 18:44:37,104 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,105 - extracted title: AEHR CFO Spink to retire from company by fiscal year end, stock falls 15% with data: ['https://seekingalpha.com/news/3953198-aehr-cfo-spink-to-retire-from-company-by-fiscal-year-end-shares-fall', '3953198']
+INFO - 2023-03-31 18:44:37,105 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,105 - check_percentage() was called with:
+ -14.62%
+INFO - 2023-03-31 18:44:37,105 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,105 - extracted price change: -14.62%
+INFO - 2023-03-31 18:44:37,105 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,105 - extracted ticker:AEHR
+INFO - 2023-03-31 18:44:37,105 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,105 - extracted title: Micron stock falls; Chinese regulators review company's chip products with data: ['https://seekingalpha.com/news/3953197-micron-stock-falls-chinese-regulators-review-companys-chip-products', '3953197']
+INFO - 2023-03-31 18:44:37,105 - add_data_links_and_titles() was called
+INFO - 2023-03-31 18:44:37,106 - check_percentage() was called with:
+ -2.87%
+INFO - 2023-03-31 18:44:37,106 - check_percentage() was ended
+INFO - 2023-03-31 18:44:37,106 - extracted price change: -2.87%
+INFO - 2023-03-31 18:44:37,106 - extracted price change time :2023-3-31 18:44:37
+INFO - 2023-03-31 18:44:37,106 - extracted ticker:MU
+INFO - 2023-03-31 18:44:37,106 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,106 - extract_links_and_titles() was ended
+INFO - 2023-03-31 18:44:37,106 - time_some_function() ended
+INFO - 2023-03-31 18:44:37,106 - print_timing_function_results() started for 0:00:02.216291
+INFO - 2023-03-31 18:44:37,107 - print_timing_function_results() was ended
+INFO - 2023-03-31 18:44:37,114 - time_some_function() was called for <function parallel_approach at 0x00000202A865DBC0>
+INFO - 2023-03-31 18:44:37,114 - parallel_approach() started 
+INFO - 2023-03-31 18:44:37,114 - https://seekingalpha.com/news/3953233-bitcoin-eyes-29k-again-as-soft-inflation-data-fuels-buying fetched successfully
+INFO - 2023-03-31 18:44:37,114 - https://seekingalpha.com/news/3953231-immunocore-stock-draws-buy-at-mizuho-on-tcr-therapies fetched successfully
+INFO - 2023-03-31 18:44:37,114 - https://seekingalpha.com/news/3953228-metropolitan-bank-holding-surges-24-recovering-from-short-report-drop fetched successfully
+INFO - 2023-03-31 18:44:37,114 - https://seekingalpha.com/news/3953229-nasdaq-sp500-dow-jones-stock-market-pce-inflation-data fetched successfully
+INFO - 2023-03-31 18:44:37,115 - https://seekingalpha.com/news/3953226-vaneck-looks-to-enter-the-robotics-sphere-with-its-latest-sec-filing fetched successfully
+INFO - 2023-03-31 18:44:37,938 - extract_data_from_soup() was called for Nasdaq, S&P, Dow extend gains to a third day after key inflation gauge moderates (SP500) | Seeking A
+INFO - 2023-03-31 18:44:37,939 - author added ! Anuron Mitra
+INFO - 2023-03-31 18:44:37,939 - date_str added ! Mar. 31, 2023
+INFO - 2023-03-31 18:44:37,939 - time_ added ! 11:28 AM
+INFO - 2023-03-31 18:44:37,939 - extract_data_from_soup() was ended
+INFO - 2023-03-31 18:44:38,004 - extract_data_from_soup() was called for Metropolitan Bank Holding surges 23%, recovering from short report drop (NYSE:MCB) | Seeking Alpha  
+INFO - 2023-03-31 18:44:38,004 - author added ! Liz Kiesche
+INFO - 2023-03-31 18:44:38,004 - date_str added ! Mar. 31, 2023
+INFO - 2023-03-31 18:44:38,004 - time_ added ! 11:31 AM
+INFO - 2023-03-31 18:44:38,004 - extract_data_from_soup() was ended
+INFO - 2023-03-31 18:44:38,004 - extract_data_from_soup() was called for VanEck looks to enter the robotics sphere as it files for a new ETF | Seeking Alpha                 
+INFO - 2023-03-31 18:44:38,004 - author added ! Jason Capul
+INFO - 2023-03-31 18:44:38,004 - date_str added ! Mar. 31, 2023
+INFO - 2023-03-31 18:44:38,004 - time_ added ! 11:20 AM
+INFO - 2023-03-31 18:44:38,004 - extract_data_from_soup() was ended
+INFO - 2023-03-31 18:44:38,036 - extract_data_from_soup() was called for Immunocore stock draws Buy at Mizuho on TCR therapies (NASDAQ:IMCR) | Seeking Alpha                 
+INFO - 2023-03-31 18:44:38,036 - author added ! Dulan Lokuwithana
+INFO - 2023-03-31 18:44:38,036 - date_str added ! Mar. 31, 2023
+INFO - 2023-03-31 18:44:38,036 - time_ added ! 11:37 AM
+INFO - 2023-03-31 18:44:38,036 - extract_data_from_soup() was ended
+INFO - 2023-03-31 18:44:38,369 - extract_data_from_soup() was called for Bitcoin eyes $29K again as soft inflation data fuels buying (Cryptocurrency:BTC-USD) | Seeking Alpha
+INFO - 2023-03-31 18:44:38,369 - author added ! Max Gottlich
+INFO - 2023-03-31 18:44:38,369 - date_str added ! Mar. 31, 2023
+INFO - 2023-03-31 18:44:38,369 - time_ added ! 11:43 AM
+INFO - 2023-03-31 18:44:38,369 - extract_data_from_soup() was ended
+INFO - 2023-03-31 18:44:38,369 - parallel_approach() was ended
+INFO - 2023-03-31 18:44:38,369 - time_some_function() ended
+INFO - 2023-03-31 18:44:38,369 - print_timing_function_results() started for 0:00:01.254229
+INFO - 2023-03-31 18:44:38,369 - print_timing_function_results() was ended
+INFO - 2023-03-31 18:44:38,389 - initialize_db() was called
+INFO - 2023-03-31 18:44:38,389 - database_query() called with: DROP DATABASE IF EXISTS market; , commit: True, print False:
+INFO - 2023-03-31 18:44:38,427 - Query executed successfully
+INFO - 2023-03-31 18:44:38,428 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,428 - database_query() called with: CREATE DATABASE IF NOT EXISTS market; , commit: True, print False:
+INFO - 2023-03-31 18:44:38,436 - Query executed successfully
+INFO - 2023-03-31 18:44:38,437 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,437 - database_query() called with: DROP TABLE IF EXISTS stock; , commit: True, print False:
+INFO - 2023-03-31 18:44:38,444 - Query executed successfully
+INFO - 2023-03-31 18:44:38,445 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,445 - database_query() called with: DROP TABLE IF EXISTS article; , commit: True, print False:
+INFO - 2023-03-31 18:44:38,453 - Query executed successfully
+INFO - 2023-03-31 18:44:38,453 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,453 - database_query() called with: DROP TABLE IF EXISTS author; , commit: True, print False:
+INFO - 2023-03-31 18:44:38,464 - Query executed successfully
+INFO - 2023-03-31 18:44:38,464 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,464 - database_query() called with: CREATE TABLE IF NOT EXISTS author (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255)); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,491 - Query executed successfully
+INFO - 2023-03-31 18:44:38,491 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,491 - database_query() called with: CREATE TABLE IF NOT EXISTS article (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(1000), link VARCHAR(1000), datetime_posted DATETIME, author_id INT, FOREIGN KEY (author_id) REFERENCES author(id)); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,522 - Query executed successfully
+INFO - 2023-03-31 18:44:38,522 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,522 - database_query() called with: CREATE TABLE IF NOT EXISTS stock (id INT AUTO_INCREMENT PRIMARY KEY, ticker_symbol VARCHAR(50), price_change DECIMAL(10, 2), datetime_change DATETIME, article_id INT, FOREIGN KEY (article_id) REFERENCES article(id)); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,553 - Query executed successfully
+INFO - 2023-03-31 18:44:38,553 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,553 - initialize_db() was ended successfully
+INFO - 2023-03-31 18:44:38,553 - dict_to_db() called for len(data): 25 
+INFO - 2023-03-31 18:44:38,600 - new_article() called for title: Bitcoin eyes 29K again as soft inflation data fuels buying 
+INFO - 2023-03-31 18:44:38,600 - database_query() called with: INSERT INTO author (name) SELECT 'Max Gottlich' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Max Gottlich'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,610 - Query executed successfully
+INFO - 2023-03-31 18:44:38,616 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,616 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Bitcoin eyes 29K again as soft inflation data fuels buying', 'https://seekingalpha.com/news/3953233-bitcoin-eyes-29k-again-as-soft-inflation-data-fuels-buying', '2023-03-31 18:43:00+03:00', (SELECT id FROM author WHERE name = 'Max Gottlich')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Bitcoin eyes 29K again as soft inflation data fuels buying'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,621 - Query executed successfully
+INFO - 2023-03-31 18:44:38,623 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,623 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('BTC-USD', '+0.31', '2023-3-31 18:44:37', (SELECT id FROM article WHERE title = 'Bitcoin eyes 29K again as soft inflation data fuels buying')); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,628 - Query executed successfully
+INFO - 2023-03-31 18:44:38,631 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,631 - new_article() ended
+INFO - 2023-03-31 18:44:38,631 - dict_to_db() ended successfully
+INFO - 2023-03-31 18:44:38,631 - new_article() called for title: Immunocore draws Buy at Mizuho on T cell receptor based therapies 
+INFO - 2023-03-31 18:44:38,631 - database_query() called with: INSERT INTO author (name) SELECT 'Dulan Lokuwithana' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Dulan Lokuwithana'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,635 - Query executed successfully
+INFO - 2023-03-31 18:44:38,638 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,638 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Immunocore draws Buy at Mizuho on T cell receptor based therapies', 'https://seekingalpha.com/news/3953231-immunocore-stock-draws-buy-at-mizuho-on-tcr-therapies', '2023-03-31 18:37:00+03:00', (SELECT id FROM author WHERE name = 'Dulan Lokuwithana')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Immunocore draws Buy at Mizuho on T cell receptor based therapies'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,643 - Query executed successfully
+INFO - 2023-03-31 18:44:38,646 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,646 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('IMCR', '+3.54', '2023-3-31 18:44:37', (SELECT id FROM article WHERE title = 'Immunocore draws Buy at Mizuho on T cell receptor based therapies')); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,650 - Query executed successfully
+INFO - 2023-03-31 18:44:38,653 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,653 - new_article() ended
+INFO - 2023-03-31 18:44:38,653 - dict_to_db() ended successfully
+INFO - 2023-03-31 18:44:38,654 - new_article() called for title: Metropolitan Bank Holding surges 23 recovering from short report drop 
+INFO - 2023-03-31 18:44:38,654 - database_query() called with: INSERT INTO author (name) SELECT 'Liz Kiesche' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Liz Kiesche'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,657 - Query executed successfully
+INFO - 2023-03-31 18:44:38,661 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,661 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Metropolitan Bank Holding surges 23 recovering from short report drop', 'https://seekingalpha.com/news/3953228-metropolitan-bank-holding-surges-24-recovering-from-short-report-drop', '2023-03-31 18:31:00+03:00', (SELECT id FROM author WHERE name = 'Liz Kiesche')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Metropolitan Bank Holding surges 23 recovering from short report drop'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,665 - Query executed successfully
+INFO - 2023-03-31 18:44:38,668 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,668 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('MCB', '+21.45', '2023-3-31 18:44:37', (SELECT id FROM article WHERE title = 'Metropolitan Bank Holding surges 23 recovering from short report drop')); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,672 - Query executed successfully
+INFO - 2023-03-31 18:44:38,675 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,675 - new_article() ended
+INFO - 2023-03-31 18:44:38,675 - dict_to_db() ended successfully
+INFO - 2023-03-31 18:44:38,675 - new_article() called for title: Nasdaq SP Dow extend gains to a third day after key inflation gauge moderates 
+INFO - 2023-03-31 18:44:38,676 - database_query() called with: INSERT INTO author (name) SELECT 'Anuron Mitra' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Anuron Mitra'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,680 - Query executed successfully
+INFO - 2023-03-31 18:44:38,683 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,683 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'Nasdaq SP Dow extend gains to a third day after key inflation gauge moderates', 'https://seekingalpha.com/news/3953229-nasdaq-sp500-dow-jones-stock-market-pce-inflation-data', '2023-03-31 18:28:00+03:00', (SELECT id FROM author WHERE name = 'Anuron Mitra')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'Nasdaq SP Dow extend gains to a third day after key inflation gauge moderates'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,687 - Query executed successfully
+INFO - 2023-03-31 18:44:38,689 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,689 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('SP500', '+0.77', '2023-3-31 18:44:37', (SELECT id FROM article WHERE title = 'Nasdaq SP Dow extend gains to a third day after key inflation gauge moderates')); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,693 - Query executed successfully
+INFO - 2023-03-31 18:44:38,696 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,696 - new_article() ended
+INFO - 2023-03-31 18:44:38,696 - dict_to_db() ended successfully
+INFO - 2023-03-31 18:44:38,696 - new_article() called for title: VanEck looks to enter the robotics sphere as it files for a new ETF 
+INFO - 2023-03-31 18:44:38,696 - database_query() called with: INSERT INTO author (name) SELECT 'Jason Capul' WHERE NOT EXISTS(SELECT name FROM author WHERE name = 'Jason Capul'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,700 - Query executed successfully
+INFO - 2023-03-31 18:44:38,702 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,702 - database_query() called with: INSERT INTO article (title, link, datetime_posted, author_id) SELECT 'VanEck looks to enter the robotics sphere as it files for a new ETF', 'https://seekingalpha.com/news/3953226-vaneck-looks-to-enter-the-robotics-sphere-with-its-latest-sec-filing', '2023-03-31 18:20:00+03:00', (SELECT id FROM author WHERE name = 'Jason Capul')WHERE NOT EXISTS (SELECT id FROM article WHERE title = 'VanEck looks to enter the robotics sphere as it files for a new ETF'); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,706 - Query executed successfully
+INFO - 2023-03-31 18:44:38,708 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,708 - database_query() called with: INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) VALUES('ROBO', '+1.19', '2023-3-31 18:44:37', (SELECT id FROM article WHERE title = 'VanEck looks to enter the robotics sphere as it files for a new ETF')); , commit: True, print False:
+INFO - 2023-03-31 18:44:38,713 - Query executed successfully
+INFO - 2023-03-31 18:44:38,715 - database_query() ended with result: []
+INFO - 2023-03-31 18:44:38,715 - new_article() ended
+INFO - 2023-03-31 18:44:38,715 - dict_to_db() ended successfully
+INFO - 2023-03-31 18:44:38,715 - database_query() called with: SELECT * FROM article , commit: False, print False:
+INFO - 2023-03-31 18:44:38,719 - Query executed successfully
+INFO - 2023-03-31 18:44:38,719 - database_query() ended with result: [(1, 'Bitcoin eyes 29K again as soft inflation data fuels buying', 'https://seekingalpha.com/news/3953233-bitcoin-eyes-29k-again-as-soft-inflation-data-fuels-buying', datetime.datetime(2023, 3, 31, 18, 43), 1), (2, 'Immunocore draws Buy at Mizuho on T cell receptor based therapies', 'https://seekingalpha.com/news/3953231-immunocore-stock-draws-buy-at-mizuho-on-tcr-therapies', datetime.datetime(2023, 3, 31, 18, 37), 2), (3, 'Metropolitan Bank Holding surges 23 recovering from short report drop', 'https://seekingalpha.com/news/3953228-metropolitan-bank-holding-surges-24-recovering-from-short-report-drop', datetime.datetime(2023, 3, 31, 18, 31), 3), (4, 'Nasdaq SP Dow extend gains to a third day after key inflation gauge moderates', 'https://seekingalpha.com/news/3953229-nasdaq-sp500-dow-jones-stock-market-pce-inflation-data', datetime.datetime(2023, 3, 31, 18, 28), 4), (5, 'VanEck looks to enter the robotics sphere as it files for a new ETF', 'https://seekingalpha.com/news/3953226-vaneck-looks-to-enter-the-robotics-sphere-with-its-latest-sec-filing', datetime.datetime(2023, 3, 31, 18, 20), 5)]
+INFO - 2023-03-31 18:44:38,723 - database_query() called with: SELECT * FROM stock , commit: False, print True:
+INFO - 2023-03-31 18:44:38,727 - Query executed successfully
+INFO - 2023-03-31 18:44:38,729 - database_query() ended with result: [(1, 'BTC-USD', Decimal('0.31'), datetime.datetime(2023, 3, 31, 18, 44, 37), 1), (2, 'IMCR', Decimal('3.54'), datetime.datetime(2023, 3, 31, 18, 44, 37), 2), (3, 'MCB', Decimal('21.45'), datetime.datetime(2023, 3, 31, 18, 44, 37), 3), (4, 'SP500', Decimal('0.77'), datetime.datetime(2023, 3, 31, 18, 44, 37), 4), (5, 'ROBO', Decimal('1.19'), datetime.datetime(2023, 3, 31, 18, 44, 37), 5)]
+INFO - 2023-03-31 18:44:38,729 - database_query() called with: SELECT * FROM author , commit: False, print True:
+INFO - 2023-03-31 18:44:38,733 - Query executed successfully
+INFO - 2023-03-31 18:44:38,735 - database_query() ended with result: [(1, 'Max Gottlich'), (2, 'Dulan Lokuwithana'), (3, 'Liz Kiesche'), (4, 'Anuron Mitra'), (5, 'Jason Capul')]
+INFO - 2023-03-31 18:44:38,735 - main() completed

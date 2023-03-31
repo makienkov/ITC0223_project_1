@@ -21,7 +21,6 @@ import pytz
 import mysql.connector
 from prettytable import PrettyTable
 
-
 FILE_NAME = ".".join(__file__.split(".")[:-1])
 
 
@@ -215,8 +214,8 @@ def set_config():
         ARGS.url,
         site_url,
         ARGS.debug_number_of_urls,
-        ARGS.deployment_number_of_pages,
         ARGS.debug_number_of_pages,
+        ARGS.deployment_number_of_pages,
         ARGS.parallel,
     ]
 
@@ -227,8 +226,8 @@ def set_config():
         "url",
         "site_url",
         "debug_number_of_urls",
-        "deployment_number_of_pages",
         "debug_number_of_pages",
+        "deployment_number_of_pages",
         "parallel",
     ]
 
@@ -268,7 +267,6 @@ def set_config():
     logging.info("parallel enabled ? : %s", configs[8])
 
     logging.info("set_config() completed")
-
 
     return configs
 
@@ -422,35 +420,39 @@ def check_percentage(percentage_string):
     return "0.0"
 
 
-def add_data_links_and_titles(data2: str) -> list[str]:
+def add_data_links_and_titles(data) -> list[str]:
     """A function that:
     extracts more data from the given select object,
-    :param data2: soup  select object
-    :return: a list with mode data [price_change, price_change_time]
+    :param data: soup  select object
+    :return: a list with mode data [price_change, price_change_time, ticker]
     """
     logging.info("add_data_links_and_titles() was called")
 
-    clean_text = re.sub(r"\s*\d+\s*Comments?", "", data2)
-    clean_text = clean_text.split()[1:]
     try:
-        price_change = str(clean_text[0].split("%")[0]) + "%"
-    except ValueError as error:
-        logging.info("Error occurred while extracting percentage:%s", error)
-        price_change = "0.0"
+        ticker = data.footer.a.span.string
+    except AttributeError:
+        ticker = "None"
+
+    try:
+        price_change = data.footer.a.span.find_next_sibling().string
+    except AttributeError:
+        price_change = "None"
 
     price_change = check_percentage(price_change)
     logging.info("extracted price change: %s", price_change)
 
     now = datetime.now()
     price_change_time = (
-        f"{now.year}/{now.month}/{now.day} {now.hour}:{now.minute}:{now.second}"
+        f"{now.year}-{now.month}-{now.day} {now.hour}:{now.minute}:{now.second}"
     )
 
-    logging.info("extracted price change:%s", price_change_time)
+    logging.info("extracted price change time :%s", price_change_time)
+
+    logging.info("extracted ticker:%s", ticker)
 
     logging.info("extract_links_and_titles() was ended")
 
-    return [price_change, price_change_time]
+    return [price_change, price_change_time, ticker]
 
 
 def extract_links_and_titles(num_pages):
@@ -470,13 +472,12 @@ def extract_links_and_titles(num_pages):
 
         link_soup = url_to_soup(url)
 
-        select_object = link_soup.select("article div div h3 a")
-        select_object2 = link_soup.select("article div div footer")
+        select_object = link_soup.select("article div div")
 
-        for data, data2 in zip(select_object, select_object2):
+        for data in select_object:
             title_data = []
-            title = data.text
-            href = data.attrs.get("href")
+            title = data.h3.a.text
+            href = data.h3.a.attrs.get("href")
             href = SITE_URL + href[: href.find("?")]
             title_data.append(href)
             title_id = re.search(r"\d+", href).group()
@@ -484,8 +485,9 @@ def extract_links_and_titles(num_pages):
             output_dict[title] = title_data
             logging.info("extracted title: %s with data: %s", title, title_data)
 
-            title_data2 = add_data_links_and_titles(data2.text)
+            title_data2 = add_data_links_and_titles(data)
             output_dict[title] += title_data2
+            print()
 
     logging.info("extract_links_and_titles() was ended")
     return output_dict
@@ -495,20 +497,12 @@ def extract_data_from_soup(soup):
     """A function that:
     extracts data from soup of article page
     and returns the dictionary of single item in the following format:
-    title: [ticker, date_str, time, author]
+    title: [date_str, time, author]
     """
 
     text = soup.text
 
     logging.info("extract_data_from_soup() was called for %s", text[:100])
-
-    match = re.search(r"\((\w+)\)", text)
-    if match:
-        ticker = match.group(1)
-        logging.info("ticker added ! %s", ticker)
-    else:
-        ticker = None
-        logging.info("ticker not found !! %s", ticker)
 
     match = re.search(r"By:\s+(\w+\s*)+", text)
     if match:
@@ -535,7 +529,7 @@ def extract_data_from_soup(soup):
         logging.info("time_ not found !! %s", time_)
 
     logging.info("extract_data_from_soup() was ended")
-    return [ticker, date_str, time_, author]
+    return [date_str, time_, author]
 
 
 def extract_data_from_articles(articles: dict):
@@ -551,7 +545,9 @@ def extract_data_from_articles(articles: dict):
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(articles)
 
     for title, values in list(articles.items())[:stop]:
-        articles[title] += extract_data_from_soup(url_to_soup(values[0]))
+        articles[title] = articles.get(title, "") + extract_data_from_soup(
+            url_to_soup(values[0])
+        )
 
     logging.info("extract_data_from_articles() was ended")
 
@@ -565,12 +561,16 @@ def print_dict(dict_):
     """
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(dict_)
 
+    separator = (
+        "+----+---------------+--------------+---------------------+------------+"
+    )
+
     for i, (key, value) in enumerate(list(dict_.items())[:stop]):
-        print(f"{i} :**************************")
+        print(f"{separator} \n {i} :")
         print(f"{key}")
         for item in value:
             print(item)
-        print("*****************************")
+        print(separator)
 
 
 def time_some_function(function_, args_list: list) -> tuple[str, any]:
@@ -644,7 +644,7 @@ def parallel_approach(my_dict: dict):
     }
 
     for key, value in list(my_dict.items())[:stop]:
-        my_dict[key] += responses_dict[value[0]]
+        my_dict[key] = my_dict.get(key, []) + responses_dict.get(value[0], [])
 
     logging.info("parallel_approach() was ended")
 
@@ -772,14 +772,11 @@ def dict_to_db(data):
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(data)
 
     for title, values in list(data.items())[:stop]:
-        translator = str.maketrans("", "", string.punctuation)
-        title = title.translate(translator)
+        # Re-format title to MySQL VARCHAR format
+        title = title.translate(str.maketrans("", "", string.punctuation))
 
         # Re-format price_change to MySQL-DATETIME format
         values[2] = values[2].strip("%")
-
-        # Re-format price_change_time to MySQL-DATETIME format
-        values[3] = datetime.strptime(values[3], "%Y/%m/%d %H:%M:%S")
 
         # Re-format article_timestamp to MySQL-DATETIME format
         date_obj = datetime.strptime(values[5], "%b. %d, %Y")
@@ -791,7 +788,7 @@ def dict_to_db(data):
         jerusalem = pytz.timezone("Asia/Jerusalem")
         dt_eastern = eastern.localize(values[5])
         values[5] = dt_eastern.astimezone(jerusalem)
-        del values[6]
+        values[6], values[7] = values[7], values[6]
 
         new_article(title, values)
 
@@ -809,6 +806,27 @@ def initialize_db():
         database_query(OTHER_SQL_CONFIG[item], commit_=True)
 
     logging.info("initialize_db() was ended successfully")
+
+
+def nice_print_article():
+    """
+    print the article table in the database
+    in a pretty format.
+    """
+    data = database_query("SELECT * FROM article")
+
+    separator = (
+        "+----+---------------+--------------+---------------------+------------+"
+    )
+
+    # Print the first separator
+    print(separator)
+
+    for row in data:
+        print(f"id: {row[0]} | publish_time: {row[3]} | author_id: {row[4]} | title:|>")
+        print(f"{row[1]}")
+        print(f"link: {row[2]}")
+        print(separator)
 
 
 def main():
@@ -845,9 +863,9 @@ def main():
 
     dict_to_db(my_dict)
 
-    database_query("SELECT * FROM author", print_result_=True)
-    database_query("SELECT * FROM article", print_result_=True)
+    nice_print_article()
     database_query("SELECT * FROM stock", print_result_=True)
+    database_query("SELECT * FROM author", print_result_=True)
 
     logging.info("main() completed")
 
