@@ -545,7 +545,7 @@ def extract_data_from_articles(articles: dict):
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(articles)
 
     for title, values in list(articles.items())[:stop]:
-        articles[title] = articles.get(title, "") + extract_data_from_soup(
+        articles[title] = articles.get(title, []) + extract_data_from_soup(
             url_to_soup(values[0])
         )
 
