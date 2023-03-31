@@ -48,8 +48,8 @@ def initialise_parser():
         "--new-config-file",
         type=str,
         help="Name of new config .json file to save."
-             "\nIf provided, the program will save all"
-             "\nused params to the new .json file.",
+        "\nIf provided, the program will save all"
+        "\nused params to the new .json file.",
     )
     parser.add_argument(
         "-l", "--log-file", default=FILE_NAME + ".log", help="Name of log file"
@@ -59,24 +59,24 @@ def initialise_parser():
         "--debug-log-level",
         choices=[10, 20, 30, 40, 50],
         help="Log level in debug mode, integer."
-             "\nPossible choices:"
-             "\n* DEBUG=10"
-             "\n* INFO=20"
-             "\n* WARN=30"
-             "\n* ERROR=40"
-             "\n* CRITICAL=50",
+        "\nPossible choices:"
+        "\n* DEBUG=10"
+        "\n* INFO=20"
+        "\n* WARN=30"
+        "\n* ERROR=40"
+        "\n* CRITICAL=50",
     )
 
     parser.add_argument(
         "--deployment-log-level",
         choices=[10, 20, 30, 40, 50],
         help="Log level in deployment mode, integer."
-             "\nPossible choices:"
-             "\n* DEBUG=10"
-             "\n* INFO=20"
-             "\n* WARN=30"
-             "\n* ERROR=40"
-             "\n* CRITICAL=50",
+        "\nPossible choices:"
+        "\n* DEBUG=10"
+        "\n* INFO=20"
+        "\n* WARN=30"
+        "\n* ERROR=40"
+        "\n* CRITICAL=50",
     )
 
     parser.add_argument(
@@ -154,7 +154,7 @@ def load_config(config_file_name: str = "conf.json"):
             obj = json.loads(obj)
 
         if set(required_constants).intersection(list(obj.keys())) == set(
-                required_constants
+            required_constants
         ):
             logging.info("all config parameters loaded successfully from config file")
         else:
@@ -409,9 +409,9 @@ def check_percentage(percentage_string):
     logging.info("check_percentage() was called with:\n %s", percentage_string)
 
     if (
-            percentage_string.startswith("+")
-            or percentage_string.startswith("-")
-            or percentage_string == "0.00"
+        percentage_string.startswith("+")
+        or percentage_string.startswith("-")
+        or percentage_string == "0.00"
     ):
         logging.info("check_percentage() was ended")
         return percentage_string
@@ -545,7 +545,9 @@ def extract_data_from_articles(articles: dict):
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(articles)
 
     for title, values in list(articles.items())[:stop]:
-        articles[title] += extract_data_from_soup(url_to_soup(values[0]))
+        articles[title] = articles.get(title, "") + extract_data_from_soup(
+            url_to_soup(values[0])
+        )
 
     logging.info("extract_data_from_articles() was ended")
 
@@ -559,12 +561,16 @@ def print_dict(dict_):
     """
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(dict_)
 
+    separator = (
+        "+----+---------------+--------------+---------------------+------------+"
+    )
+
     for i, (key, value) in enumerate(list(dict_.items())[:stop]):
-        print(f"{i} :**************************")
+        print(f"{separator} \n {i} :")
         print(f"{key}")
         for item in value:
             print(item)
-        print("*****************************")
+        print(separator)
 
 
 def time_some_function(function_, args_list: list) -> tuple[str, any]:
@@ -638,7 +644,7 @@ def parallel_approach(my_dict: dict):
     }
 
     for key, value in list(my_dict.items())[:stop]:
-        my_dict[key] += responses_dict[value[0]]
+        my_dict[key] = my_dict.get(key, []) + responses_dict.get(value[0], [])
 
     logging.info("parallel_approach() was ended")
 
@@ -728,25 +734,25 @@ def new_article(title, values):
 
     # add new "name" in the table "author" if not already present
     author_query = (
-            f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
-            + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
+        f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
+        + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
     )
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
     article_query = (
-            "INSERT INTO article (title, link, datetime_posted, author_id) "
-            + f"SELECT '{title}', '{values[0]}', '{values[5]}', "
-            + f"(SELECT id FROM author WHERE name = '{values[6]}')"
-            + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+        "INSERT INTO article (title, link, datetime_posted, author_id) "
+        + f"SELECT '{title}', '{values[0]}', '{values[5]}', "
+        + f"(SELECT id FROM author WHERE name = '{values[6]}')"
+        + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
     )
     database_query(article_query, commit_=True)
 
     # update the stock table with the data
     stock_query = (
-            "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
-            + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', "
-            + f"(SELECT id FROM article WHERE title = '{title}'));"
+        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
+        + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', "
+        + f"(SELECT id FROM article WHERE title = '{title}'));"
     )
     database_query(stock_query, commit_=True)
 
@@ -782,7 +788,7 @@ def dict_to_db(data):
         jerusalem = pytz.timezone("Asia/Jerusalem")
         dt_eastern = eastern.localize(values[5])
         values[5] = dt_eastern.astimezone(jerusalem)
-        del values[6]
+        values[6], values[7] = values[7], values[6]
 
         new_article(title, values)
 
@@ -805,30 +811,22 @@ def initialize_db():
 def nice_print_article():
     """
     print the article table in the database
-    in a pretty format and not just:
-    database_query("SELECT * FROM article", print_result_=True)
+    in a pretty format.
     """
     data = database_query("SELECT * FROM article")
 
-    separator = "+----+---------------+--------------+---------------------+------------+"
+    separator = (
+        "+----+---------------+--------------+---------------------+------------+"
+    )
 
-    header = \
-        """+----+---------------+--------------+---------------------+------------+
-+----+---------------+--------------+---------------------+------------+
-| id | title | publish_time | datetime_change | author_id |
-|
-| id* | link
-+----+---------------+--------------+---------------------+------------+"""
-    print(header)
+    # Print the first separator
+    print(separator)
 
     for row in data:
+        print(f"id: {row[0]} | publish_time: {row[3]} | author_id: {row[4]} | title:|>")
+        print(f"{row[1]}")
+        print(f"link: {row[2]}")
         print(separator)
-        print(f"id={row[0]} | title:{row[1]} | publish_time:{row[3]} | author_id:{row[4]}")
-        print(f"id={row[0]}* | link:{row[2]}")
-        print()
-
-    # Print the final separator
-    print(separator)
 
 
 def main():
