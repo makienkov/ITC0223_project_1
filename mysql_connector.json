@@ -1,6 +1,6 @@
 {
   "USER_NAME": "root",
-  "PASSWORD": "123456",
+  "PASSWORD": "root",
   "COMMAND_1": "DROP DATABASE IF EXISTS market;",
   "COMMAND_2": "CREATE DATABASE IF NOT EXISTS market;", 
   "COMMAND_3": "DROP TABLE IF EXISTS stock;",

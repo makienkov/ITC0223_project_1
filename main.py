@@ -5,11 +5,13 @@ coding=utf-8
 Global scope
 ----------------------------------------------------------------
 """
+import string
 import time
 import sys
 import logging
 import json
 import re
+import argparse
 from datetime import datetime
 from datetime import timedelta
 import grequests
@@ -18,7 +20,6 @@ from bs4 import BeautifulSoup
 import pytz
 import mysql.connector
 from prettytable import PrettyTable
-import argparse
 
 
 FILE_NAME = ".".join(__file__.split(".")[:-1])
@@ -26,60 +27,95 @@ FILE_NAME = ".".join(__file__.split(".")[:-1])
 
 def initialise_parser():
     """
-    The function initialises and returns the parser of user input.
+    The function initializes and returns the parser of user input.
 
-    :return: Initialised parser object
+    :return: Initialized parser object
     """
     print("initialise_parser() started")
-    parser = argparse.ArgumentParser(description='Scrap info from seekingalpha.com')
-    parser.add_argument('-s', '--shortened-info', action='store_false',
-                        help='Don\'t scrap news pages and get data,'
-                             ' only from main page(s).')
-    parser.add_argument('-c', '--config-file', default='conf.json',
-                        help='Path to the .json config file to use')
-    parser.add_argument('--new-config-file', type=str,
-                        help='Name of new config .json file to save.'
-                             '\nIf provided, the program will save all'
-                             '\nused params to the new .json file.')
-    parser.add_argument('-l', '--log-file', default=FILE_NAME + '.log',
-                        help='Name of log file')
+    parser = argparse.ArgumentParser(description='Scrap info from "seeking alpha" site')
+    parser.add_argument(
+        "-s",
+        "--shortened-info",
+        action="store_false",
+        help="Don't scrap news pages and get data," " only from main page(s).",
+    )
+    parser.add_argument(
+        "-c",
+        "--config-file",
+        default="conf.json",
+        help="Path to the .json config file to use",
+    )
+    parser.add_argument(
+        "--new-config-file",
+        type=str,
+        help="Name of new config .json file to save."
+        "\nIf provided, the program will save all"
+        "\nused params to the new .json file.",
+    )
+    parser.add_argument(
+        "-l", "--log-file", default=FILE_NAME + ".log", help="Name of log file"
+    )
 
-    parser.add_argument('--debug-log-level', choices=[10, 20, 30, 40, 50],
-                        help='Log level in debug mode, integer.'
-                             '\nPossible choices:'
-                             '\n* DEBUG=10'
-                             '\n* INFO=20'
-                             '\n* WARN=30'
-                             '\n* ERROR=40'
-                             '\n* CRITICAL=50')
+    parser.add_argument(
+        "--debug-log-level",
+        choices=[10, 20, 30, 40, 50],
+        help="Log level in debug mode, integer."
+        "\nPossible choices:"
+        "\n* DEBUG=10"
+        "\n* INFO=20"
+        "\n* WARN=30"
+        "\n* ERROR=40"
+        "\n* CRITICAL=50",
+    )
 
-    parser.add_argument('--deployment-log-level', choices=[10, 20, 30, 40, 50],
-                        help='Log level in deployment mode, integer.'
-                             '\nPossible choices:'
-                             '\n* DEBUG=10'
-                             '\n* INFO=20'
-                             '\n* WARN=30'
-                             '\n* ERROR=40'
-                             '\n* CRITICAL=50')
+    parser.add_argument(
+        "--deployment-log-level",
+        choices=[10, 20, 30, 40, 50],
+        help="Log level in deployment mode, integer."
+        "\nPossible choices:"
+        "\n* DEBUG=10"
+        "\n* INFO=20"
+        "\n* WARN=30"
+        "\n* ERROR=40"
+        "\n* CRITICAL=50",
+    )
 
-    parser.add_argument('-d', '--debug-mode', type=bool,
-                        help='Switcher between dev (debug) and prod (deployment) scenarios.')
-    parser.add_argument('--url', type=str,
-                        help="URL of the main news page. Must ends with '?page='")
-    parser.add_argument('--debug_number-of-pages', type=int,
-                        help='Number of news main pages to scrap in debug mode')
-    parser.add_argument('--deployment-number-of-pages', type=int,
-                        help='Number of news main pages to scrap in deployment mode')
-    parser.add_argument('--debug-number-of-urls', type=int,
-                        help='Number of news main pages to scrap in deployment mode')
-    parser.add_argument('-p', '--parallel', action='store_true',
-                        help='Run the scraping parallely using grequest.')
+    parser.add_argument(
+        "-d",
+        "--debug-mode",
+        type=bool,
+        help="Switcher between dev (debug) and prod (deployment) scenarios.",
+    )
+    parser.add_argument(
+        "--url", type=str, help="URL of the main news page. Must ends with '?page='"
+    )
+    parser.add_argument(
+        "--debug_number-of-pages",
+        type=int,
+        help="Number of news main pages to scrap in debug mode",
+    )
+    parser.add_argument(
+        "--deployment-number-of-pages",
+        type=int,
+        help="Number of news main pages to scrap in deployment mode",
+    )
+    parser.add_argument(
+        "--debug-number-of-urls",
+        type=int,
+        help="Number of news main pages to scrap in deployment mode",
+    )
+    parser.add_argument(
+        "-p",
+        "--parallel",
+        action="store_true",
+        help="Run the scraping in parallel using grequests.",
+    )
 
     print("initialise_parser() was ended")
     return parser
 
 
-def config_logging(log_file_name: str = FILE_NAME + '.log'):
+def config_logging(log_file_name: str = FILE_NAME + ".log"):
     """
     Initializes logger instance based on provided log file name
     and sets log level to DEBUG.
@@ -100,7 +136,7 @@ def load_config(config_file_name: str = "conf.json"):
     Loads the configuration file settings config_file_name.
     Returns the global parameters
     """
-    logging.info("load_config() started, config_file_name : " + config_file_name)
+    logging.info("load_config() started, config_file_name : %s", config_file_name)
 
     required_constants = [
         "DEBUG_MODE",
@@ -119,7 +155,7 @@ def load_config(config_file_name: str = "conf.json"):
             obj = json.loads(obj)
 
         if set(required_constants).intersection(list(obj.keys())) == set(
-                required_constants
+            required_constants
         ):
             logging.info("all config parameters loaded successfully from config file")
         else:
@@ -179,9 +215,9 @@ def set_config():
         ARGS.url,
         site_url,
         ARGS.debug_number_of_urls,
-        ARGS.debug_number_of_pages,
         ARGS.deployment_number_of_pages,
-        ARGS.parallel
+        ARGS.debug_number_of_pages,
+        ARGS.parallel,
     ]
 
     configs_names = [
@@ -191,27 +227,35 @@ def set_config():
         "url",
         "site_url",
         "debug_number_of_urls",
-        "debug_number_of_pages",
         "deployment_number_of_pages",
-        "parallel"
+        "debug_number_of_pages",
+        "parallel",
     ]
 
     if all(args_configs):
         # user entered all the parameters from CLI
-        logging.info("User entered all the params from the CLI, config file is being ignored.")
+        logging.info(
+            "User entered all the params from the CLI, config file is being ignored."
+        )
         configs = args_configs
     else:
         # some params need to be taken from config file...
         configs = load_config(ARGS.config_file)
 
         # ...and then updated with the CLI ones
-        for i in range(len(args_configs)):
-            if args_configs[i]:
-                logging.info(f"Setting command line argument {configs_names[i]} as {args_configs[i]}")
-                configs[i] = args_configs[i]
+        for i, arg_config in enumerate(args_configs):
+            if arg_config:
+                logging.info(
+                    "Setting command line argument %s as %s",
+                    configs_names[i],
+                    arg_config,
+                )
+                configs[i] = arg_config
 
     if configs[0]:
-        # debug mode
+        # debug mode number of pages
+        configs[7] = configs[7]
+    else:
         configs[7] = configs[6]
 
     logging.info("debug mode is: %s", configs[0])
@@ -225,10 +269,6 @@ def set_config():
 
     logging.info("set_config() completed")
 
-    # delete unused number of pages before returning
-    configs.pop(5)
-    # TODO: the whole load_config() needs an update
-    #  to work as dictionary od pd.DataFrame, not like this.
 
     return configs
 
@@ -243,8 +283,8 @@ DEPLOYMENT_LOG_LEVEL = glob[2]
 URL = glob[3]
 SITE_URL = glob[4]
 DEBUG_NUMBER_OF_URLS = glob[5]
-NUMBER_OF_PAGES = glob[6]
-PARALLEL = glob[7]
+NUMBER_OF_PAGES = glob[7]
+PARALLEL = glob[8]
 del glob
 
 PATH_TO_CONFIGURATION_FILE = "mysql_connector.json"
@@ -371,9 +411,9 @@ def check_percentage(percentage_string):
     logging.info("check_percentage() was called with:\n %s", percentage_string)
 
     if (
-            percentage_string.startswith("+")
-            or percentage_string.startswith("-")
-            or percentage_string == "0.00"
+        percentage_string.startswith("+")
+        or percentage_string.startswith("-")
+        or percentage_string == "0.00"
     ):
         logging.info("check_percentage() was ended")
         return percentage_string
@@ -394,8 +434,8 @@ def add_data_links_and_titles(data2: str) -> list[str]:
     clean_text = clean_text.split()[1:]
     try:
         price_change = str(clean_text[0].split("%")[0]) + "%"
-    except Exception as e:
-        logging.info("Error occurred while extracting percentage:%s", e)
+    except ValueError as error:
+        logging.info("Error occurred while extracting percentage:%s", error)
         price_change = "0.0"
 
     price_change = check_percentage(price_change)
@@ -432,8 +472,6 @@ def extract_links_and_titles(num_pages):
 
         select_object = link_soup.select("article div div h3 a")
         select_object2 = link_soup.select("article div div footer")
-        # TODO: rename object to corresponding data
-        # TODO: add the object to scrap symbols
 
         for data, data2 in zip(select_object, select_object2):
             title_data = []
@@ -696,24 +734,26 @@ def new_article(title, values):
 
     # add new "name" in the table "author" if not already present
     author_query = (
-            f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
-            + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
+        f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
+        + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
     )
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
-    article_query = \
-        "INSERT INTO article (title, link, datetime_posted, author_id) "\
-        + f"SELECT '{title}', '{values[0]}', '{values[5]}', "\
-        + f"(SELECT id FROM author WHERE name = '{values[6]}')"\
+    article_query = (
+        "INSERT INTO article (title, link, datetime_posted, author_id) "
+        + f"SELECT '{title}', '{values[0]}', '{values[5]}', "
+        + f"(SELECT id FROM author WHERE name = '{values[6]}')"
         + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+    )
     database_query(article_query, commit_=True)
 
     # update the stock table with the data
-    stock_query = \
-        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) " \
-        + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', " \
+    stock_query = (
+        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
+        + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', "
         + f"(SELECT id FROM article WHERE title = '{title}'));"
+    )
     database_query(stock_query, commit_=True)
 
     logging.info("new_article() ended")
@@ -731,12 +771,9 @@ def dict_to_db(data):
 
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(data)
 
-    # for value in list(my_dict.values())[:stop]:
-    #     urls.append(value[0])
-
     for title, values in list(data.items())[:stop]:
-        # Re-format title MySQL-string  format
-        title = title.strip("'\"")
+        translator = str.maketrans("", "", string.punctuation)
+        title = title.translate(translator)
 
         # Re-format price_change to MySQL-DATETIME format
         values[2] = values[2].strip("%")
@@ -769,7 +806,6 @@ def initialize_db():
     logging.info("initialize_db() was called")
 
     for item in OTHER_SQL_CONFIG:
-        # print(obj[item])
         database_query(OTHER_SQL_CONFIG[item], commit_=True)
 
     logging.info("initialize_db() was ended successfully")
