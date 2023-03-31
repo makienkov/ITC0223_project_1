@@ -5,11 +5,13 @@ coding=utf-8
 Global scope
 ----------------------------------------------------------------
 """
+import string
 import time
 import sys
 import logging
 import json
 import re
+import argparse
 from datetime import datetime
 from datetime import timedelta
 import grequests
@@ -18,68 +20,101 @@ from bs4 import BeautifulSoup
 import pytz
 import mysql.connector
 from prettytable import PrettyTable
-import argparse
-
 
 FILE_NAME = ".".join(__file__.split(".")[:-1])
 
 
 def initialise_parser():
     """
-    The function initialises and returns the parser of user input.
+    The function initializes and returns the parser of user input.
 
-    :return: Initialised parser object
+    :return: Initialized parser object
     """
     print("initialise_parser() started")
-    parser = argparse.ArgumentParser(description='Scrap info from seekingalpha.com')
-    parser.add_argument('-s', '--shortened-info', action='store_false',
-                        help='Don\'t scrap news pages and get data,'
-                             ' only from main page(s).')
-    parser.add_argument('-c', '--config-file', default='conf.json',
-                        help='Path to the .json config file to use')
-    parser.add_argument('--new-config-file', type=str,
-                        help='Name of new config .json file to save.'
-                             '\nIf provided, the program will save all'
-                             '\nused params to the new .json file.')
-    parser.add_argument('-l', '--log-file', default=FILE_NAME + '.log',
-                        help='Name of log file')
+    parser = argparse.ArgumentParser(description='Scrap info from "seeking alpha" site')
+    parser.add_argument(
+        "-s",
+        "--shortened-info",
+        action="store_false",
+        help="Don't scrap news pages and get data," " only from main page(s).",
+    )
+    parser.add_argument(
+        "-c",
+        "--config-file",
+        default="conf.json",
+        help="Path to the .json config file to use",
+    )
+    parser.add_argument(
+        "--new-config-file",
+        type=str,
+        help="Name of new config .json file to save."
+             "\nIf provided, the program will save all"
+             "\nused params to the new .json file.",
+    )
+    parser.add_argument(
+        "-l", "--log-file", default=FILE_NAME + ".log", help="Name of log file"
+    )
 
-    parser.add_argument('--debug-log-level', choices=[10, 20, 30, 40, 50],
-                        help='Log level in debug mode, integer.'
-                             '\nPossible choices:'
-                             '\n* DEBUG=10'
-                             '\n* INFO=20'
-                             '\n* WARN=30'
-                             '\n* ERROR=40'
-                             '\n* CRITICAL=50')
+    parser.add_argument(
+        "--debug-log-level",
+        choices=[10, 20, 30, 40, 50],
+        help="Log level in debug mode, integer."
+             "\nPossible choices:"
+             "\n* DEBUG=10"
+             "\n* INFO=20"
+             "\n* WARN=30"
+             "\n* ERROR=40"
+             "\n* CRITICAL=50",
+    )
 
-    parser.add_argument('--deployment-log-level', choices=[10, 20, 30, 40, 50],
-                        help='Log level in deployment mode, integer.'
-                             '\nPossible choices:'
-                             '\n* DEBUG=10'
-                             '\n* INFO=20'
-                             '\n* WARN=30'
-                             '\n* ERROR=40'
-                             '\n* CRITICAL=50')
+    parser.add_argument(
+        "--deployment-log-level",
+        choices=[10, 20, 30, 40, 50],
+        help="Log level in deployment mode, integer."
+             "\nPossible choices:"
+             "\n* DEBUG=10"
+             "\n* INFO=20"
+             "\n* WARN=30"
+             "\n* ERROR=40"
+             "\n* CRITICAL=50",
+    )
 
-    parser.add_argument('-d', '--debug-mode', type=bool,
-                        help='Switcher between dev (debug) and prod (deployment) scenarios.')
-    parser.add_argument('--url', type=str,
-                        help="URL of the main news page. Must ends with '?page='")
-    parser.add_argument('--debug_number-of-pages', type=int,
-                        help='Number of news main pages to scrap in debug mode')
-    parser.add_argument('--deployment-number-of-pages', type=int,
-                        help='Number of news main pages to scrap in deployment mode')
-    parser.add_argument('--debug-number-of-urls', type=int,
-                        help='Number of news main pages to scrap in deployment mode')
-    parser.add_argument('-p', '--parallel', action='store_true',
-                        help='Run the scraping parallely using grequest.')
+    parser.add_argument(
+        "-d",
+        "--debug-mode",
+        type=bool,
+        help="Switcher between dev (debug) and prod (deployment) scenarios.",
+    )
+    parser.add_argument(
+        "--url", type=str, help="URL of the main news page. Must ends with '?page='"
+    )
+    parser.add_argument(
+        "--debug_number-of-pages",
+        type=int,
+        help="Number of news main pages to scrap in debug mode",
+    )
+    parser.add_argument(
+        "--deployment-number-of-pages",
+        type=int,
+        help="Number of news main pages to scrap in deployment mode",
+    )
+    parser.add_argument(
+        "--debug-number-of-urls",
+        type=int,
+        help="Number of news main pages to scrap in deployment mode",
+    )
+    parser.add_argument(
+        "-p",
+        "--parallel",
+        action="store_true",
+        help="Run the scraping in parallel using grequests.",
+    )
 
     print("initialise_parser() was ended")
     return parser
 
 
-def config_logging(log_file_name: str = FILE_NAME + '.log'):
+def config_logging(log_file_name: str = FILE_NAME + ".log"):
     """
     Initializes logger instance based on provided log file name
     and sets log level to DEBUG.
@@ -100,7 +135,7 @@ def load_config(config_file_name: str = "conf.json"):
     Loads the configuration file settings config_file_name.
     Returns the global parameters
     """
-    logging.info("load_config() started, config_file_name : " + config_file_name)
+    logging.info("load_config() started, config_file_name : %s", config_file_name)
 
     required_constants = [
         "DEBUG_MODE",
@@ -181,7 +216,7 @@ def set_config():
         ARGS.debug_number_of_urls,
         ARGS.debug_number_of_pages,
         ARGS.deployment_number_of_pages,
-        ARGS.parallel
+        ARGS.parallel,
     ]
 
     configs_names = [
@@ -193,25 +228,33 @@ def set_config():
         "debug_number_of_urls",
         "debug_number_of_pages",
         "deployment_number_of_pages",
-        "parallel"
+        "parallel",
     ]
 
     if all(args_configs):
         # user entered all the parameters from CLI
-        logging.info("User entered all the params from the CLI, config file is being ignored.")
+        logging.info(
+            "User entered all the params from the CLI, config file is being ignored."
+        )
         configs = args_configs
     else:
         # some params need to be taken from config file...
         configs = load_config(ARGS.config_file)
 
         # ...and then updated with the CLI ones
-        for i in range(len(args_configs)):
-            if args_configs[i]:
-                logging.info(f"Setting command line argument {configs_names[i]} as {args_configs[i]}")
-                configs[i] = args_configs[i]
+        for i, arg_config in enumerate(args_configs):
+            if arg_config:
+                logging.info(
+                    "Setting command line argument %s as %s",
+                    configs_names[i],
+                    arg_config,
+                )
+                configs[i] = arg_config
 
     if configs[0]:
-        # debug mode
+        # debug mode number of pages
+        configs[7] = configs[7]
+    else:
         configs[7] = configs[6]
 
     logging.info("debug mode is: %s", configs[0])
@@ -224,11 +267,6 @@ def set_config():
     logging.info("parallel enabled ? : %s", configs[8])
 
     logging.info("set_config() completed")
-
-    # delete unused number of pages before returning
-    configs.pop(5)
-    # TODO: the whole load_config() needs an update
-    #  to work as dictionary od pd.DataFrame, not like this.
 
     return configs
 
@@ -243,8 +281,8 @@ DEPLOYMENT_LOG_LEVEL = glob[2]
 URL = glob[3]
 SITE_URL = glob[4]
 DEBUG_NUMBER_OF_URLS = glob[5]
-NUMBER_OF_PAGES = glob[6]
-PARALLEL = glob[7]
+NUMBER_OF_PAGES = glob[7]
+PARALLEL = glob[8]
 del glob
 
 PATH_TO_CONFIGURATION_FILE = "mysql_connector.json"
@@ -382,35 +420,39 @@ def check_percentage(percentage_string):
     return "0.0"
 
 
-def add_data_links_and_titles(data2: str) -> list[str]:
+def add_data_links_and_titles(data) -> list[str]:
     """A function that:
     extracts more data from the given select object,
-    :param data2: soup  select object
-    :return: a list with mode data [price_change, price_change_time]
+    :param data: soup  select object
+    :return: a list with mode data [price_change, price_change_time, ticker]
     """
     logging.info("add_data_links_and_titles() was called")
 
-    clean_text = re.sub(r"\s*\d+\s*Comments?", "", data2)
-    clean_text = clean_text.split()[1:]
     try:
-        price_change = str(clean_text[0].split("%")[0]) + "%"
-    except Exception as e:
-        logging.info("Error occurred while extracting percentage:%s", e)
-        price_change = "0.0"
+        ticker = data.footer.a.span.string
+    except AttributeError:
+        ticker = "None"
+
+    try:
+        price_change = data.footer.a.span.find_next_sibling().string
+    except AttributeError:
+        price_change = "None"
 
     price_change = check_percentage(price_change)
     logging.info("extracted price change: %s", price_change)
 
     now = datetime.now()
     price_change_time = (
-        f"{now.year}/{now.month}/{now.day} {now.hour}:{now.minute}:{now.second}"
+        f"{now.year}-{now.month}-{now.day} {now.hour}:{now.minute}:{now.second}"
     )
 
-    logging.info("extracted price change:%s", price_change_time)
+    logging.info("extracted price change time :%s", price_change_time)
+
+    logging.info("extracted ticker:%s", ticker)
 
     logging.info("extract_links_and_titles() was ended")
 
-    return [price_change, price_change_time]
+    return [price_change, price_change_time, ticker]
 
 
 def extract_links_and_titles(num_pages):
@@ -430,15 +472,12 @@ def extract_links_and_titles(num_pages):
 
         link_soup = url_to_soup(url)
 
-        select_object = link_soup.select("article div div h3 a")
-        select_object2 = link_soup.select("article div div footer")
-        # TODO: rename object to corresponding data
-        # TODO: add the object to scrap symbols
+        select_object = link_soup.select("article div div")
 
-        for data, data2 in zip(select_object, select_object2):
+        for data in select_object:
             title_data = []
-            title = data.text
-            href = data.attrs.get("href")
+            title = data.h3.a.text
+            href = data.h3.a.attrs.get("href")
             href = SITE_URL + href[: href.find("?")]
             title_data.append(href)
             title_id = re.search(r"\d+", href).group()
@@ -446,8 +485,9 @@ def extract_links_and_titles(num_pages):
             output_dict[title] = title_data
             logging.info("extracted title: %s with data: %s", title, title_data)
 
-            title_data2 = add_data_links_and_titles(data2.text)
+            title_data2 = add_data_links_and_titles(data)
             output_dict[title] += title_data2
+            print()
 
     logging.info("extract_links_and_titles() was ended")
     return output_dict
@@ -457,20 +497,12 @@ def extract_data_from_soup(soup):
     """A function that:
     extracts data from soup of article page
     and returns the dictionary of single item in the following format:
-    title: [ticker, date_str, time, author]
+    title: [date_str, time, author]
     """
 
     text = soup.text
 
     logging.info("extract_data_from_soup() was called for %s", text[:100])
-
-    match = re.search(r"\((\w+)\)", text)
-    if match:
-        ticker = match.group(1)
-        logging.info("ticker added ! %s", ticker)
-    else:
-        ticker = None
-        logging.info("ticker not found !! %s", ticker)
 
     match = re.search(r"By:\s+(\w+\s*)+", text)
     if match:
@@ -497,7 +529,7 @@ def extract_data_from_soup(soup):
         logging.info("time_ not found !! %s", time_)
 
     logging.info("extract_data_from_soup() was ended")
-    return [ticker, date_str, time_, author]
+    return [date_str, time_, author]
 
 
 def extract_data_from_articles(articles: dict):
@@ -702,18 +734,20 @@ def new_article(title, values):
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
-    article_query = \
-        "INSERT INTO article (title, link, datetime_posted, author_id) "\
-        + f"SELECT '{title}', '{values[0]}', '{values[5]}', "\
-        + f"(SELECT id FROM author WHERE name = '{values[6]}')"\
-        + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+    article_query = (
+            "INSERT INTO article (title, link, datetime_posted, author_id) "
+            + f"SELECT '{title}', '{values[0]}', '{values[5]}', "
+            + f"(SELECT id FROM author WHERE name = '{values[6]}')"
+            + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+    )
     database_query(article_query, commit_=True)
 
     # update the stock table with the data
-    stock_query = \
-        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) " \
-        + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', " \
-        + f"(SELECT id FROM article WHERE title = '{title}'));"
+    stock_query = (
+            "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
+            + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', "
+            + f"(SELECT id FROM article WHERE title = '{title}'));"
+    )
     database_query(stock_query, commit_=True)
 
     logging.info("new_article() ended")
@@ -731,18 +765,12 @@ def dict_to_db(data):
 
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(data)
 
-    # for value in list(my_dict.values())[:stop]:
-    #     urls.append(value[0])
-
     for title, values in list(data.items())[:stop]:
-        # Re-format title MySQL-string  format
-        title = title.strip("'\"")
+        # Re-format title to MySQL VARCHAR format
+        title = title.translate(str.maketrans("", "", string.punctuation))
 
         # Re-format price_change to MySQL-DATETIME format
         values[2] = values[2].strip("%")
-
-        # Re-format price_change_time to MySQL-DATETIME format
-        values[3] = datetime.strptime(values[3], "%Y/%m/%d %H:%M:%S")
 
         # Re-format article_timestamp to MySQL-DATETIME format
         date_obj = datetime.strptime(values[5], "%b. %d, %Y")
@@ -769,10 +797,38 @@ def initialize_db():
     logging.info("initialize_db() was called")
 
     for item in OTHER_SQL_CONFIG:
-        # print(obj[item])
         database_query(OTHER_SQL_CONFIG[item], commit_=True)
 
     logging.info("initialize_db() was ended successfully")
+
+
+def nice_print_article():
+    """
+    print the article table in the database
+    in a pretty format and not just:
+    database_query("SELECT * FROM article", print_result_=True)
+    """
+    data = database_query("SELECT * FROM article")
+
+    separator = "+----+---------------+--------------+---------------------+------------+"
+
+    header = \
+        """+----+---------------+--------------+---------------------+------------+
++----+---------------+--------------+---------------------+------------+
+| id | title | publish_time | datetime_change | author_id |
+|
+| id* | link
++----+---------------+--------------+---------------------+------------+"""
+    print(header)
+
+    for row in data:
+        print(separator)
+        print(f"id={row[0]} | title:{row[1]} | publish_time:{row[3]} | author_id:{row[4]}")
+        print(f"id={row[0]}* | link:{row[2]}")
+        print()
+
+    # Print the final separator
+    print(separator)
 
 
 def main():
@@ -809,9 +865,9 @@ def main():
 
     dict_to_db(my_dict)
 
-    database_query("SELECT * FROM author", print_result_=True)
-    database_query("SELECT * FROM article", print_result_=True)
+    nice_print_article()
     database_query("SELECT * FROM stock", print_result_=True)
+    database_query("SELECT * FROM author", print_result_=True)
 
     logging.info("main() completed")
 

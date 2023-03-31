@@ -5,7 +5,7 @@
     "URL": "https://seekingalpha.com/market-news?page=",
     "DEPLOYMENT_NUMBER_OF_PAGES": 2,
     "DEBUG_NUMBER_OF_PAGES": 1,
-    "DEBUG_NUMBER_OF_URLS": 5,
+    "DEBUG_NUMBER_OF_URLS": 3,
     "PARALLEL": true,
     "//00_comment": "Logging_levels:",
     "//01_comment": "DEBUG=10",
