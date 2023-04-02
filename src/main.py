@@ -16,7 +16,7 @@ from datetime import datetime
 from datetime import timedelta
 import grequests
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import pytz
 import mysql.connector
 from prettytable import PrettyTable
@@ -24,59 +24,49 @@ from prettytable import PrettyTable
 FILE_NAME = ".".join(__file__.split(".")[:-1])
 
 
-def initialise_parser():
+def initialise_parser() -> argparse.ArgumentParser:
     """
-    The function initializes and returns the parser of user input.
+    The function initializes and returns the parser of CLI user input.
 
-    :return: Initialized parser object
+    :return: argparse.ArgumentParser, initialized parser object
     """
     print("initialise_parser() started")
     parser = argparse.ArgumentParser(description='Scrap info from "seeking alpha" site')
     parser.add_argument(
-        "-s",
-        "--shortened-info",
-        action="store_false",
-        help="Don't scrap news pages and get data," " only from main page(s).",
-    )
-    parser.add_argument(
         "-c",
         "--config-file",
+        type=str,
         default="conf.json",
         help="Path to the .json config file to use",
     )
     parser.add_argument(
-        "--new-config-file",
-        type=str,
-        help="Name of new config .json file to save."
-        "\nIf provided, the program will save all"
-        "\nused params to the new .json file.",
-    )
-    parser.add_argument(
-        "-l", "--log-file", default=FILE_NAME + ".log", help="Name of log file"
+        "-l", "--log-file", type=str, default=FILE_NAME + ".log", help="Name of log file"
     )
 
     parser.add_argument(
         "--debug-log-level",
+        type=int,
         choices=[10, 20, 30, 40, 50],
         help="Log level in debug mode, integer."
-        "\nPossible choices:"
-        "\n* DEBUG=10"
-        "\n* INFO=20"
-        "\n* WARN=30"
-        "\n* ERROR=40"
-        "\n* CRITICAL=50",
+             "\nPossible choices:"
+             "\n* DEBUG=10"
+             "\n* INFO=20"
+             "\n* WARN=30"
+             "\n* ERROR=40"
+             "\n* CRITICAL=50",
     )
 
     parser.add_argument(
         "--deployment-log-level",
+        type=int,
         choices=[10, 20, 30, 40, 50],
         help="Log level in deployment mode, integer."
-        "\nPossible choices:"
-        "\n* DEBUG=10"
-        "\n* INFO=20"
-        "\n* WARN=30"
-        "\n* ERROR=40"
-        "\n* CRITICAL=50",
+             "\nPossible choices:"
+             "\n* DEBUG=10"
+             "\n* INFO=20"
+             "\n* WARN=30"
+             "\n* ERROR=40"
+             "\n* CRITICAL=50",
     )
 
     parser.add_argument(
@@ -101,7 +91,8 @@ def initialise_parser():
     parser.add_argument(
         "--debug-number-of-urls",
         type=int,
-        help="Number of news main pages to scrap in deployment mode",
+        help="Number of articles to save and show in debug mode"
+             "(used only in debug mode)",
     )
     parser.add_argument(
         "-p",
@@ -114,12 +105,19 @@ def initialise_parser():
     return parser
 
 
-def config_logging(log_file_name: str = FILE_NAME + ".log"):
+def config_logging(log_file_name: str) -> None:
     """
     Initializes logger instance based on provided log file name
     and sets log level to DEBUG.
     Log level setting may be updated later outside this function.
+
+    :param log_file_name: str, the name of the log file to save the logs to
+    :return: None
     """
+    if log_file_name[-4:] != ".log":
+        print("Log file creation error, the logfile is expected to end as .log")
+        sys.exit()
+
     with open(log_file_name, "wb"):
         pass
 
@@ -130,10 +128,12 @@ def config_logging(log_file_name: str = FILE_NAME + ".log"):
     )
 
 
-def load_config(config_file_name: str = "conf.json"):
+def load_config(config_file_name: str) -> list:
     """
     Loads the configuration file settings config_file_name.
-    Returns the global parameters
+
+    :param config_file_name: str, the name of config file to read
+    :return: the list of parameters received from the config file
     """
     logging.info("load_config() started, config_file_name : %s", config_file_name)
 
@@ -154,7 +154,7 @@ def load_config(config_file_name: str = "conf.json"):
             obj = json.loads(obj)
 
         if set(required_constants).intersection(list(obj.keys())) == set(
-            required_constants
+                required_constants
         ):
             logging.info("all config parameters loaded successfully from config file")
         else:
@@ -195,11 +195,13 @@ def load_config(config_file_name: str = "conf.json"):
     ]
 
 
-def set_config():
+def set_config() -> list:
     """
     Gets global variables values from config file,
     updates them with values from command line arguments
     and then returns the list of global variables values.
+
+    :return: the list of global variables values
     """
     logging.info("set_config() started")
     if ARGS.url:
@@ -274,7 +276,6 @@ def set_config():
 ARGS = initialise_parser().parse_args()
 config_logging(ARGS.log_file)
 glob = set_config()
-SCRAP_INDIVIDUAL_PAGES = ARGS.shortened_info
 DEBUG_MODE = glob[0]
 DEBUG_LOG_LEVEL = glob[1]
 DEPLOYMENT_LOG_LEVEL = glob[2]
@@ -288,10 +289,13 @@ del glob
 PATH_TO_CONFIGURATION_FILE = "mysql_connector.json"
 
 
-def load_config_file_database():
+def load_config_file_database() -> tuple[str, str, list]:
     """
-    get the full path to the configuration file .json
-    and load it into the configuration
+    Gets the full path to the configuration file .json
+    and load it into the configuration.
+
+    :return: a tuple of parameters of database setting:
+            username, password, main commands (including database name)
     """
     try:
         with open(PATH_TO_CONFIGURATION_FILE, "rb") as my_file:
@@ -314,10 +318,11 @@ def load_config_file_database():
 USER_NAME, PASSWORD, OTHER_SQL_CONFIG = load_config_file_database()
 
 
-def set_log_level():
+def set_log_level() -> None:
     """
-    Change the logging level according
-    to the DEBUG_MODE variable
+    Change the logging level according to the DEBUG_MODE variable.
+
+    :return: None
     """
 
     logging.info("load_logs() started")
@@ -345,9 +350,13 @@ def set_log_level():
 
 
 def url_request(url: str) -> str:
-    """A function that:
-    "requests" the HTML page from the given string  - URL,
-    and will return the HTML page
+    """
+    Requests the HTML page from the given string - URL,
+    and returns the HTML page in str format.
+    Adds small waiting time to avoid blocking.
+
+    :param url: str, the url to get the HTML data from
+    :return: str, the HTML page in str format
     """
     logging.info("url_request() was called with:\n %s", url)
 
@@ -383,10 +392,13 @@ def url_request(url: str) -> str:
 
 
 def url_to_soup(url: str) -> BeautifulSoup:
-    """A function that:
-    "requests" the HTML page from the given string  - URL,
-    and parse it with BeautifulSoup will return the corresponding
-    object.
+    """
+    Requests the HTML page from the given string - URL,
+    parse it with BeautifulSoup
+    and returns the corresponding object.
+
+    :param url: str, url to get the data from
+    :return: BeautifulSoup, the data from the url
     """
     logging.info("url_to_soup() was called with:\n %s", url)
 
@@ -399,19 +411,19 @@ def url_to_soup(url: str) -> BeautifulSoup:
     return soup
 
 
-def check_percentage(percentage_string):
-    """checks for percentage string formatting
-    Args:
-        percentage_string (string): the string to test
-    Returns:
-        string: "absent" or the string if in percent formatting
+def check_percentage(percentage_string: str) -> str:
+    """
+    Checks for percentage string formatting.
+
+    :param percentage_string(string): the string to test
+    :return: "absent" or the string if in percent formatting
     """
     logging.info("check_percentage() was called with:\n %s", percentage_string)
 
     if (
-        percentage_string.startswith("+")
-        or percentage_string.startswith("-")
-        or percentage_string == "0.00"
+            percentage_string.startswith("+")
+            or percentage_string.startswith("-")
+            or percentage_string == "0.00"
     ):
         logging.info("check_percentage() was ended")
         return percentage_string
@@ -420,10 +432,11 @@ def check_percentage(percentage_string):
     return "0.0"
 
 
-def add_data_links_and_titles(data) -> list[str]:
-    """A function that:
-    extracts more data from the given select object,
-    :param data: soup  select object
+def add_data_links_and_titles(data: Tag) -> list[str]:
+    """
+    Extracts more price_change, price_change_time and ticker from the given select object.
+
+    :param data: BeautifulSoup select output object to scan and extract data from
     :return: a list with mode data [price_change, price_change_time, ticker]
     """
     logging.info("add_data_links_and_titles() was called")
@@ -455,10 +468,10 @@ def add_data_links_and_titles(data) -> list[str]:
     return [price_change, price_change_time, ticker]
 
 
-def extract_links_and_titles(num_pages):
-    """A function that:
-    extracts article's links (full and short) from news main page(s).
-    Outputs a dict of {title1: [href, title_id..],...}
+def extract_links_and_titles(num_pages: int) -> dict:
+    """
+    Extracts article's links (full and short) from news main page(s).
+    Outputs a dict of {title1: [href, title_id..],...}.
 
     :param num_pages: number of pages to scrap
     :return: a dict with data per title
@@ -487,17 +500,20 @@ def extract_links_and_titles(num_pages):
 
             title_data2 = add_data_links_and_titles(data)
             output_dict[title] += title_data2
-            print()
+            logging.info("extracted ticker with data: %s ", title_data2)
 
     logging.info("extract_links_and_titles() was ended")
     return output_dict
 
 
-def extract_data_from_soup(soup):
-    """A function that:
-    extracts data from soup of article page
-    and returns the dictionary of single item in the following format:
-    title: [date_str, time, author]
+def extract_data_from_soup(soup: BeautifulSoup) -> list:
+    """
+    Extracts date, time and author from the soup of article page
+    and returns them the list in the following format:
+    [date_str, time, author].
+
+    :param soup: the soup of article page
+    :return: list, [date_str, time, author]
     """
 
     text = soup.text
@@ -532,11 +548,15 @@ def extract_data_from_soup(soup):
     return [date_str, time_, author]
 
 
-def extract_data_from_articles(articles: dict):
+def extract_data_from_articles(articles: dict) -> None:
     """
     Extracts data about articles
     and fills it into the provided dict,
-    using the sequential approach
+    using the sequential approach.
+
+    :param articles: dict of {title: link} of group of articles.
+                    The values are subjects of change!
+    :return: None
     """
     logging.info(
         "extract_data_from_articles() was called for # of articles %s", len(articles)
@@ -545,40 +565,45 @@ def extract_data_from_articles(articles: dict):
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(articles)
 
     for title, values in list(articles.items())[:stop]:
-        articles[title] = articles.get(title, []) + extract_data_from_soup(
+        articles[title] = [articles.get(title, "")] + extract_data_from_soup(
             url_to_soup(values[0])
         )
 
     logging.info("extract_data_from_articles() was ended")
 
 
-def print_dict(dict_):
+def print_dict(dict_: dict) -> None:
     """
     A function that prints the dictionary.
     Using the DEBUG_NUMBER_OF_URLS variable
     as the number of articles to be printed.
     If debug mode in True.
+
+    :param dict_:  dict with data about articles
+    :return: None
     """
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(dict_)
 
-    separator = (
-        "+----+---------------+--------------+---------------------+------------+"
-    )
+    spacer = "+----+---------------+--------------+---------------------+------------+"
 
     for i, (key, value) in enumerate(list(dict_.items())[:stop]):
-        print(f"{separator} \n {i} :")
+        print(f"{spacer} \n {i} :")
         print(f"{key}")
         for item in value:
             print(item)
-        print(separator)
+        print(spacer)
 
 
-def time_some_function(function_, args_list: list) -> tuple[str, any]:
-    """A function that:
+def time_some_function(function_: callable, args_list: list) -> tuple[str, any]:
+    """
     given the function name and the list of arguments,
     will execute the function and return the result and return
     in string format the time it took to execute the function.
     in the following format: 0:00:37.183115 = Hours:Minutes:Seconds.milliseconds
+
+    :param function_: the function to measure the execution time of
+    :param args_list: args of the function to measure the execution time of
+    :return: the tuple of two elements: execution time and function output
     """
     logging.info("time_some_function() was called for %s", function_)
 
@@ -590,11 +615,12 @@ def time_some_function(function_, args_list: list) -> tuple[str, any]:
     return str(timedelta(seconds=time_taken)), result
 
 
-def print_timing_function_results(time_lapse: str):
+def print_timing_function_results(time_lapse: str) -> None:
     """
-    A function that prints the timing results.
-    and also logs the timing.
-    time_lapse is a string in the following format: 0:00:37.1831
+    A function that prints the timing results and also logs the timing.
+
+    :param time_lapse: string in the following format: 0:00:37.1831
+    :return: None
     """
     logging.info("print_timing_function_results() started for %s", time_lapse)
 
@@ -608,9 +634,13 @@ def print_timing_function_results(time_lapse: str):
     logging.info("print_timing_function_results() was ended")
 
 
-def parallel_approach(my_dict: dict):
+def parallel_approach(my_dict: dict) -> None:
     """
-    A function that scrapes data from secondary href sites using parallel approach
+    A function that scrapes data from secondary href sites using parallel approach.
+
+    :param my_dict: dict of {title: link} items to fill with new data.
+                    The values are the subjects of change!
+    :return: None
     """
     logging.info("parallel_approach() started ")
 
@@ -649,12 +679,22 @@ def parallel_approach(my_dict: dict):
     logging.info("parallel_approach() was ended")
 
 
-def database_query(query_, commit_=False, print_result_=False, data_base_="market"):
+def database_query(
+        query_: str,
+        commit_: bool = False,
+        print_result_: bool = False,
+        data_base_: str = "market",
+) -> list:
     """
-    data_base: database name
-    query: SQL query to be executed
-    commit=False: whether to commit the changes to database by the query
-    print_result=False: whether to print the result of the query
+    Wrapper of SQL query executor. Can print the output,
+    provide ability to set database name
+    and even not to commit the query to database at all.
+
+    :param query_: str, SQL query to be executed
+    :param commit_: bool = False, whether to commit the changes to database by the query
+    :param print_result_: bool = False: whether to print the result of the query
+    :param data_base_: str, database name
+    :return: the output of .fetchall() function, or None
     """
     logging.info(
         "database_query() called with: %s , commit: %s, print %s:",
@@ -722,50 +762,57 @@ def database_query(query_, commit_=False, print_result_=False, data_base_="marke
     return result
 
 
-def new_article(title, values):
+def new_article(title: str, values: list) -> None:
     """
-    a case when the article is new,
-    update the database accordingly
-    note :
+    Executes a query of adding new item to articles table of database.
+
+    Note :
      values = 0link, 1article_id, 2price_change, 3price_change_time,
      4ticker_symbol, 5article_timestamp, 6author_name
+
+    :param title: str, the title of the article
+    :param values: list, the values of fields to be filled
+    :return: None
     """
     logging.info("new_article() called for title: %s ", title)
 
     # add new "name" in the table "author" if not already present
     author_query = (
-        f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
-        + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
+            f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
+            + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
     )
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
     article_query = (
-        "INSERT INTO article (title, link, datetime_posted, author_id) "
-        + f"SELECT '{title}', '{values[0]}', '{values[5]}', "
-        + f"(SELECT id FROM author WHERE name = '{values[6]}')"
-        + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+            "INSERT INTO article (title, link, datetime_posted, author_id) "
+            + f"SELECT '{title}', '{values[0]}', '{values[5]}', "
+            + f"(SELECT id FROM author WHERE name = '{values[6]}')"
+            + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
     )
     database_query(article_query, commit_=True)
 
     # update the stock table with the data
     stock_query = (
-        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
-        + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', "
-        + f"(SELECT id FROM article WHERE title = '{title}'));"
+            "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
+            + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', "
+            + f"(SELECT id FROM article WHERE title = '{title}'));"
     )
     database_query(stock_query, commit_=True)
 
     logging.info("new_article() ended")
 
 
-def dict_to_db(data):
+def dict_to_db(data: dict) -> None:
     """
-    take the dictionary .
-    update the database with all the entries.
-    note:
+    Updates the database with all the entries from the dict provided.
+
+    Note:
       values =  0link, 1article_id, 2price_change, 3price_change_time,
                 4ticker_symbol, 5date_str, 6time_str, 7author_name
+
+    :param data: dict, the data to save to db
+    :return: None
     """
     logging.info("dict_to_db() called for len(data): %s ", len(data))
 
@@ -795,10 +842,12 @@ def dict_to_db(data):
         logging.info("dict_to_db() ended successfully")
 
 
-def initialize_db():
+def initialize_db() -> None:
     """
-    drop the database "market" tables and,
-    initialize the database with the empty tables
+    Drops the database "market" tables and,
+    initialize it back with the empty tables.
+
+    :return: None
     """
     logging.info("initialize_db() was called")
 
@@ -808,10 +857,11 @@ def initialize_db():
     logging.info("initialize_db() was ended successfully")
 
 
-def nice_print_article():
+def nice_print_article() -> None:
     """
-    print the article table in the database
-    in a pretty format.
+    Prints the article table in the database in a pretty format.
+
+    :return: None
     """
     data = database_query("SELECT * FROM article")
 
@@ -829,9 +879,11 @@ def nice_print_article():
         print(separator)
 
 
-def main():
+def main() -> None:
     """
-    Main function:
+    The main function.
+
+    :return: None
     """
     logging.info("main() started")
 
@@ -848,16 +900,15 @@ def main():
 
     print_dict(my_dict)
 
-    if SCRAP_INDIVIDUAL_PAGES:
-        if not PARALLEL:
-            time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
-        else:
-            time_str2, _ = time_some_function(parallel_approach, [my_dict])
+    if not PARALLEL:
+        time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+    else:
+        time_str2, _ = time_some_function(parallel_approach, [my_dict])
 
-        print("scraping the secondary webpages took: ")
-        print_timing_function_results(time_str2)
+    print("scraping the secondary webpages took: ")
+    print_timing_function_results(time_str2)
 
-        print_dict(my_dict)
+    print_dict(my_dict)
 
     initialize_db()
 
