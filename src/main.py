@@ -415,7 +415,7 @@ def check_percentage(percentage_string: str) -> str:
     """
     Checks for percentage string formatting.
 
-    :param percentage_string(string): the string to test
+    :param percentage_string: the string to test
     :return: "absent" or the string if in percent formatting
     """
     logging.info("check_percentage() was called with:\n %s", percentage_string)
