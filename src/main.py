@@ -495,7 +495,7 @@ def check_percentage(percentage_string: str) -> str:
     return "0.0"
 
 
-def add_data_links_and_titles(data: Tag) -> list[str]:
+def add_data_links_and_titles(data: Tag) -> dict:
     """
     Extracts more price_change, price_change_time and ticker from the given select object.
 
@@ -508,6 +508,8 @@ def add_data_links_and_titles(data: Tag) -> list[str]:
         ticker = data.footer.a.span.string
     except AttributeError:
         ticker = "None"
+    output_dict = {'ticker': ticker}
+    logging.info("extracted ticker:%s", ticker)
 
     try:
         price_change = data.footer.a.span.find_next_sibling().string
@@ -515,20 +517,19 @@ def add_data_links_and_titles(data: Tag) -> list[str]:
         price_change = "None"
 
     price_change = check_percentage(price_change)
+    output_dict['price_change'] = price_change
     logging.info("extracted price change: %s", price_change)
 
     now = datetime.now()
     price_change_time = (
         f"{now.year}-{now.month}-{now.day} {now.hour}:{now.minute}:{now.second}"
     )
-
+    output_dict['price_change_time'] = price_change_time
     logging.info("extracted price change time :%s", price_change_time)
-
-    logging.info("extracted ticker:%s", ticker)
 
     logging.info("extract_links_and_titles() was ended")
 
-    return [price_change, price_change_time, ticker]
+    return output_dict
 
 
 def extract_links_and_titles(num_pages: int) -> dict:
@@ -551,37 +552,39 @@ def extract_links_and_titles(num_pages: int) -> dict:
         select_object = link_soup.select("article div div")
 
         for data in select_object:
-            title_data = []
+            title_data = {}
             title = data.h3.a.text
             href = data.h3.a.attrs.get("href")
             href = SITE_URL + href[: href.find("?")]
-            title_data.append(href)
+            title_data['href'] = href
             title_id = re.search(r"\d+", href).group()
-            title_data.append(title_id)
+            title_data['title_id'] = title_id
             output_dict[title] = title_data
             logging.info("extracted title: %s with data: %s", title, title_data)
 
             title_data2 = add_data_links_and_titles(data)
-            output_dict[title] += title_data2
+            output_dict[title].update(title_data2)
             logging.info("extracted ticker with data: %s ", title_data2)
 
     logging.info("extract_links_and_titles() was ended")
     return output_dict
 
 
-def extract_data_from_soup(soup: BeautifulSoup) -> list:
+def extract_data_from_soup(soup: BeautifulSoup) -> dict:
     """
     Extracts date, time and author from the soup of article page
     and returns them the list in the following format:
     [date_str, time, author].
 
     :param soup: the soup of article page
-    :return: list, [date_str, time, author]
+    :return: dict containing author, date_str and time
     """
 
     text = soup.text
 
     logging.info("extract_data_from_soup() was called for %s", text[:100])
+
+    output_dict = {}
 
     match = re.search(r"By:\s+(\w+\s*)+", text)
     if match:
@@ -590,6 +593,8 @@ def extract_data_from_soup(soup: BeautifulSoup) -> list:
     else:
         author = None
         logging.info("author not found !! %s", author)
+    output_dict['author'] = author
+    logging.debug("extracted author %s", author)
 
     match = re.search(r"\w{3}\. \d{1,2}, \d{4}", text)
     if match:
@@ -598,6 +603,8 @@ def extract_data_from_soup(soup: BeautifulSoup) -> list:
     else:
         date_str = None
         logging.info("date_str not found !! %s", date_str)
+    output_dict['date_str'] = date_str
+    logging.debug("extracted publishing date_str %s", date_str)
 
     match = re.search(r"\d{1,2}:\d{2} [AP]M", text)
     if match:
@@ -606,9 +613,11 @@ def extract_data_from_soup(soup: BeautifulSoup) -> list:
     else:
         time_ = None
         logging.info("time_ not found !! %s", time_)
+    output_dict['time'] = time_
+    logging.debug("extracted publishing time %s", time_)
 
     logging.info("extract_data_from_soup() was ended")
-    return [date_str, time_, author]
+    return output_dict
 
 
 def extract_data_from_articles(articles: dict) -> None:
@@ -629,9 +638,9 @@ def extract_data_from_articles(articles: dict) -> None:
 
     for title, values in tqdm(list(articles.items())[:stop]):
         extracted_data = extract_data_from_soup(
-            selenium_url_to_soup(values[0])
+            selenium_url_to_soup(values['href'])
         )
-        articles[title] = articles.get(title, []) + extracted_data
+        articles[title].update(extracted_data)
         logging.debug("The following extracted data was added to dataset:", extracted_data)
 
     logging.info("extract_data_from_articles() was ended")
@@ -651,17 +660,17 @@ def print_dict(dict_: dict) -> None:
 
     spacer = "+----+---------------+--------------+---------------------+------------+"
 
-    for i, (key, value) in enumerate(list(dict_.items())[:stop]):
+    for i, (key, article_data) in enumerate(list(dict_.items())[:stop]):
         print(f"{spacer} \n {i} :")
         print(f"{key}")
-        for item in value:
-            print(item)
+        for data_key, item in article_data.items():
+            print(f"{data_key}: {item}")
         print(spacer)
 
 
 def time_some_function(function_: callable, args_list: list) -> tuple[str, any]:
     """
-    given the function name and the list of arguments,
+    Given the function name and the list of arguments,
     will execute the function and return the result and return
     in string format the time it took to execute the function.
     in the following format: 0:00:37.183115 = Hours:Minutes:Seconds.milliseconds
@@ -701,6 +710,8 @@ def print_timing_function_results(time_lapse: str) -> None:
 
 def parallel_approach(my_dict: dict) -> None:
     """
+    The function is temporarily out of order due to web-site issues.
+
     A function that scrapes data from secondary href sites using parallel approach.
 
     :param my_dict: dict of {title: link} items to fill with new data.
@@ -827,7 +838,7 @@ def database_query(
     return result
 
 
-def new_article(title: str, values: list) -> None:
+def new_article(title: str, article_data: dict) -> None:
     """
     Executes a query of adding new item to articles table of database.
 
@@ -836,23 +847,23 @@ def new_article(title: str, values: list) -> None:
      4ticker_symbol, 5article_timestamp, 6author_name
 
     :param title: str, the title of the article
-    :param values: list, the values of fields to be filled
+    :param article_data: dict, the data to be filled
     :return: None
     """
     logging.info("new_article() called for title: %s ", title)
 
     # add new "name" in the table "author" if not already present
     author_query = (
-            f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
-            + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
+            f"INSERT INTO author (name) SELECT '{article_data['author']}' WHERE NOT "
+            + f"EXISTS(SELECT name FROM author WHERE name = '{article_data['author']}');"
     )
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
     article_query = (
             "INSERT INTO article (title, link, datetime_posted, author_id) "
-            + f"SELECT '{title}', '{values[0]}', '{values[5]}', "
-            + f"(SELECT id FROM author WHERE name = '{values[6]}')"
+            + f"SELECT '{title}', '{article_data['href']}', '{article_data['date_str']}', "
+            + f"(SELECT id FROM author WHERE name = '{article_data['author']}')"
             + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
     )
     database_query(article_query, commit_=True)
@@ -860,7 +871,8 @@ def new_article(title: str, values: list) -> None:
     # update the stock table with the data
     stock_query = (
             "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
-            + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', "
+            + f"VALUES('{article_data['ticker']}', '{article_data['price_change']}', "
+            + f"'{article_data['price_change_time']}', "
             + f"(SELECT id FROM article WHERE title = '{title}'));"
     )
     database_query(stock_query, commit_=True)
@@ -872,10 +884,6 @@ def dict_to_db(data: dict) -> None:
     """
     Updates the database with all the entries from the dict provided.
 
-    Note:
-      values =  0link, 1article_id, 2price_change, 3price_change_time,
-                4ticker_symbol, 5date_str, 6time_str, 7author_name
-
     :param data: dict, the data to save to db
     :return: None
     """
@@ -883,26 +891,25 @@ def dict_to_db(data: dict) -> None:
 
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(data)
 
-    for title, values in list(data.items())[:stop]:
+    for title, article_data in list(data.items())[:stop]:
         # Re-format title to MySQL VARCHAR format
         title = title.translate(str.maketrans("", "", string.punctuation))
 
         # Re-format price_change to MySQL-DATETIME format
-        values[2] = values[2].strip("%")
+        article_data['price_change'] = article_data['price_change'].strip("%")
 
         # Re-format article_timestamp to MySQL-DATETIME format
-        date_obj = datetime.strptime(values[5], "%b. %d, %Y")
-        time_obj = datetime.strptime(values[6], "%I:%M %p")
-        values[5] = datetime.combine(date_obj.date(), time_obj.time())
+        date_obj = datetime.strptime(article_data['date_str'], "%b. %d, %Y")
+        time_obj = datetime.strptime(article_data['time'], "%I:%M %p")
+        article_data['date_str'] = datetime.combine(date_obj.date(), time_obj.time())
 
         # Update the date from Eastern Time (ET) to Jerusalem Time Zone (GMT+2)
         eastern = pytz.timezone("US/Eastern")
         jerusalem = pytz.timezone("Asia/Jerusalem")
-        dt_eastern = eastern.localize(values[5])
-        values[5] = dt_eastern.astimezone(jerusalem)
-        values[6], values[7] = values[7], values[6]
+        dt_eastern = eastern.localize(article_data['date_str'])
+        article_data['date_str'] = dt_eastern.astimezone(jerusalem)
 
-        new_article(title, values)
+        new_article(title, article_data)
 
         logging.info("dict_to_db() ended successfully")
 
@@ -965,15 +972,34 @@ def main() -> None:
 
     print_dict(my_dict)
 
-    if not PARALLEL:
-        time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+    if SECONDARY_PAGES_SCRAPPING:
+        if not PARALLEL:
+            time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+        else:
+            print("\n=============="
+                  "Sorry, parallel mode is temporarily out of order!"
+                  "==============\n")
+            # time_str2, _ = time_some_function(parallel_approach, [my_dict])
+            time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+
+        print("scraping the secondary webpages took: ")
+        print_timing_function_results(time_str2)
+
+        print_dict(my_dict)
+
     else:
-        time_str2, _ = time_some_function(parallel_approach, [my_dict])
-
-    print("scraping the secondary webpages took: ")
-    print_timing_function_results(time_str2)
-
-    print_dict(my_dict)
+        # Get the current date and time in New York
+        tz = pytz.timezone('America/New_York')
+        now = datetime.now(tz)
+        date_str = now.strftime("%b. %d, %Y")
+        # now = datetime.now(tz)
+        time_str = now.strftime("%I:%M %p")
+        for key in my_dict.keys():
+            my_dict[key].update({
+                'author': 'None',
+                'date_str': date_str,
+                'time': time_str
+            })
 
     initialize_db()
 
