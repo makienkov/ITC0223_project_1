@@ -23,6 +23,7 @@ from prettytable import PrettyTable
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from tqdm import tqdm
 
 FILE_NAME = ".".join(__file__.split(".")[:-1])
 
@@ -36,7 +37,8 @@ REQUIRED_CONSTANTS = [
     "DEPLOYMENT_NUMBER_OF_PAGES",
     "PARALLEL",
     "CHROME_DRIVER_PATH",
-    "MYSQL_CONFIG_FILE"
+    "MYSQL_CONFIG_FILE",
+    "SECONDARY_PAGES_SCRAPPING"
 ]
 
 
@@ -100,6 +102,10 @@ def initialise_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mysql-config-file", type=str, help="Path to mysql configuration file"
                                               "containing SQL commands and your login and password."
+    )
+    parser.add_argument(
+        "--secondary-pages-scrapping", type=bool, help="Switcher between modes that enable not to scrap"
+                                                       "secondary pages of each article."
     )
     parser.add_argument(
         "--debug_number-of-pages",
@@ -261,6 +267,7 @@ NUMBER_OF_PAGES = glob['number_of_pages']
 PARALLEL = glob['parallel']
 CHROME_DRIVER_PATH = glob['chrome_driver_path']
 MYSQL_CONFIG_FILE = glob['mysql_config_file']
+SECONDARY_PAGES_SCRAPPING = glob['secondary_pages_scrapping']
 del glob
 
 
@@ -401,35 +408,70 @@ def selenium_url_to_soup(url: str) -> BeautifulSoup:
     """
     logging.info("selenium_url_to_soup() was called with:\n %s", url)
 
-    # Create a Service object with the ChromeDriver executable path
-    service = Service(executable_path=CHROME_DRIVER_PATH)
-
-    # Create a Chrome options object
-    chrome_options = Options()
-
-    # Set the log level to suppress console output (3 means only FATAL messages will be shown)
-    chrome_options.add_argument("--log-level=3")
-
-    # Create an instance of the Chrome WebDriver using the Service object and the options
-    driver = webdriver.Chrome(service=service, options=chrome_options)
-
-    # Navigate to the desired URL
-    driver.get(url)
-
-    # Give some time for JavaScript to load the content
-    time.sleep(3)
-
-    # Get the HTML content of the page
-    html_content = driver.page_source
-
-    # Close the WebDriver
-    driver.quit()
+    html_content = get_html_content_with_driver(url)
 
     soup = BeautifulSoup(html_content, "html.parser")
 
     logging.info("selenium_url_to_soup() ended")
 
     return soup
+
+
+def selenium_service_and_options() -> tuple:
+    """
+    Initializes and return service and options objects
+    for selenium webdriver input.
+
+    :return: service and options objects
+    """
+    logging.info("selenium_service_and_options() was called")
+
+    service = Service(executable_path=CHROME_DRIVER_PATH)
+    options = Options()
+
+    options.add_argument("--log-level=3")
+
+    # Add argument to hide browser window and make the process faster
+    options.add_argument("--headless")
+
+    # Some options to come over block against headless browsers
+    options.add_argument(
+        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+        'AppleWebKit/537.36 (KHTML, like Gecko) '
+        'Chrome/58.0.3029.110 Safari/537.3')
+    options.add_argument('--disable-gpu')
+
+    logging.info("selenium_service_and_options() ended")
+
+    return service, options
+
+
+def get_html_content_with_driver(url: str) -> str:
+    """
+    Uses selenium driver to get html_content of the provided page.
+
+    :param url: the address to request
+    :return: a string with html content of the page
+    """
+    logging.info("get_html_content_with_driver was called with\n %s", url)
+
+    service, options = selenium_service_and_options()
+    driver = webdriver.Chrome(service=service, options=options)
+
+    # command to wait inside the headless browser window
+    driver.implicitly_wait(3)
+
+    driver.get(url)
+
+    # Give some time for JavaScript to load the content.
+    # Both driver.implicitly_wait and time.sleep are important in headless mode.
+    for i in tqdm(range(100)):
+        time.sleep(0.03)
+
+    html_content = driver.page_source
+    driver.quit()
+
+    return html_content
 
 
 def check_percentage(percentage_string: str) -> str:
@@ -585,10 +627,12 @@ def extract_data_from_articles(articles: dict) -> None:
 
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(articles)
 
-    for title, values in list(articles.items())[:stop]:
-        articles[title] = articles.get(title, []) + extract_data_from_soup(
+    for title, values in tqdm(list(articles.items())[:stop]):
+        extracted_data = extract_data_from_soup(
             selenium_url_to_soup(values[0])
         )
+        articles[title] = articles.get(title, []) + extracted_data
+        logging.debug("The following extracted data was added to dataset:", extracted_data)
 
     logging.info("extract_data_from_articles() was ended")
 
