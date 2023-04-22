@@ -20,8 +20,24 @@ from bs4 import BeautifulSoup, Tag
 import pytz
 import mysql.connector
 from prettytable import PrettyTable
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 FILE_NAME = ".".join(__file__.split(".")[:-1])
+
+REQUIRED_CONSTANTS = [
+    "DEBUG_MODE",
+    "DEBUG_LOG_LEVEL",
+    "DEPLOYMENT_LOG_LEVEL",
+    "URL",
+    "DEBUG_NUMBER_OF_PAGES",
+    "DEBUG_NUMBER_OF_URLS",
+    "DEPLOYMENT_NUMBER_OF_PAGES",
+    "PARALLEL",
+    "CHROME_DRIVER_PATH",
+    "MYSQL_CONFIG_FILE"
+]
 
 
 def initialise_parser() -> argparse.ArgumentParser:
@@ -79,6 +95,13 @@ def initialise_parser() -> argparse.ArgumentParser:
         "--url", type=str, help="URL of the main news page. Must ends with '?page='"
     )
     parser.add_argument(
+        "--chrome-driver-path", type=str, help="Path to Google Chrome driver file."
+    )
+    parser.add_argument(
+        "--mysql-config-file", type=str, help="Path to mysql configuration file"
+                                              "containing SQL commands and your login and password."
+    )
+    parser.add_argument(
         "--debug_number-of-pages",
         type=int,
         help="Number of news main pages to scrap in debug mode",
@@ -128,26 +151,16 @@ def config_logging(log_file_name: str) -> None:
     )
 
 
-def load_config(config_file_name: str) -> list:
+def check_config_file(config_file_name: str, required_constants: list) -> dict:
     """
-    Loads the configuration file settings config_file_name.
+    Checks that config file exists and consists of required_constants.
+    Stops the whole program in case of any issue.
 
-    :param config_file_name: str, the name of config file to read
-    :return: the list of parameters received from the config file
+    :param config_file_name: a name of config file to  open
+    :param required_constants: a list of expected params names
+    :return: obj: a dict of params received from the file
     """
-    logging.info("load_config() started, config_file_name : %s", config_file_name)
-
-    required_constants = [
-        "DEBUG_MODE",
-        "DEBUG_LOG_LEVEL",
-        "DEPLOYMENT_LOG_LEVEL",
-        "URL",
-        "DEBUG_NUMBER_OF_PAGES",
-        "DEBUG_NUMBER_OF_URLS",
-        "DEPLOYMENT_NUMBER_OF_PAGES",
-        "PARALLEL",
-    ]
-
+    logging.info("check_config_file() started")
     try:
         with open(config_file_name, "rb") as my_file:
             obj = my_file.read()
@@ -164,38 +177,39 @@ def load_config(config_file_name: str) -> list:
             logging.critical("Exiting program...")
             sys.exit()
 
-        logging.info("Config file loaded successfully")
+        logging.info("Config file loaded successfully, check_config_file() completed")
+        return obj
     except FileNotFoundError:
         logging.error("Config file not found")
         logging.critical("Exiting program...")
         sys.exit()
 
-    debug_mode_ = obj["DEBUG_MODE"]
-    debug_log_level_ = obj["DEBUG_LOG_LEVEL"]
-    deployment_log_level_ = obj["DEPLOYMENT_LOG_LEVEL"]
-    url_ = obj["URL"]
-    site_url_ = "/".join(url_.split("/")[0:-1])
-    debug_number_of_urls_ = obj["DEBUG_NUMBER_OF_URLS"]
-    deployment_number_of_pages_ = obj["DEPLOYMENT_NUMBER_OF_PAGES"]
-    debug_number_of_pages_ = obj["DEBUG_NUMBER_OF_PAGES"]
-    parallel_ = obj["PARALLEL"]
+
+def load_config(config_file_name: str) -> dict:
+    """
+    Loads the configuration file settings config_file_name.
+
+    :param config_file_name: str, the name of config file to read
+    :return: the list of parameters received from the config file
+    """
+    logging.info("load_config() started, config_file_name : %s", config_file_name)
+
+    obj = check_config_file(config_file_name, REQUIRED_CONSTANTS)
+
+    configs = {}
+    for key in obj.keys():
+        config_var_name = key.lower()
+        if 'comment' not in config_var_name:
+            configs[config_var_name] = obj[key]
+
+    configs['site_url'] = "/".join(obj["URL"].split("/")[0:-1])
 
     logging.info("load_config() completed")
 
-    return [
-        debug_mode_,
-        debug_log_level_,
-        deployment_log_level_,
-        url_,
-        site_url_,
-        debug_number_of_urls_,
-        deployment_number_of_pages_,
-        debug_number_of_pages_,
-        parallel_,
-    ]
+    return configs
 
 
-def set_config() -> list:
+def set_config() -> dict:
     """
     Gets global variables values from config file,
     updates them with values from command line arguments
@@ -204,70 +218,31 @@ def set_config() -> list:
     :return: the list of global variables values
     """
     logging.info("set_config() started")
-    if ARGS.url:
-        site_url = "/".join(ARGS.url.split("/")[0:-1])
-    else:
-        site_url = ARGS.url
 
-    args_configs = [
-        ARGS.debug_mode,
-        ARGS.debug_log_level,
-        ARGS.deployment_log_level,
-        ARGS.url,
-        site_url,
-        ARGS.debug_number_of_urls,
-        ARGS.debug_number_of_pages,
-        ARGS.deployment_number_of_pages,
-        ARGS.parallel,
-    ]
+    args_configs = vars(ARGS)
 
-    configs_names = [
-        "debug_mode",
-        "debug_log_level",
-        "deployment_log_level",
-        "url",
-        "site_url",
-        "debug_number_of_urls",
-        "debug_number_of_pages",
-        "deployment_number_of_pages",
-        "parallel",
-    ]
+    configs = load_config(ARGS.config_file)
 
-    if all(args_configs):
-        # user entered all the parameters from CLI
-        logging.info(
-            "User entered all the params from the CLI, config file is being ignored."
-        )
-        configs = args_configs
-    else:
-        # some params need to be taken from config file...
-        configs = load_config(ARGS.config_file)
+    # update with the CLI ones
+    for key in configs.keys():
+        if args_configs.get(key):
+            logging.info(
+                "Setting command line argument %s as %s",
+                key,
+                args_configs[key],
+            )
+            configs[key] = args_configs[key]
+            if key == 'url':
+                configs['site_url'] = "/".join(ARGS.url.split("/")[0:-1])
+        logging.info(key + " is: %s", configs[key])
 
-        # ...and then updated with the CLI ones
-        for i, arg_config in enumerate(args_configs):
-            if arg_config:
-                logging.info(
-                    "Setting command line argument %s as %s",
-                    configs_names[i],
-                    arg_config,
-                )
-                configs[i] = arg_config
-
-    if configs[0]:
+    if configs['debug_mode']:
         # debug mode number of pages
-        configs[7] = configs[7]
+        configs['number_of_pages'] = configs['debug_number_of_pages']
     else:
-        configs[7] = configs[6]
+        configs['number_of_pages'] = configs['deployment_number_of_pages']
 
-    logging.info("debug mode is: %s", configs[0])
-    logging.info("debug log level is: %s", configs[1])
-    logging.info("deployment log level  is: %s", configs[2])
-    logging.info("URL is: %s", configs[3])
-    logging.info("site URL is: %s", configs[4])
-    logging.info("debug number of urls_ is: %s", configs[5])
-    logging.info("number of pages is: %s", configs[7])
-    logging.info("parallel enabled ? : %s", configs[8])
-
+    logging.info("number of pages is: %s", configs['number_of_pages'])
     logging.info("set_config() completed")
 
     return configs
@@ -276,17 +251,17 @@ def set_config() -> list:
 ARGS = initialise_parser().parse_args()
 config_logging(ARGS.log_file)
 glob = set_config()
-DEBUG_MODE = glob[0]
-DEBUG_LOG_LEVEL = glob[1]
-DEPLOYMENT_LOG_LEVEL = glob[2]
-URL = glob[3]
-SITE_URL = glob[4]
-DEBUG_NUMBER_OF_URLS = glob[5]
-NUMBER_OF_PAGES = glob[7]
-PARALLEL = glob[8]
+DEBUG_MODE = glob['debug_mode']
+DEBUG_LOG_LEVEL = glob['debug_log_level']
+DEPLOYMENT_LOG_LEVEL = glob['deployment_log_level']
+URL = glob['url']
+SITE_URL = glob['site_url']
+DEBUG_NUMBER_OF_URLS = glob['debug_number_of_urls']
+NUMBER_OF_PAGES = glob['number_of_pages']
+PARALLEL = glob['parallel']
+CHROME_DRIVER_PATH = glob['chrome_driver_path']
+MYSQL_CONFIG_FILE = glob['mysql_config_file']
 del glob
-
-PATH_TO_CONFIGURATION_FILE = "mysql_connector.json"
 
 
 def load_config_file_database() -> tuple[str, str, list]:
@@ -298,7 +273,7 @@ def load_config_file_database() -> tuple[str, str, list]:
             username, password, main commands (including database name)
     """
     try:
-        with open(PATH_TO_CONFIGURATION_FILE, "rb") as my_file:
+        with open(MYSQL_CONFIG_FILE, "rb") as my_file:
             obj = my_file.read()
             obj = json.loads(obj)
         print("Config file loaded successfully")
@@ -393,6 +368,10 @@ def url_request(url: str) -> str:
 
 def url_to_soup(url: str) -> BeautifulSoup:
     """
+    The function is deprecated due to site
+    update with a lot of javascript.
+    Use selenium_url_to_soup() instead.
+
     Requests the HTML page from the given string - URL,
     parse it with BeautifulSoup
     and returns the corresponding object.
@@ -407,6 +386,48 @@ def url_to_soup(url: str) -> BeautifulSoup:
     soup = BeautifulSoup(html, "html.parser")
 
     logging.info("url_to_soup() ended")
+
+    return soup
+
+
+def selenium_url_to_soup(url: str) -> BeautifulSoup:
+    """
+    Requests the HTML page from the given string - URL,
+    parse it with BeautifulSoup
+    and returns the corresponding object.
+
+    :param url: str, url to get the data from
+    :return: BeautifulSoup, the data from the url
+    """
+    logging.info("selenium_url_to_soup() was called with:\n %s", url)
+
+    # Create a Service object with the ChromeDriver executable path
+    service = Service(executable_path=CHROME_DRIVER_PATH)
+
+    # Create a Chrome options object
+    chrome_options = Options()
+
+    # Set the log level to suppress console output (3 means only FATAL messages will be shown)
+    chrome_options.add_argument("--log-level=3")
+
+    # Create an instance of the Chrome WebDriver using the Service object and the options
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+
+    # Navigate to the desired URL
+    driver.get(url)
+
+    # Give some time for JavaScript to load the content
+    time.sleep(3)
+
+    # Get the HTML content of the page
+    html_content = driver.page_source
+
+    # Close the WebDriver
+    driver.quit()
+
+    soup = BeautifulSoup(html_content, "html.parser")
+
+    logging.info("selenium_url_to_soup() ended")
 
     return soup
 
@@ -483,7 +504,7 @@ def extract_links_and_titles(num_pages: int) -> dict:
     for i in range(1, num_pages + 1):
         url = URL + str(i)
 
-        link_soup = url_to_soup(url)
+        link_soup = selenium_url_to_soup(url)
 
         select_object = link_soup.select("article div div")
 
@@ -565,8 +586,8 @@ def extract_data_from_articles(articles: dict) -> None:
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(articles)
 
     for title, values in list(articles.items())[:stop]:
-        articles[title] = [articles.get(title, "")] + extract_data_from_soup(
-            url_to_soup(values[0])
+        articles[title] = articles.get(title, []) + extract_data_from_soup(
+            selenium_url_to_soup(values[0])
         )
 
     logging.info("extract_data_from_articles() was ended")
