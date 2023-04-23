@@ -10,6 +10,7 @@
     "CHROME_DRIVER_PATH": "C:\\Data\\SySToolS\\Downloads\\chromedriver_win32\\chromedriver.exe",
     "MYSQL_CONFIG_FILE": "mysql_connector.json",
     "SECONDARY_PAGES_SCRAPPING": true,
+    "API_KEY": "NWB5X0ZE7YA3BL7U",
     "//00_comment": "Logging_levels:",
     "//01_comment": "DEBUG=10",
     "//02_comment": "INFO=20",
