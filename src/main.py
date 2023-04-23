@@ -38,7 +38,11 @@ REQUIRED_CONSTANTS = [
     "PARALLEL",
     "CHROME_DRIVER_PATH",
     "MYSQL_CONFIG_FILE",
-    "SECONDARY_PAGES_SCRAPPING"
+    "SECONDARY_PAGES_SCRAPPING",
+    "REQUEST_API_DATA",
+    "API_KEY",
+    "API_BASE_URL",
+    "API_DATA_INTERVAL"
 ]
 
 
@@ -49,7 +53,8 @@ def initialise_parser() -> argparse.ArgumentParser:
     :return: argparse.ArgumentParser, initialized parser object
     """
     print("initialise_parser() started")
-    parser = argparse.ArgumentParser(description='Scrap info from "seeking alpha" site')
+    parser = argparse.ArgumentParser(
+        description='Scrap info from "seeking alpha" site and alphavantage.co API')
     parser.add_argument(
         "-c",
         "--config-file",
@@ -104,8 +109,23 @@ def initialise_parser() -> argparse.ArgumentParser:
                                               "containing SQL commands and your login and password."
     )
     parser.add_argument(
-        "--secondary-pages-scrapping", type=bool, help="Switcher between modes that enable not to scrap"
-                                                       "secondary pages of each article."
+        "--api-key", type=str, help="API key to request data from alphavantage.co"
+    )
+    parser.add_argument(
+        "--api-base-url", type=str, help="Exact base url of api to request data from alphavantage.co"
+    )
+    parser.add_argument(
+        "--api-data-interval", type=str, help="Interval between stock states requested from alphavantage.co"
+    )
+    parser.add_argument(
+        "--request-api-data", type=bool,
+        help="Switcher between modes that enable to request"
+             "data from alphavantage.co."
+    )
+    parser.add_argument(
+        "--secondary-pages-scrapping", type=bool,
+        help="Switcher between modes that enable not to scrap"
+        "secondary pages of each article." ###Alex
     )
     parser.add_argument(
         "--debug_number-of-pages",
@@ -175,7 +195,8 @@ def check_config_file(config_file_name: str, required_constants: list) -> dict:
         if set(required_constants).intersection(list(obj.keys())) == set(
                 required_constants
         ):
-            logging.info("all config parameters loaded successfully from config file")
+            logging.info(
+                "all config parameters loaded successfully from config file")
         else:
             logging.error(
                 "Config file does not contain the one or more required parameters"
@@ -183,7 +204,8 @@ def check_config_file(config_file_name: str, required_constants: list) -> dict:
             logging.critical("Exiting program...")
             sys.exit()
 
-        logging.info("Config file loaded successfully, check_config_file() completed")
+        logging.info(
+            "Config file loaded successfully, check_config_file() completed")
         return obj
     except FileNotFoundError:
         logging.error("Config file not found")
@@ -198,7 +220,8 @@ def load_config(config_file_name: str) -> dict:
     :param config_file_name: str, the name of config file to read
     :return: the list of parameters received from the config file
     """
-    logging.info("load_config() started, config_file_name : %s", config_file_name)
+    logging.info("load_config() started, config_file_name : %s",
+                 config_file_name)
 
     obj = check_config_file(config_file_name, REQUIRED_CONSTANTS)
 
@@ -230,7 +253,7 @@ def set_config() -> dict:
     configs = load_config(ARGS.config_file)
 
     # update with the CLI ones
-    for key in configs.keys():
+    for key, _ in configs.items():
         if args_configs.get(key):
             logging.info(
                 "Setting command line argument %s as %s",
@@ -239,8 +262,8 @@ def set_config() -> dict:
             )
             configs[key] = args_configs[key]
             if key == 'url':
-                configs['site_url'] = "/".join(ARGS.url.split("/")[0:-1])
-        logging.info(key + " is: %s", configs[key])
+                configs['site_url'] = "/".join(args_configs[key].split("/")[0:-1])
+        logging.info("%s + is: %s", key, configs[key])  # Alex
 
     if configs['debug_mode']:
         # debug mode number of pages
@@ -268,6 +291,10 @@ PARALLEL = glob['parallel']
 CHROME_DRIVER_PATH = glob['chrome_driver_path']
 MYSQL_CONFIG_FILE = glob['mysql_config_file']
 SECONDARY_PAGES_SCRAPPING = glob['secondary_pages_scrapping']
+REQUEST_API_DATA = glob['request_api_data']
+API_KEY = glob['api_key']
+API_BASE_URL = glob['api_base_url']
+API_DATA_INTERVAL = glob['api_data_interval']
 del glob
 
 
@@ -320,10 +347,12 @@ def set_log_level() -> None:
     # set logger level
     if DEBUG_MODE:
         level_ = DEBUG_LOG_LEVEL
-        logging.info("logging level set to: %s", error_map.get(DEBUG_LOG_LEVEL))
+        logging.info("logging level set to: %s",
+                     error_map.get(DEBUG_LOG_LEVEL))
     else:
         level_ = DEPLOYMENT_LOG_LEVEL
-        logging.info("logging level set to: %s", error_map.get(DEPLOYMENT_LOG_LEVEL))
+        logging.info("logging level set to: %s",
+                     error_map.get(DEPLOYMENT_LOG_LEVEL))
 
     logger = logging.getLogger()
     logger.setLevel(level_)
@@ -363,7 +392,8 @@ def url_request(url: str) -> str:
 
     if response.status_code != 200:
         print(f"Request failed with status code: {response.status_code}")
-        logging.error("Request failed with status code: %s", response.status_code)
+        logging.error("Request failed with status code: %s",
+                      response.status_code)
         print("closing program")
         logging.error("closing program")
         sys.exit()
@@ -465,7 +495,7 @@ def get_html_content_with_driver(url: str) -> str:
 
     # Give some time for JavaScript to load the content.
     # Both driver.implicitly_wait and time.sleep are important in headless mode.
-    for i in tqdm(range(100)):
+    for _ in tqdm(range(100)):
         time.sleep(0.03)
 
     html_content = driver.page_source
@@ -560,7 +590,8 @@ def extract_links_and_titles(num_pages: int) -> dict:
             title_id = re.search(r"\d+", href).group()
             title_data['title_id'] = title_id
             output_dict[title] = title_data
-            logging.info("extracted title: %s with data: %s", title, title_data)
+            logging.info("extracted title: %s with data: %s",
+                         title, title_data)
 
             title_data2 = add_data_links_and_titles(data)
             output_dict[title].update(title_data2)
@@ -641,7 +672,7 @@ def extract_data_from_articles(articles: dict) -> None:
             selenium_url_to_soup(values['href'])
         )
         articles[title].update(extracted_data)
-        logging.debug("The following extracted data was added to dataset:", extracted_data)
+        logging.debug("The extracted data was added to dataset.")
 
     logging.info("extract_data_from_articles() was ended")
 
@@ -755,6 +786,74 @@ def parallel_approach(my_dict: dict) -> None:
     logging.info("parallel_approach() was ended")
 
 
+def get_intraday_stock_data(symbol, api_key=API_KEY, interval="5min") -> tuple[str, dict]:
+    """
+    Given stock symbol, api_key and interval requests from alphavantage.co
+    historical data of the stock: open, close, high, low and volume of sales in each interval.
+
+    :param symbol: stock symbol to get data about
+    :param api_key: api_key to request data with
+    :param interval: an interval between requested states
+
+    :return: tuple containing symbol and requested data
+    """
+    function = "TIME_SERIES_INTRADAY"
+    output_size = "compact"  # use "full" for more historical data
+
+    url = f"{API_BASE_URL}function={function}&symbol={symbol}&interval={interval}" \
+          f"&outputsize={output_size}&apikey={api_key}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        time_series = data.get(f"Time Series ({interval})")
+        return symbol, time_series
+    else:
+        print("Error fetching data:", response.status_code)
+        logging.error("Error fetching data:", response.status_code)
+        sys.exit()
+
+
+def prices_to_db(ticker, dict_api):
+    """
+    given the prices dictionary and the ticker name
+    update the database accordingly
+    """
+    logging.info("prices_to_db(() called for ticker: %s ", ticker)
+
+    command = f"SELECT id FROM stock WHERE ticker_symbol = '{ticker}'"
+    ticker_id = database_query(command)[0][0]
+
+    for key, values in dict_api.items():
+        command = "INSERT INTO prices "
+        command += "(ticker_symbol_id, datetime, open, high, low, close, volume) "
+        command += f"VALUES ('{ticker_id}', '{key}', {values['1. open']}, "
+        command += f"{values['2. high']}, {values['3. low']}, {values['4. close']}, "
+        command += f"{values['5. volume']})"
+
+        database_query(command, commit_=True)
+
+    logging.info("new_article() ended")
+
+
+def tickers_to_db(tickers: list):
+    """
+    This function organises saving of  API data for several symbols to 'prices' table.
+
+    :param tickers: list of symbols(strings) like ['AAPL', 'NVDA']
+
+    :return: None
+    """
+    for ticker in tickers:
+        prices_to_db(
+            *get_intraday_stock_data(
+                symbol = ticker,
+                api_key=API_KEY,
+                interval=API_DATA_INTERVAL
+            )
+        )
+
+
 def database_query(
         query_: str,
         commit_: bool = False,
@@ -813,7 +912,8 @@ def database_query(
         # Add each row to the table
         for row in result:
             table.add_row(
-                [col.decode("utf-8") if isinstance(col, bytes) else col for col in row]
+                [col.decode("utf-8") if isinstance(col, bytes)
+                 else col for col in row]
             )
 
         # Display the table
@@ -854,26 +954,26 @@ def new_article(title: str, article_data: dict) -> None:
 
     # add new "name" in the table "author" if not already present
     author_query = (
-            f"INSERT INTO author (name) SELECT '{article_data['author']}' WHERE NOT "
-            + f"EXISTS(SELECT name FROM author WHERE name = '{article_data['author']}');"
+        f"INSERT INTO author (name) SELECT '{article_data['author']}' WHERE NOT "
+        + f"EXISTS(SELECT name FROM author WHERE name = '{article_data['author']}');"
     )
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
     article_query = (
-            "INSERT INTO article (title, link, datetime_posted, author_id) "
-            + f"SELECT '{title}', '{article_data['href']}', '{article_data['date_str']}', "
-            + f"(SELECT id FROM author WHERE name = '{article_data['author']}')"
-            + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+        "INSERT INTO article (title, link, datetime_posted, author_id) "
+        + f"SELECT '{title}', '{article_data['href']}', '{article_data['date_str']}', "
+        + f"(SELECT id FROM author WHERE name = '{article_data['author']}')"
+        + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
     )
     database_query(article_query, commit_=True)
 
     # update the stock table with the data
     stock_query = (
-            "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
-            + f"VALUES('{article_data['ticker']}', '{article_data['price_change']}', "
-            + f"'{article_data['price_change_time']}', "
-            + f"(SELECT id FROM article WHERE title = '{title}'));"
+        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
+        + f"VALUES('{article_data['ticker']}', '{article_data['price_change']}', "
+        + f"'{article_data['price_change_time']}', "
+        + f"(SELECT id FROM article WHERE title = '{title}'));"
     )
     database_query(stock_query, commit_=True)
 
@@ -901,7 +1001,8 @@ def dict_to_db(data: dict) -> None:
         # Re-format article_timestamp to MySQL-DATETIME format
         date_obj = datetime.strptime(article_data['date_str'], "%b. %d, %Y")
         time_obj = datetime.strptime(article_data['time'], "%I:%M %p")
-        article_data['date_str'] = datetime.combine(date_obj.date(), time_obj.time())
+        article_data['date_str'] = datetime.combine(
+            date_obj.date(), time_obj.time())
 
         # Update the date from Eastern Time (ET) to Jerusalem Time Zone (GMT+2)
         eastern = pytz.timezone("US/Eastern")
@@ -945,7 +1046,8 @@ def nice_print_article() -> None:
     print(separator)
 
     for row in data:
-        print(f"id: {row[0]} | publish_time: {row[3]} | author_id: {row[4]} | title:|>")
+        print(
+            f"id: {row[0]} | publish_time: {row[3]} | author_id: {row[4]} | title:|>")
         print(f"{row[1]}")
         print(f"link: {row[2]}")
         print(separator)
@@ -966,7 +1068,8 @@ def main() -> None:
     print("debug mode is:", DEBUG_MODE)
     print("number of pages to scrape is:", NUMBER_OF_PAGES)
 
-    time_str1, my_dict = time_some_function(extract_links_and_titles, [NUMBER_OF_PAGES])
+    time_str1, my_dict = time_some_function(
+        extract_links_and_titles, [NUMBER_OF_PAGES])
     print(f"scraping the main {NUMBER_OF_PAGES} web pages took: ")
     print_timing_function_results(time_str1)
 
@@ -974,13 +1077,15 @@ def main() -> None:
 
     if SECONDARY_PAGES_SCRAPPING:
         if not PARALLEL:
-            time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+            time_str2, _ = time_some_function(
+                extract_data_from_articles, [my_dict])
         else:
             print("\n=============="
                   "Sorry, parallel mode is temporarily out of order!"
                   "==============\n")
             # time_str2, _ = time_some_function(parallel_approach, [my_dict])
-            time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+            time_str2, _ = time_some_function(
+                extract_data_from_articles, [my_dict])
 
         print("scraping the secondary webpages took: ")
         print_timing_function_results(time_str2)
@@ -989,10 +1094,9 @@ def main() -> None:
 
     else:
         # Get the current date and time in New York
-        tz = pytz.timezone('America/New_York')
-        now = datetime.now(tz)
+        time_zone = pytz.timezone('America/New_York')
+        now = datetime.now(time_zone)
         date_str = now.strftime("%b. %d, %Y")
-        # now = datetime.now(tz)
         time_str = now.strftime("%I:%M %p")
         for key in my_dict.keys():
             my_dict[key].update({
@@ -1005,9 +1109,15 @@ def main() -> None:
 
     dict_to_db(my_dict)
 
+    tickers = database_query("SELECT DISTINCT ticker_symbol FROM stock")[:-1]
+    tickers = [x[0] for x in tickers]
+
+    tickers_to_db(tickers)
+
     nice_print_article()
     database_query("SELECT * FROM stock", print_result_=True)
     database_query("SELECT * FROM author", print_result_=True)
+    database_query("SELECT * FROM prices ORDER BY datetime LIMIT 5", print_result_=True)
 
     logging.info("main() completed")
 
