@@ -20,8 +20,26 @@ from bs4 import BeautifulSoup, Tag
 import pytz
 import mysql.connector
 from prettytable import PrettyTable
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from tqdm import tqdm
 
 FILE_NAME = ".".join(__file__.split(".")[:-1])
+
+REQUIRED_CONSTANTS = [
+    "DEBUG_MODE",
+    "DEBUG_LOG_LEVEL",
+    "DEPLOYMENT_LOG_LEVEL",
+    "URL",
+    "DEBUG_NUMBER_OF_PAGES",
+    "DEBUG_NUMBER_OF_URLS",
+    "DEPLOYMENT_NUMBER_OF_PAGES",
+    "PARALLEL",
+    "CHROME_DRIVER_PATH",
+    "MYSQL_CONFIG_FILE",
+    "SECONDARY_PAGES_SCRAPPING"
+]
 
 
 def initialise_parser() -> argparse.ArgumentParser:
@@ -79,6 +97,17 @@ def initialise_parser() -> argparse.ArgumentParser:
         "--url", type=str, help="URL of the main news page. Must ends with '?page='"
     )
     parser.add_argument(
+        "--chrome-driver-path", type=str, help="Path to Google Chrome driver file."
+    )
+    parser.add_argument(
+        "--mysql-config-file", type=str, help="Path to mysql configuration file"
+                                              "containing SQL commands and your login and password."
+    )
+    parser.add_argument(
+        "--secondary-pages-scrapping", type=bool, help="Switcher between modes that enable not to scrap"
+                                                       "secondary pages of each article."
+    )
+    parser.add_argument(
         "--debug_number-of-pages",
         type=int,
         help="Number of news main pages to scrap in debug mode",
@@ -128,26 +157,16 @@ def config_logging(log_file_name: str) -> None:
     )
 
 
-def load_config(config_file_name: str) -> list:
+def check_config_file(config_file_name: str, required_constants: list) -> dict:
     """
-    Loads the configuration file settings config_file_name.
+    Checks that config file exists and consists of required_constants.
+    Stops the whole program in case of any issue.
 
-    :param config_file_name: str, the name of config file to read
-    :return: the list of parameters received from the config file
+    :param config_file_name: a name of config file to  open
+    :param required_constants: a list of expected params names
+    :return: obj: a dict of params received from the file
     """
-    logging.info("load_config() started, config_file_name : %s", config_file_name)
-
-    required_constants = [
-        "DEBUG_MODE",
-        "DEBUG_LOG_LEVEL",
-        "DEPLOYMENT_LOG_LEVEL",
-        "URL",
-        "DEBUG_NUMBER_OF_PAGES",
-        "DEBUG_NUMBER_OF_URLS",
-        "DEPLOYMENT_NUMBER_OF_PAGES",
-        "PARALLEL",
-    ]
-
+    logging.info("check_config_file() started")
     try:
         with open(config_file_name, "rb") as my_file:
             obj = my_file.read()
@@ -164,38 +183,39 @@ def load_config(config_file_name: str) -> list:
             logging.critical("Exiting program...")
             sys.exit()
 
-        logging.info("Config file loaded successfully")
+        logging.info("Config file loaded successfully, check_config_file() completed")
+        return obj
     except FileNotFoundError:
         logging.error("Config file not found")
         logging.critical("Exiting program...")
         sys.exit()
 
-    debug_mode_ = obj["DEBUG_MODE"]
-    debug_log_level_ = obj["DEBUG_LOG_LEVEL"]
-    deployment_log_level_ = obj["DEPLOYMENT_LOG_LEVEL"]
-    url_ = obj["URL"]
-    site_url_ = "/".join(url_.split("/")[0:-1])
-    debug_number_of_urls_ = obj["DEBUG_NUMBER_OF_URLS"]
-    deployment_number_of_pages_ = obj["DEPLOYMENT_NUMBER_OF_PAGES"]
-    debug_number_of_pages_ = obj["DEBUG_NUMBER_OF_PAGES"]
-    parallel_ = obj["PARALLEL"]
+
+def load_config(config_file_name: str) -> dict:
+    """
+    Loads the configuration file settings config_file_name.
+
+    :param config_file_name: str, the name of config file to read
+    :return: the list of parameters received from the config file
+    """
+    logging.info("load_config() started, config_file_name : %s", config_file_name)
+
+    obj = check_config_file(config_file_name, REQUIRED_CONSTANTS)
+
+    configs = {}
+    for key in obj.keys():
+        config_var_name = key.lower()
+        if 'comment' not in config_var_name:
+            configs[config_var_name] = obj[key]
+
+    configs['site_url'] = "/".join(obj["URL"].split("/")[0:-1])
 
     logging.info("load_config() completed")
 
-    return [
-        debug_mode_,
-        debug_log_level_,
-        deployment_log_level_,
-        url_,
-        site_url_,
-        debug_number_of_urls_,
-        deployment_number_of_pages_,
-        debug_number_of_pages_,
-        parallel_,
-    ]
+    return configs
 
 
-def set_config() -> list:
+def set_config() -> dict:
     """
     Gets global variables values from config file,
     updates them with values from command line arguments
@@ -204,70 +224,31 @@ def set_config() -> list:
     :return: the list of global variables values
     """
     logging.info("set_config() started")
-    if ARGS.url:
-        site_url = "/".join(ARGS.url.split("/")[0:-1])
-    else:
-        site_url = ARGS.url
 
-    args_configs = [
-        ARGS.debug_mode,
-        ARGS.debug_log_level,
-        ARGS.deployment_log_level,
-        ARGS.url,
-        site_url,
-        ARGS.debug_number_of_urls,
-        ARGS.debug_number_of_pages,
-        ARGS.deployment_number_of_pages,
-        ARGS.parallel,
-    ]
+    args_configs = vars(ARGS)
 
-    configs_names = [
-        "debug_mode",
-        "debug_log_level",
-        "deployment_log_level",
-        "url",
-        "site_url",
-        "debug_number_of_urls",
-        "debug_number_of_pages",
-        "deployment_number_of_pages",
-        "parallel",
-    ]
+    configs = load_config(ARGS.config_file)
 
-    if all(args_configs):
-        # user entered all the parameters from CLI
-        logging.info(
-            "User entered all the params from the CLI, config file is being ignored."
-        )
-        configs = args_configs
-    else:
-        # some params need to be taken from config file...
-        configs = load_config(ARGS.config_file)
+    # update with the CLI ones
+    for key in configs.keys():
+        if args_configs.get(key):
+            logging.info(
+                "Setting command line argument %s as %s",
+                key,
+                args_configs[key],
+            )
+            configs[key] = args_configs[key]
+            if key == 'url':
+                configs['site_url'] = "/".join(ARGS.url.split("/")[0:-1])
+        logging.info(key + " is: %s", configs[key])
 
-        # ...and then updated with the CLI ones
-        for i, arg_config in enumerate(args_configs):
-            if arg_config:
-                logging.info(
-                    "Setting command line argument %s as %s",
-                    configs_names[i],
-                    arg_config,
-                )
-                configs[i] = arg_config
-
-    if configs[0]:
+    if configs['debug_mode']:
         # debug mode number of pages
-        configs[7] = configs[7]
+        configs['number_of_pages'] = configs['debug_number_of_pages']
     else:
-        configs[7] = configs[6]
+        configs['number_of_pages'] = configs['deployment_number_of_pages']
 
-    logging.info("debug mode is: %s", configs[0])
-    logging.info("debug log level is: %s", configs[1])
-    logging.info("deployment log level  is: %s", configs[2])
-    logging.info("URL is: %s", configs[3])
-    logging.info("site URL is: %s", configs[4])
-    logging.info("debug number of urls_ is: %s", configs[5])
-    logging.info("number of pages is: %s", configs[7])
-    logging.info("parallel enabled ? : %s", configs[8])
-
+    logging.info("number of pages is: %s", configs['number_of_pages'])
     logging.info("set_config() completed")
 
     return configs
@@ -276,17 +257,18 @@ def set_config() -> list:
 ARGS = initialise_parser().parse_args()
 config_logging(ARGS.log_file)
 glob = set_config()
-DEBUG_MODE = glob[0]
-DEBUG_LOG_LEVEL = glob[1]
-DEPLOYMENT_LOG_LEVEL = glob[2]
-URL = glob[3]
-SITE_URL = glob[4]
-DEBUG_NUMBER_OF_URLS = glob[5]
-NUMBER_OF_PAGES = glob[7]
-PARALLEL = glob[8]
+DEBUG_MODE = glob['debug_mode']
+DEBUG_LOG_LEVEL = glob['debug_log_level']
+DEPLOYMENT_LOG_LEVEL = glob['deployment_log_level']
+URL = glob['url']
+SITE_URL = glob['site_url']
+DEBUG_NUMBER_OF_URLS = glob['debug_number_of_urls']
+NUMBER_OF_PAGES = glob['number_of_pages']
+PARALLEL = glob['parallel']
+CHROME_DRIVER_PATH = glob['chrome_driver_path']
+MYSQL_CONFIG_FILE = glob['mysql_config_file']
+SECONDARY_PAGES_SCRAPPING = glob['secondary_pages_scrapping']
 del glob
-
-PATH_TO_CONFIGURATION_FILE = "mysql_connector.json"
 
 
 def load_config_file_database() -> tuple[str, str, list]:
@@ -298,7 +280,7 @@ def load_config_file_database() -> tuple[str, str, list]:
             username, password, main commands (including database name)
     """
     try:
-        with open(PATH_TO_CONFIGURATION_FILE, "rb") as my_file:
+        with open(MYSQL_CONFIG_FILE, "rb") as my_file:
             obj = my_file.read()
             obj = json.loads(obj)
         print("Config file loaded successfully")
@@ -393,6 +375,10 @@ def url_request(url: str) -> str:
 
 def url_to_soup(url: str) -> BeautifulSoup:
     """
+    The function is deprecated due to site
+    update with a lot of javascript.
+    Use selenium_url_to_soup() instead.
+
     Requests the HTML page from the given string - URL,
     parse it with BeautifulSoup
     and returns the corresponding object.
@@ -411,11 +397,88 @@ def url_to_soup(url: str) -> BeautifulSoup:
     return soup
 
 
+def selenium_url_to_soup(url: str) -> BeautifulSoup:
+    """
+    Requests the HTML page from the given string - URL,
+    parse it with BeautifulSoup
+    and returns the corresponding object.
+
+    :param url: str, url to get the data from
+    :return: BeautifulSoup, the data from the url
+    """
+    logging.info("selenium_url_to_soup() was called with:\n %s", url)
+
+    html_content = get_html_content_with_driver(url)
+
+    soup = BeautifulSoup(html_content, "html.parser")
+
+    logging.info("selenium_url_to_soup() ended")
+
+    return soup
+
+
+def selenium_service_and_options() -> tuple:
+    """
+    Initializes and return service and options objects
+    for selenium webdriver input.
+
+    :return: service and options objects
+    """
+    logging.info("selenium_service_and_options() was called")
+
+    service = Service(executable_path=CHROME_DRIVER_PATH)
+    options = Options()
+
+    options.add_argument("--log-level=3")
+
+    # Add argument to hide browser window and make the process faster
+    options.add_argument("--headless")
+
+    # Some options to come over block against headless browsers
+    options.add_argument(
+        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+        'AppleWebKit/537.36 (KHTML, like Gecko) '
+        'Chrome/58.0.3029.110 Safari/537.3')
+    options.add_argument('--disable-gpu')
+
+    logging.info("selenium_service_and_options() ended")
+
+    return service, options
+
+
+def get_html_content_with_driver(url: str) -> str:
+    """
+    Uses selenium driver to get html_content of the provided page.
+
+    :param url: the address to request
+    :return: a string with html content of the page
+    """
+    logging.info("get_html_content_with_driver was called with\n %s", url)
+
+    service, options = selenium_service_and_options()
+    driver = webdriver.Chrome(service=service, options=options)
+
+    # command to wait inside the headless browser window
+    driver.implicitly_wait(3)
+
+    driver.get(url)
+
+    # Give some time for JavaScript to load the content.
+    # Both driver.implicitly_wait and time.sleep are important in headless mode.
+    for i in tqdm(range(100)):
+        time.sleep(0.03)
+
+    html_content = driver.page_source
+    driver.quit()
+
+    return html_content
+
+
 def check_percentage(percentage_string: str) -> str:
     """
     Checks for percentage string formatting.
 
-    :param percentage_string(string): the string to test
+    :param percentage_string: the string to test
     :return: "absent" or the string if in percent formatting
     """
     logging.info("check_percentage() was called with:\n %s", percentage_string)
@@ -432,7 +495,7 @@ def check_percentage(percentage_string: str) -> str:
     return "0.0"
 
 
-def add_data_links_and_titles(data: Tag) -> list[str]:
+def add_data_links_and_titles(data: Tag) -> dict:
     """
     Extracts more price_change, price_change_time and ticker from the given select object.
 
@@ -445,6 +508,8 @@ def add_data_links_and_titles(data: Tag) -> list[str]:
         ticker = data.footer.a.span.string
     except AttributeError:
         ticker = "None"
+    output_dict = {'ticker': ticker}
+    logging.info("extracted ticker:%s", ticker)
 
     try:
         price_change = data.footer.a.span.find_next_sibling().string
@@ -452,20 +517,19 @@ def add_data_links_and_titles(data: Tag) -> list[str]:
         price_change = "None"
 
     price_change = check_percentage(price_change)
+    output_dict['price_change'] = price_change
     logging.info("extracted price change: %s", price_change)
 
     now = datetime.now()
     price_change_time = (
         f"{now.year}-{now.month}-{now.day} {now.hour}:{now.minute}:{now.second}"
     )
-
+    output_dict['price_change_time'] = price_change_time
     logging.info("extracted price change time :%s", price_change_time)
-
-    logging.info("extracted ticker:%s", ticker)
 
     logging.info("extract_links_and_titles() was ended")
 
-    return [price_change, price_change_time, ticker]
+    return output_dict
 
 
 def extract_links_and_titles(num_pages: int) -> dict:
@@ -483,42 +547,44 @@ def extract_links_and_titles(num_pages: int) -> dict:
     for i in range(1, num_pages + 1):
         url = URL + str(i)
 
-        link_soup = url_to_soup(url)
+        link_soup = selenium_url_to_soup(url)
 
         select_object = link_soup.select("article div div")
 
         for data in select_object:
-            title_data = []
+            title_data = {}
             title = data.h3.a.text
             href = data.h3.a.attrs.get("href")
             href = SITE_URL + href[: href.find("?")]
-            title_data.append(href)
+            title_data['href'] = href
             title_id = re.search(r"\d+", href).group()
-            title_data.append(title_id)
+            title_data['title_id'] = title_id
             output_dict[title] = title_data
             logging.info("extracted title: %s with data: %s", title, title_data)
 
             title_data2 = add_data_links_and_titles(data)
-            output_dict[title] += title_data2
+            output_dict[title].update(title_data2)
             logging.info("extracted ticker with data: %s ", title_data2)
 
     logging.info("extract_links_and_titles() was ended")
     return output_dict
 
 
-def extract_data_from_soup(soup: BeautifulSoup) -> list:
+def extract_data_from_soup(soup: BeautifulSoup) -> dict:
     """
     Extracts date, time and author from the soup of article page
     and returns them the list in the following format:
     [date_str, time, author].
 
     :param soup: the soup of article page
-    :return: list, [date_str, time, author]
+    :return: dict containing author, date_str and time
     """
 
     text = soup.text
 
     logging.info("extract_data_from_soup() was called for %s", text[:100])
+
+    output_dict = {}
 
     match = re.search(r"By:\s+(\w+\s*)+", text)
     if match:
@@ -527,6 +593,8 @@ def extract_data_from_soup(soup: BeautifulSoup) -> list:
     else:
         author = None
         logging.info("author not found !! %s", author)
+    output_dict['author'] = author
+    logging.debug("extracted author %s", author)
 
     match = re.search(r"\w{3}\. \d{1,2}, \d{4}", text)
     if match:
@@ -535,6 +603,8 @@ def extract_data_from_soup(soup: BeautifulSoup) -> list:
     else:
         date_str = None
         logging.info("date_str not found !! %s", date_str)
+    output_dict['date_str'] = date_str
+    logging.debug("extracted publishing date_str %s", date_str)
 
     match = re.search(r"\d{1,2}:\d{2} [AP]M", text)
     if match:
@@ -543,9 +613,11 @@ def extract_data_from_soup(soup: BeautifulSoup) -> list:
     else:
         time_ = None
         logging.info("time_ not found !! %s", time_)
+    output_dict['time'] = time_
+    logging.debug("extracted publishing time %s", time_)
 
     logging.info("extract_data_from_soup() was ended")
-    return [date_str, time_, author]
+    return output_dict
 
 
 def extract_data_from_articles(articles: dict) -> None:
@@ -564,10 +636,12 @@ def extract_data_from_articles(articles: dict) -> None:
 
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(articles)
 
-    for title, values in list(articles.items())[:stop]:
-        articles[title] = [articles.get(title, "")] + extract_data_from_soup(
-            url_to_soup(values[0])
+    for title, values in tqdm(list(articles.items())[:stop]):
+        extracted_data = extract_data_from_soup(
+            selenium_url_to_soup(values['href'])
         )
+        articles[title].update(extracted_data)
+        logging.debug("The following extracted data was added to dataset:", extracted_data)
 
     logging.info("extract_data_from_articles() was ended")
 
@@ -586,17 +660,17 @@ def print_dict(dict_: dict) -> None:
 
     spacer = "+----+---------------+--------------+---------------------+------------+"
 
-    for i, (key, value) in enumerate(list(dict_.items())[:stop]):
+    for i, (key, article_data) in enumerate(list(dict_.items())[:stop]):
         print(f"{spacer} \n {i} :")
         print(f"{key}")
-        for item in value:
-            print(item)
+        for data_key, item in article_data.items():
+            print(f"{data_key}: {item}")
         print(spacer)
 
 
 def time_some_function(function_: callable, args_list: list) -> tuple[str, any]:
     """
-    given the function name and the list of arguments,
+    Given the function name and the list of arguments,
     will execute the function and return the result and return
     in string format the time it took to execute the function.
     in the following format: 0:00:37.183115 = Hours:Minutes:Seconds.milliseconds
@@ -636,6 +710,8 @@ def print_timing_function_results(time_lapse: str) -> None:
 
 def parallel_approach(my_dict: dict) -> None:
     """
+    The function is temporarily out of order due to web-site issues.
+
     A function that scrapes data from secondary href sites using parallel approach.
 
     :param my_dict: dict of {title: link} items to fill with new data.
@@ -762,7 +838,7 @@ def database_query(
     return result
 
 
-def new_article(title: str, values: list) -> None:
+def new_article(title: str, article_data: dict) -> None:
     """
     Executes a query of adding new item to articles table of database.
 
@@ -771,23 +847,23 @@ def new_article(title: str, values: list) -> None:
      4ticker_symbol, 5article_timestamp, 6author_name
 
     :param title: str, the title of the article
-    :param values: list, the values of fields to be filled
+    :param article_data: dict, the data to be filled
     :return: None
     """
     logging.info("new_article() called for title: %s ", title)
 
     # add new "name" in the table "author" if not already present
     author_query = (
-            f"INSERT INTO author (name) SELECT '{values[6]}' WHERE NOT "
-            + f"EXISTS(SELECT name FROM author WHERE name = '{values[6]}');"
+            f"INSERT INTO author (name) SELECT '{article_data['author']}' WHERE NOT "
+            + f"EXISTS(SELECT name FROM author WHERE name = '{article_data['author']}');"
     )
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
     article_query = (
             "INSERT INTO article (title, link, datetime_posted, author_id) "
-            + f"SELECT '{title}', '{values[0]}', '{values[5]}', "
-            + f"(SELECT id FROM author WHERE name = '{values[6]}')"
+            + f"SELECT '{title}', '{article_data['href']}', '{article_data['date_str']}', "
+            + f"(SELECT id FROM author WHERE name = '{article_data['author']}')"
             + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
     )
     database_query(article_query, commit_=True)
@@ -795,7 +871,8 @@ def new_article(title: str, values: list) -> None:
     # update the stock table with the data
     stock_query = (
             "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
-            + f"VALUES('{values[4]}', '{values[2]}', '{values[3]}', "
+            + f"VALUES('{article_data['ticker']}', '{article_data['price_change']}', "
+            + f"'{article_data['price_change_time']}', "
             + f"(SELECT id FROM article WHERE title = '{title}'));"
     )
     database_query(stock_query, commit_=True)
@@ -807,10 +884,6 @@ def dict_to_db(data: dict) -> None:
     """
     Updates the database with all the entries from the dict provided.
 
-    Note:
-      values =  0link, 1article_id, 2price_change, 3price_change_time,
-                4ticker_symbol, 5date_str, 6time_str, 7author_name
-
     :param data: dict, the data to save to db
     :return: None
     """
@@ -818,26 +891,25 @@ def dict_to_db(data: dict) -> None:
 
     stop = DEBUG_NUMBER_OF_URLS if DEBUG_MODE else len(data)
 
-    for title, values in list(data.items())[:stop]:
+    for title, article_data in list(data.items())[:stop]:
         # Re-format title to MySQL VARCHAR format
         title = title.translate(str.maketrans("", "", string.punctuation))
 
         # Re-format price_change to MySQL-DATETIME format
-        values[2] = values[2].strip("%")
+        article_data['price_change'] = article_data['price_change'].strip("%")
 
         # Re-format article_timestamp to MySQL-DATETIME format
-        date_obj = datetime.strptime(values[5], "%b. %d, %Y")
-        time_obj = datetime.strptime(values[6], "%I:%M %p")
-        values[5] = datetime.combine(date_obj.date(), time_obj.time())
+        date_obj = datetime.strptime(article_data['date_str'], "%b. %d, %Y")
+        time_obj = datetime.strptime(article_data['time'], "%I:%M %p")
+        article_data['date_str'] = datetime.combine(date_obj.date(), time_obj.time())
 
         # Update the date from Eastern Time (ET) to Jerusalem Time Zone (GMT+2)
         eastern = pytz.timezone("US/Eastern")
         jerusalem = pytz.timezone("Asia/Jerusalem")
-        dt_eastern = eastern.localize(values[5])
-        values[5] = dt_eastern.astimezone(jerusalem)
-        values[6], values[7] = values[7], values[6]
+        dt_eastern = eastern.localize(article_data['date_str'])
+        article_data['date_str'] = dt_eastern.astimezone(jerusalem)
 
-        new_article(title, values)
+        new_article(title, article_data)
 
         logging.info("dict_to_db() ended successfully")
 
@@ -900,15 +972,34 @@ def main() -> None:
 
     print_dict(my_dict)
 
-    if not PARALLEL:
-        time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+    if SECONDARY_PAGES_SCRAPPING:
+        if not PARALLEL:
+            time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+        else:
+            print("\n=============="
+                  "Sorry, parallel mode is temporarily out of order!"
+                  "==============\n")
+            # time_str2, _ = time_some_function(parallel_approach, [my_dict])
+            time_str2, _ = time_some_function(extract_data_from_articles, [my_dict])
+
+        print("scraping the secondary webpages took: ")
+        print_timing_function_results(time_str2)
+
+        print_dict(my_dict)
+
     else:
-        time_str2, _ = time_some_function(parallel_approach, [my_dict])
-
-    print("scraping the secondary webpages took: ")
-    print_timing_function_results(time_str2)
-
-    print_dict(my_dict)
+        # Get the current date and time in New York
+        tz = pytz.timezone('America/New_York')
+        now = datetime.now(tz)
+        date_str = now.strftime("%b. %d, %Y")
+        # now = datetime.now(tz)
+        time_str = now.strftime("%I:%M %p")
+        for key in my_dict.keys():
+            my_dict[key].update({
+                'author': 'None',
+                'date_str': date_str,
+                'time': time_str
+            })
 
     initialize_db()
 

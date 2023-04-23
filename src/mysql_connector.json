@@ -8,5 +8,7 @@
   "COMMAND_5": "DROP TABLE IF EXISTS author;",
   "COMMAND_6": "CREATE TABLE IF NOT EXISTS author (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255));",
   "COMMAND_7": "CREATE TABLE IF NOT EXISTS article (id INT AUTO_INCREMENT PRIMARY KEY, title VARCHAR(1000), link VARCHAR(1000), datetime_posted DATETIME, author_id INT, FOREIGN KEY (author_id) REFERENCES author(id));",
-  "COMMAND_8": "CREATE TABLE IF NOT EXISTS stock (id INT AUTO_INCREMENT PRIMARY KEY, ticker_symbol VARCHAR(50), price_change DECIMAL(10, 2), datetime_change DATETIME, article_id INT, FOREIGN KEY (article_id) REFERENCES article(id));"
+  "COMMAND_8": "CREATE TABLE IF NOT EXISTS stock (id INT AUTO_INCREMENT PRIMARY KEY, ticker_symbol VARCHAR(50), price_change DECIMAL(10, 2), datetime_change DATETIME, article_id INT, FOREIGN KEY (article_id) REFERENCES article(id));",
+  "COMMAND_9": "DROP TABLE IF EXISTS prices;",
+  "COMMAND_10": "CREATE TABLE IF NOT EXISTS prices (id INT AUTO_INCREMENT PRIMARY KEY, ticker_symbol_id INT, datetime DATETIME, open DECIMAL(10,4), high DECIMAL(10,4), low DECIMAL(10,4), close DECIMAL(10,4), volume INT, FOREIGN KEY (ticker_symbol_id) REFERENCES stock(id));"
 }

@@ -4,3 +4,7 @@ grequests~=0.6.0
 pytz~=2023.3
 mysql-connector-python~=8.0.32
 prettytable~=3.6.0
+selenium~=4.8.3
+bs4~=0.0.1
+tqdm~=4.65.0
+matplotlib~=3.7.1
