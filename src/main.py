@@ -105,17 +105,19 @@ def initialise_parser() -> argparse.ArgumentParser:
         "--chrome-driver-path", type=str, help="Path to Google Chrome driver file."
     )
     parser.add_argument(
-        "--mysql-config-file", type=str, help="Path to mysql configuration file"
-                                              "containing SQL commands and your login and password."
+        "--mysql-config-file", type=str,
+        help="Path to mysql configuration file containing SQL commands and your login and password."
     )
     parser.add_argument(
         "--api-key", type=str, help="API key to request data from alphavantage.co"
     )
     parser.add_argument(
-        "--api-base-url", type=str, help="Exact base url of api to request data from alphavantage.co"
+        "--api-base-url", type=str,
+        help="Exact base url of api to request data from alphavantage.co"
     )
     parser.add_argument(
-        "--api-data-interval", type=str, help="Interval between stock states requested from alphavantage.co"
+        "--api-data-interval", type=str,
+        help="Interval between stock states requested from alphavantage.co"
     )
     parser.add_argument(
         "--request-api-data", type=bool,
@@ -125,7 +127,7 @@ def initialise_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--secondary-pages-scrapping", type=bool,
         help="Switcher between modes that enable not to scrap"
-        "secondary pages of each article." ###Alex
+             "secondary pages of each article."
     )
     parser.add_argument(
         "--debug_number-of-pages",
@@ -263,7 +265,7 @@ def set_config() -> dict:
             configs[key] = args_configs[key]
             if key == 'url':
                 configs['site_url'] = "/".join(args_configs[key].split("/")[0:-1])
-        logging.info("%s + is: %s", key, configs[key])  # Alex
+        logging.info("%s + is: %s", key, configs[key])
 
     if configs['debug_mode']:
         # debug mode number of pages
@@ -464,11 +466,12 @@ def selenium_service_and_options() -> tuple:
     # Add argument to hide browser window and make the process faster
     options.add_argument("--headless")
 
-    # Some options to come over block against headless browsers
-    options.add_argument(
-        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-        'AppleWebKit/537.36 (KHTML, like Gecko) '
-        'Chrome/58.0.3029.110 Safari/537.3')
+    # # Some options to come over block against headless browsers
+    # options.add_argument(
+    #     '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+    #     'AppleWebKit/537.36 (KHTML, like Gecko) '
+    #     'Chrome/58.0.3029.110 Safari/537.3')
+
     options.add_argument('--disable-gpu')
 
     logging.info("selenium_service_and_options() ended")
@@ -488,15 +491,13 @@ def get_html_content_with_driver(url: str) -> str:
     service, options = selenium_service_and_options()
     driver = webdriver.Chrome(service=service, options=options)
 
-    # command to wait inside the headless browser window
-    driver.implicitly_wait(3)
-
     driver.get(url)
 
     # Give some time for JavaScript to load the content.
     # Both driver.implicitly_wait and time.sleep are important in headless mode.
+
     for _ in tqdm(range(100)):
-        time.sleep(0.03)
+        time.sleep(0.05)
 
     html_content = driver.page_source
     driver.quit()
@@ -622,7 +623,7 @@ def extract_data_from_soup(soup: BeautifulSoup) -> dict:
         author = match.group(0).replace("By: ", "").strip()
         logging.info("author added ! %s", author)
     else:
-        author = None
+        author = "Add Blocker"
         logging.info("author not found !! %s", author)
     output_dict['author'] = author
     logging.debug("extracted author %s", author)
@@ -632,7 +633,7 @@ def extract_data_from_soup(soup: BeautifulSoup) -> dict:
         date_str = match.group()
         logging.info("date_str added ! %s", date_str)
     else:
-        date_str = None
+        date_str = "Apr. 1, 2222"
         logging.info("date_str not found !! %s", date_str)
     output_dict['date_str'] = date_str
     logging.debug("extracted publishing date_str %s", date_str)
@@ -642,7 +643,7 @@ def extract_data_from_soup(soup: BeautifulSoup) -> dict:
         time_ = match.group()
         logging.info("time_ added ! %s", time_)
     else:
-        time_ = None
+        time_ = "11:11 AM"
         logging.info("time_ not found !! %s", time_)
     output_dict['time'] = time_
     logging.debug("extracted publishing time %s", time_)
@@ -802,16 +803,27 @@ def get_intraday_stock_data(symbol, api_key=API_KEY, interval="5min") -> tuple[s
 
     url = f"{API_BASE_URL}function={function}&symbol={symbol}&interval={interval}" \
           f"&outputsize={output_size}&apikey={api_key}"
-    response = requests.get(url)
+    response = requests.get(url, timeout=9.9)
 
     if response.status_code == 200:
         data = response.json()
         time_series = data.get(f"Time Series ({interval})")
         return symbol, time_series
-    else:
-        print("Error fetching data:", response.status_code)
-        logging.error("Error fetching data:", response.status_code)
-        sys.exit()
+
+    print("Error fetching data: %s", response.status_code)
+    logging.error("Error fetching data: %s", response.status_code)
+    sys.exit()
+
+
+def get_ticker_id(ticker: str) -> int:
+    """
+    Given ticker symbol returns its id from stock table.
+
+    :param ticker:
+    :return:
+    """
+    command = f"SELECT id FROM stock WHERE ticker_symbol = '{ticker}'"
+    return database_query(command)[0][0]
 
 
 def prices_to_db(ticker, dict_api):
@@ -821,24 +833,48 @@ def prices_to_db(ticker, dict_api):
     """
     logging.info("prices_to_db(() called for ticker: %s ", ticker)
 
-    command = f"SELECT id FROM stock WHERE ticker_symbol = '{ticker}'"
-    ticker_id = database_query(command)[0][0]
+    ticker_id = get_ticker_id(ticker)
 
-    for key, values in dict_api.items():
-        command = "INSERT INTO prices "
-        command += "(ticker_symbol_id, datetime, open, high, low, close, volume) "
-        command += f"VALUES ('{ticker_id}', '{key}', {values['1. open']}, "
-        command += f"{values['2. high']}, {values['3. low']}, {values['4. close']}, "
-        command += f"{values['5. volume']})"
+    try:
+        for key, values in dict_api.items():
+            command = "INSERT INTO prices "
+            command += "(ticker_symbol_id, datetime, open, high, low, close, volume) "
+            command += f"VALUES ('{ticker_id}', '{key}', {values['1. open']}, "
+            command += f"{values['2. high']}, {values['3. low']}, {values['4. close']}, "
+            command += f"{values['5. volume']})"
 
-        database_query(command, commit_=True)
+            database_query(command, commit_=True)
+
+    except Exception as err:
+        logging.critical(
+            "Saving data for ticker %s failed. The error is %s",
+            ticker,
+            err
+        )
 
     logging.info("new_article() ended")
 
 
+def add_tickers_to_db() -> list[str]:
+    """
+    Gets list of tickers from DB, request API data for them and then saves it to DB.
+
+    :return: list of tickers
+    """
+    raw_tickers = database_query("SELECT DISTINCT ticker_symbol FROM stock")[:-1]
+    tickers = []
+    for item in raw_tickers:
+        if item[0] != 'None':
+            tickers.append(item[0])
+
+    tickers_to_db(tickers)
+
+    return tickers
+
+
 def tickers_to_db(tickers: list):
     """
-    This function organises saving of  API data for several symbols to 'prices' table.
+    This function organizes saving of  API data for several symbols to 'prices' table.
 
     :param tickers: list of symbols(strings) like ['AAPL', 'NVDA']
 
@@ -847,7 +883,7 @@ def tickers_to_db(tickers: list):
     for ticker in tickers:
         prices_to_db(
             *get_intraday_stock_data(
-                symbol = ticker,
+                symbol=ticker,
                 api_key=API_KEY,
                 interval=API_DATA_INTERVAL
             )
@@ -865,7 +901,7 @@ def database_query(
     provide ability to set database name
     and even not to commit the query to database at all.
 
-    :param query_: str, SQL query to be executed
+    :param query_: str, an SQL query to be executed
     :param commit_: bool = False, whether to commit the changes to database by the query
     :param print_result_: bool = False: whether to print the result of the query
     :param data_base_: str, database name
@@ -954,26 +990,26 @@ def new_article(title: str, article_data: dict) -> None:
 
     # add new "name" in the table "author" if not already present
     author_query = (
-        f"INSERT INTO author (name) SELECT '{article_data['author']}' WHERE NOT "
-        + f"EXISTS(SELECT name FROM author WHERE name = '{article_data['author']}');"
+            f"INSERT INTO author (name) SELECT '{article_data['author']}' WHERE NOT "
+            + f"EXISTS(SELECT name FROM author WHERE name = '{article_data['author']}');"
     )
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
     article_query = (
-        "INSERT INTO article (title, link, datetime_posted, author_id) "
-        + f"SELECT '{title}', '{article_data['href']}', '{article_data['date_str']}', "
-        + f"(SELECT id FROM author WHERE name = '{article_data['author']}')"
-        + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+            "INSERT INTO article (title, link, datetime_posted, author_id) "
+            + f"SELECT '{title}', '{article_data['href']}', '{article_data['date_str']}', "
+            + f"(SELECT id FROM author WHERE name = '{article_data['author']}')"
+            + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
     )
     database_query(article_query, commit_=True)
 
     # update the stock table with the data
     stock_query = (
-        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
-        + f"VALUES('{article_data['ticker']}', '{article_data['price_change']}', "
-        + f"'{article_data['price_change_time']}', "
-        + f"(SELECT id FROM article WHERE title = '{title}'));"
+            "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
+            + f"VALUES('{article_data['ticker']}', '{article_data['price_change']}', "
+            + f"'{article_data['price_change_time']}', "
+            + f"(SELECT id FROM article WHERE title = '{title}'));"
     )
     database_query(stock_query, commit_=True)
 
@@ -1109,15 +1145,15 @@ def main() -> None:
 
     dict_to_db(my_dict)
 
-    tickers = database_query("SELECT DISTINCT ticker_symbol FROM stock")[:-1]
-    tickers = [x[0] for x in tickers]
-
-    tickers_to_db(tickers)
-
     nice_print_article()
     database_query("SELECT * FROM stock", print_result_=True)
     database_query("SELECT * FROM author", print_result_=True)
-    database_query("SELECT * FROM prices ORDER BY datetime LIMIT 5", print_result_=True)
+
+    if REQUEST_API_DATA:
+        tickers = add_tickers_to_db()
+        ticker_id = get_ticker_id(tickers[0])
+        query = f"SELECT * FROM prices WHERE ticker_symbol_id={ticker_id} LIMIT 2"
+        database_query(query, print_result_=True)
 
     logging.info("main() completed")
 

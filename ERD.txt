@@ -27,20 +27,34 @@ c. Author
 
 author_id (Primary Key)
 name
+
+d. Prices
+
+id (Primary Key)
+ticker_symbol_id (Foreign Key)
+datetime
+open
+high
+low
+close
+volume
 Relationships:
 a. An Article is written by an Author (One Author to Many Articles)
 b. An Article is about a Stock (One Article to One Stock)
 c. A Stock price change is influenced by an Article (One Article to Many Stock price changes)
+d. Prices is gathered from API according to set of tickers in stock table
 
 Primary and foreign keys:
 The primary keys remain the same:
 a. Article: article_id
 b. Stock: ticker_symbol
 c. Author: author_id
+d. Prices: id
 
 Foreign keys are now as follows:
 a. author_id in Article entity, which links the Article to its Author.
 b. ticker_symbol in Article entity, which links the Article to the Stock it is about.
 c. article_id in Stock entity, which links the Stock price change to an Article.
+d. ticker_symbol_id is Prices entity, which links historical data of symbol prices to Stock ticker.
 ___________________________________________________________________________________________
 

@@ -6,34 +6,45 @@ SELECT 'CREATING DATABASE STRUCTURE' as 'INFO';
 
 DROP TABLE IF EXISTS stock,
                      author,
-                     article;
+                     article,
+                     prices;
 
-CREATE TABLE `article` (
-  `article_id` int PRIMARY KEY,
-  `title` varchar(1000),
-  `link` varchar(1000),
-  `date_posted` date,
-  `time_posted` time,
-  `author_id` int,
-  `ticker_symbol` varchar(50)
+CREATE TABLE `Article` (
+  `id` int PRIMARY KEY,
+  `title` varchar(255),
+  `link` varchar(255),
+  `datetime_posted` datetime,
+  `author_id` int
 );
 
-CREATE TABLE `stock` (
-  `ticker_symbol` varchar(50) PRIMARY KEY,
+CREATE TABLE `Stock` (
+  `id` int PRIMARY KEY,
+  `ticker_symbol` varchar(255),
   `price_change` decimal,
-  `date_change` date,
-  `time_change` time,
+  `datetime_change` datetime,
   `article_id` int
 );
 
-CREATE TABLE `author` (
-  `author_id` int PRIMARY KEY,
+CREATE TABLE `Author` (
+  `id` int PRIMARY KEY,
   `name` varchar(255)
 );
 
-ALTER TABLE `article` ADD FOREIGN KEY (`author_id`) REFERENCES `author` (`author_id`);
+CREATE TABLE `Prices` (
+  `id` int PRIMARY KEY,
+  `ticker_symbol_id` int,
+  `datetime` datetime,
+  `open` decimal,
+  `high` decimal,
+  `low` decimal,
+  `close` decimal,
+  `volume` int
+);
 
-ALTER TABLE `article` ADD FOREIGN KEY (`ticker_symbol`) REFERENCES `stock` (`ticker_symbol`);
+ALTER TABLE `Author` ADD FOREIGN KEY (`id`) REFERENCES `Article` (`author_id`);
 
-ALTER TABLE `stock` ADD FOREIGN KEY (`article_id`) REFERENCES `article` (`article_id`);
+ALTER TABLE `Stock` ADD FOREIGN KEY (`article_id`) REFERENCES `Article` (`id`);
+
+ALTER TABLE `Prices` ADD FOREIGN KEY (`ticker_symbol_id`) REFERENCES `Stock` (`id`);
+
 
