@@ -44,6 +44,13 @@ If you don't use Google Chrome, then [install it](https://www.google.com/chrome/
 (that should be easier) Google Chrome driver corresponding to you Chrome browser
 [version](https://help.illinoisstate.edu/technology/support-topics/device-support/software/web-browsers/what-version-of-chrome-do-i-have).
 
+Put the path to your Google Chrome driver into a `CHROME_DRIVER_PATH` variable of `conf.json` file like this:
+```json
+{
+ "CHROME_DRIVER_PATH": "C:\\Users\\maxim\\PycharmProjects\\chromedriver_win32\\chromedriver.exe"
+}
+```
+
 It is also highly recommended to set your Google Chrome browser settings to insecure mode:
 * in the upper right corner click the Menu button ⋮
 * choose Settings
