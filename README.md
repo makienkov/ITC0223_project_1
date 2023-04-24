@@ -29,14 +29,6 @@ then the required python packages:
 pip install -r requirements.txt
 ```
 
-Make sure your local MySQL server is turned on and then configure
-(just open and review) the `conf.json` and `mysql_connector.json`
-files and finally run
-
-```sh
-pyhton3 main.py
-```
-
 If you don't use Google Chrome, then [install it](https://www.google.com/chrome/).
 
 [Find](https://stackoverflow.com/questions/49788257/what-is-default-location-of-chromedriver-and-for-installing-chrome-on-windows)
@@ -74,6 +66,14 @@ get an API key and paste it into "API_KEY" field of `conf.json` file like this
 ```
 
 The data requested from [alphavantage.co] will be saved in a database table 'prices'.
+
+Make sure your local MySQL server is turned on and then configure
+(just open and review) the `conf.json` and `mysql_connector.json`
+files and finally run
+
+```sh
+pyhton3 main.py
+```
 
 ## Settings
 
