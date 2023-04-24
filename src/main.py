@@ -466,11 +466,12 @@ def selenium_service_and_options() -> tuple:
     # Add argument to hide browser window and make the process faster
     options.add_argument("--headless")
 
-    # Some options to come over block against headless browsers
-    options.add_argument(
-        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-        'AppleWebKit/537.36 (KHTML, like Gecko) '
-        'Chrome/58.0.3029.110 Safari/537.3')
+    # # Some options to come over block against headless browsers
+    # options.add_argument(
+    #     '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+    #     'AppleWebKit/537.36 (KHTML, like Gecko) '
+    #     'Chrome/58.0.3029.110 Safari/537.3')
+
     options.add_argument('--disable-gpu')
 
     logging.info("selenium_service_and_options() ended")
@@ -490,15 +491,13 @@ def get_html_content_with_driver(url: str) -> str:
     service, options = selenium_service_and_options()
     driver = webdriver.Chrome(service=service, options=options)
 
-    # command to wait inside the headless browser window
-    driver.implicitly_wait(3)
-
     driver.get(url)
 
     # Give some time for JavaScript to load the content.
     # Both driver.implicitly_wait and time.sleep are important in headless mode.
+
     for _ in tqdm(range(100)):
-        time.sleep(0.03)
+        time.sleep(0.05)
 
     html_content = driver.page_source
     driver.quit()
@@ -624,7 +623,7 @@ def extract_data_from_soup(soup: BeautifulSoup) -> dict:
         author = match.group(0).replace("By: ", "").strip()
         logging.info("author added ! %s", author)
     else:
-        author = None
+        author = "Add Blocker"
         logging.info("author not found !! %s", author)
     output_dict['author'] = author
     logging.debug("extracted author %s", author)
@@ -634,7 +633,7 @@ def extract_data_from_soup(soup: BeautifulSoup) -> dict:
         date_str = match.group()
         logging.info("date_str added ! %s", date_str)
     else:
-        date_str = None
+        date_str = "Apr. 1, 2222"
         logging.info("date_str not found !! %s", date_str)
     output_dict['date_str'] = date_str
     logging.debug("extracted publishing date_str %s", date_str)
@@ -644,7 +643,7 @@ def extract_data_from_soup(soup: BeautifulSoup) -> dict:
         time_ = match.group()
         logging.info("time_ added ! %s", time_)
     else:
-        time_ = None
+        time_ = "11:11 AM"
         logging.info("time_ not found !! %s", time_)
     output_dict['time'] = time_
     logging.debug("extracted publishing time %s", time_)
@@ -816,6 +815,17 @@ def get_intraday_stock_data(symbol, api_key=API_KEY, interval="5min") -> tuple[s
     sys.exit()
 
 
+def get_ticker_id(ticker: str) -> int:
+    """
+    Given ticker symbol returns its id from stock table.
+
+    :param ticker:
+    :return:
+    """
+    command = f"SELECT id FROM stock WHERE ticker_symbol = '{ticker}'"
+    return database_query(command)[0][0]
+
+
 def prices_to_db(ticker, dict_api):
     """
     given the prices dictionary and the ticker name
@@ -823,19 +833,43 @@ def prices_to_db(ticker, dict_api):
     """
     logging.info("prices_to_db(() called for ticker: %s ", ticker)
 
-    command = f"SELECT id FROM stock WHERE ticker_symbol = '{ticker}'"
-    ticker_id = database_query(command)[0][0]
+    ticker_id = get_ticker_id(ticker)
 
-    for key, values in dict_api.items():
-        command = "INSERT INTO prices "
-        command += "(ticker_symbol_id, datetime, open, high, low, close, volume) "
-        command += f"VALUES ('{ticker_id}', '{key}', {values['1. open']}, "
-        command += f"{values['2. high']}, {values['3. low']}, {values['4. close']}, "
-        command += f"{values['5. volume']})"
+    try:
+        for key, values in dict_api.items():
+            command = "INSERT INTO prices "
+            command += "(ticker_symbol_id, datetime, open, high, low, close, volume) "
+            command += f"VALUES ('{ticker_id}', '{key}', {values['1. open']}, "
+            command += f"{values['2. high']}, {values['3. low']}, {values['4. close']}, "
+            command += f"{values['5. volume']})"
 
-        database_query(command, commit_=True)
+            database_query(command, commit_=True)
+
+    except Exception as err:
+        logging.critical(
+            "Saving data for ticker %s failed. The error is %s",
+            ticker,
+            err
+        )
 
     logging.info("new_article() ended")
+
+
+def add_tickers_to_db() -> list[str]:
+    """
+    Gets list of tickers from DB, request API data for them and then saves it to DB.
+
+    :return: list of tickers
+    """
+    raw_tickers = database_query("SELECT DISTINCT ticker_symbol FROM stock")[:-1]
+    tickers = []
+    for item in raw_tickers:
+        if item[0] != 'None':
+            tickers.append(item[0])
+
+    tickers_to_db(tickers)
+
+    return tickers
 
 
 def tickers_to_db(tickers: list):
@@ -1111,15 +1145,15 @@ def main() -> None:
 
     dict_to_db(my_dict)
 
-    tickers = database_query("SELECT DISTINCT ticker_symbol FROM stock")[:-1]
-    tickers = [x[0] for x in tickers]
-
-    tickers_to_db(tickers)
-
     nice_print_article()
     database_query("SELECT * FROM stock", print_result_=True)
     database_query("SELECT * FROM author", print_result_=True)
-    database_query("SELECT * FROM prices ORDER BY datetime LIMIT 5", print_result_=True)
+
+    if REQUEST_API_DATA:
+        tickers = add_tickers_to_db()
+        ticker_id = get_ticker_id(tickers[0])
+        query = f"SELECT * FROM prices WHERE ticker_symbol_id={ticker_id} LIMIT 2"
+        database_query(query, print_result_=True)
 
     logging.info("main() completed")
 
