@@ -816,9 +816,10 @@ def get_intraday_stock_data(
         data = response.json()
         time_series = data.get(f"Time Series ({interval})")
         if time_series is None:
-            print("Error fetching data: time_series is None")
+            print("Error fetching data for ticker %s: time_series is None", symbol)
             logging.critical(
-                "Error fetching data: time_series is None,\n%s\n%s",
+                "Error fetching data for symbol %s: time_series is None,\n%s\n%s",
+                symbol,
                 response.status_code,
                 data
             )
