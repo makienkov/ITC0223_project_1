@@ -815,8 +815,16 @@ def get_intraday_stock_data(
     if response.status_code == 200:
         data = response.json()
         time_series = data.get(f"Time Series ({interval})")
+        if time_series is None:
+            print("Error fetching data: time_series is None")
+            logging.critical(
+                "Error fetching data: time_series is None,\n%s\n%s",
+                response.status_code,
+                data
+            )
         logging.info("get_intraday_stock_data() ended")
         return symbol, time_series
+
 
     print("Error fetching data: %s", response.status_code)
     logging.error("Error fetching data: %s", response.status_code)
@@ -845,7 +853,7 @@ def prices_to_db(ticker, dict_api):
     ticker_id = get_ticker_id(ticker)
 
     try:
-        for key, values in dict_api.items():
+        for key, values in tqdm(dict_api.items()):
             command = "INSERT INTO prices "
             command += "(ticker_symbol_id, datetime, open, high, low, close, volume) "
             command += f"VALUES ('{ticker_id}', '{key}', {values['1. open']}, "
@@ -857,6 +865,10 @@ def prices_to_db(ticker, dict_api):
             database_query(command, commit_=True)
 
     except mysql.connector.Error as err:
+        logging.critical(
+            "Saving data for ticker %s failed. The error is %s", ticker, err
+        )
+    except AttributeError as err:
         logging.critical(
             "Saving data for ticker %s failed. The error is %s", ticker, err
         )
