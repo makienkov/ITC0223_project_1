@@ -76,12 +76,12 @@ def initialise_parser() -> argparse.ArgumentParser:
         type=int,
         choices=[10, 20, 30, 40, 50],
         help="Log level in debug mode, integer."
-        "\nPossible choices:"
-        "\n* DEBUG=10"
-        "\n* INFO=20"
-        "\n* WARN=30"
-        "\n* ERROR=40"
-        "\n* CRITICAL=50",
+             "\nPossible choices:"
+             "\n* DEBUG=10"
+             "\n* INFO=20"
+             "\n* WARN=30"
+             "\n* ERROR=40"
+             "\n* CRITICAL=50",
     )
 
     parser.add_argument(
@@ -89,12 +89,12 @@ def initialise_parser() -> argparse.ArgumentParser:
         type=int,
         choices=[10, 20, 30, 40, 50],
         help="Log level in deployment mode, integer."
-        "\nPossible choices:"
-        "\n* DEBUG=10"
-        "\n* INFO=20"
-        "\n* WARN=30"
-        "\n* ERROR=40"
-        "\n* CRITICAL=50",
+             "\nPossible choices:"
+             "\n* DEBUG=10"
+             "\n* INFO=20"
+             "\n* WARN=30"
+             "\n* ERROR=40"
+             "\n* CRITICAL=50",
     )
 
     parser.add_argument(
@@ -132,13 +132,13 @@ def initialise_parser() -> argparse.ArgumentParser:
         "--request-api-data",
         type=bool,
         help="Switcher between modes that enable to request"
-        "data from alphavantage.co.",
+             "data from alphavantage.co.",
     )
     parser.add_argument(
         "--secondary-pages-scrapping",
         type=bool,
         help="Switcher between modes that enable not to scrap"
-        "secondary pages of each article.",
+             "secondary pages of each article.",
     )
     parser.add_argument(
         "--debug_number-of-pages",
@@ -154,7 +154,7 @@ def initialise_parser() -> argparse.ArgumentParser:
         "--debug-number-of-urls",
         type=int,
         help="Number of articles to save and show in debug mode"
-        "(used only in debug mode)",
+             "(used only in debug mode)",
     )
     parser.add_argument(
         "-p",
@@ -206,7 +206,7 @@ def check_config_file(config_file_name: str, required_constants: list) -> dict:
             obj = json.loads(obj)
 
         if set(required_constants).intersection(list(obj.keys())) == set(
-            required_constants
+                required_constants
         ):
             logging.info("all config parameters loaded successfully from config file")
         else:
@@ -520,9 +520,9 @@ def check_percentage(percentage_string: str) -> str:
     logging.info("check_percentage() was called with:\n %s", percentage_string)
 
     if (
-        percentage_string.startswith("+")
-        or percentage_string.startswith("-")
-        or percentage_string == "0.00"
+            percentage_string.startswith("+")
+            or percentage_string.startswith("-")
+            or percentage_string == "0.00"
     ):
         logging.info("check_percentage() was ended")
         return percentage_string
@@ -790,7 +790,7 @@ def parallel_approach(my_dict: dict) -> None:
 
 
 def get_intraday_stock_data(
-    symbol, api_key=API_KEY, interval="5min"
+        symbol, api_key=API_KEY, interval="5min"
 ) -> tuple[str, dict]:
     """
     Given stock symbol, api_key and interval requests from alphavantage.co
@@ -816,7 +816,7 @@ def get_intraday_stock_data(
         data = response.json()
         time_series = data.get(f"Time Series ({interval})")
         if time_series is None:
-            print("Error fetching data for ticker %s: time_series is None", symbol)
+            print(f"Error fetching data for ticker {symbol}: time_series is None")
             logging.critical(
                 "Error fetching data for symbol %s: time_series is None,\n%s\n%s",
                 symbol,
@@ -825,7 +825,6 @@ def get_intraday_stock_data(
             )
         logging.info("get_intraday_stock_data() ended")
         return symbol, time_series
-
 
     print("Error fetching data: %s", response.status_code)
     logging.error("Error fetching data: %s", response.status_code)
@@ -911,10 +910,10 @@ def tickers_to_db(tickers: list):
 
 
 def database_query(
-    query_: str,
-    commit_: bool = False,
-    print_result_: bool = False,
-    data_base_: str = "alexander_maxim",
+        query_: str,
+        commit_: bool = False,
+        print_result_: bool = False,
+        data_base_: str = "alexander_maxim",
 ) -> list:
     """
     Wrapper of SQL query executor. Can print the output,
@@ -940,7 +939,8 @@ def database_query(
     try:
         # Establish a connection to the MySQL database
         my_db = mysql.connector.connect(
-            host="data-mining-db1.cttpnp4olbpx.us-west-1.rds.amazonaws.com", user=USER_NAME, password=PASSWORD, database=data_base_
+            host="data-mining-db1.cttpnp4olbpx.us-west-1.rds.amazonaws.com",
+            user=USER_NAME, password=PASSWORD, database=data_base_
         )
 
         # Create a cursor object to execute SQL queries
@@ -1009,26 +1009,26 @@ def new_article(title: str, article_data: dict) -> None:
 
     # add new "name" in the table "author" if not already present
     author_query = (
-        f"INSERT INTO author (name) SELECT '{article_data['author']}' WHERE NOT "
-        + f"EXISTS(SELECT name FROM author WHERE name = '{article_data['author']}');"
+            f"INSERT INTO author (name) SELECT '{article_data['author']}' WHERE NOT "
+            + f"EXISTS(SELECT name FROM author WHERE name = '{article_data['author']}');"
     )
     database_query(author_query, commit_=True)
 
     # add the data only if there are no articles in the article table with the same title
     article_query = (
-        "INSERT INTO article (title, link, datetime_posted, author_id) "
-        + f"SELECT '{title}', '{article_data['href']}', '{article_data['date_str']}', "
-        + f"(SELECT id FROM author WHERE name = '{article_data['author']}')"
-        + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
+            "INSERT INTO article (title, link, datetime_posted, author_id) "
+            + f"SELECT '{title}', '{article_data['href']}', '{article_data['date_str']}', "
+            + f"(SELECT id FROM author WHERE name = '{article_data['author']}')"
+            + f"WHERE NOT EXISTS (SELECT id FROM article WHERE title = '{title}');"
     )
     database_query(article_query, commit_=True)
 
     # update the stock table with the data
     stock_query = (
-        "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
-        + f"VALUES('{article_data['ticker']}', '{article_data['price_change']}', "
-        + f"'{article_data['price_change_time']}', "
-        + f"(SELECT id FROM article WHERE title = '{title}'));"
+            "INSERT INTO stock(ticker_symbol, price_change, datetime_change, article_id) "
+            + f"VALUES('{article_data['ticker']}', '{article_data['price_change']}', "
+            + f"'{article_data['price_change_time']}', "
+            + f"(SELECT id FROM article WHERE title = '{title}'));"
     )
     database_query(stock_query, commit_=True)
 
@@ -1088,7 +1088,7 @@ def scraping_secondary_pages(my_dict: dict) -> None:
     """
     a function to handle scraping of secondary pages
 
-    :param data: my_dict, the data to save to db
+    :param my_dict: my_dict, the data to save to db
     :return: None
     """
     if SECONDARY_PAGES_SCRAPPING:
